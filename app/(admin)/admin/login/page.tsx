@@ -17,7 +17,7 @@ const loginPage = () => {
     <div
       className={`flex justify-center items-center bg-gray-100 h-screen ${lora.className}`}
     >
-      <div className="px-8 py-12 bg-white w-[32rem] rounded-xl">
+      <div className="px-8 py-8 bg-white w-[30rem] shadow-md rounded-xl">
         <form action="">
           <div className="flex flex-col">
             <label className=" mb-2 font-semibold mr-4" htmlFor="email">
@@ -34,7 +34,7 @@ const loginPage = () => {
               Password
             </label>
             <input
-              className="text-lg border-[1.5px] rounded-md shadow-sm border-gray-300 py-1.5 pl-2 pr-12 focus:outline-none focus:shadow-outline"
+              className="text-lg border-[1.5px] rounded-md shadow-sm border-gray-300 py-1.5 pl-2 pr-12 focus:outline-none"
               id="password"
               name="password"
               type={`${hidePassword ? "text" : "password"}`}
@@ -45,7 +45,7 @@ const loginPage = () => {
             >
               {hidePassword ? <EyeIcon /> : <EyeSlashIcon />}
             </div>
-            <button className="bg-blue-500 mt-6 text-white text-lg py-2 rounded-md">
+            <button className="bg-blue-500 mt-6 font-semibold text-white text-md tracking-wider py-2 rounded-md">
               login
             </button>
           </div>
