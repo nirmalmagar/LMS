@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Figtree, Lora } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], weight:["100"] });
+const figTree = Figtree({ subsets: ["latin"], variable: "--font-figtree" });
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+  style: ["normal", "italic"],
+});
 
 export const metadata: Metadata = {
   title: "LMS",
@@ -16,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={`${lora.variable} ${figTree.variable} ${figTree.className} overflow-x-hidden`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
