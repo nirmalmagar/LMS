@@ -15,7 +15,7 @@ const AdminSidebar = () => {
   return (
     <>
       <aside className="bg-gray-800 h-screen w-[14rem] text-blue-100 px-4">
-        <Link href={"/"} className="flex justify-center pt-4">
+        <Link href={routes.ADMIN_DASHBOARD_ROUTE} className="flex justify-center pt-4">
           <Image
             height={100}
             width={100}
@@ -23,36 +23,37 @@ const AdminSidebar = () => {
             alt="LMS logo"
           />
         </Link>
-        <div className="list-none flex flex-col text-lg gap-y-6 mt-12">
-          <span className="text-sm text-blue-200 font-semibold px-4">MENU</span>
+        <div className="list-none flex flex-col text-lg gap-y-4 mt-12">
+          <span className="text-xs text-blue-200 font-semibold px-4">BOOKS</span>
           <Link
             href={routes.ADMIN_DASHBOARD_ROUTE}
-            className="flex gap-2 hover:bg-slate-700 px-4 py-2"
+            className="flex gap-2 hover:bg-slate-700 text-base items-center px-4 py-2"
           >
-            <HomeIcon className="w-6 h-6" />
+            <HomeIcon className="w-5 h-5" />
             <span>Dashboard</span>
           </Link>
-          <Link href={"/"} className="flex gap-2 hover:bg-slate-700 px-4 py-2">
-            <ChatBubbleLeftEllipsisIcon className="w-6 h-6" />
-            <span>Contact us</span>
-          </Link>
+         
           <Link
             href={routes.ADMIN_BOOKS_ROUTE}
-            className="flex gap-2 hover:bg-slate-700 px-4 py-2"
+            className="flex gap-2 hover:bg-slate-700 text-base items-center px-4 py-2"
           >
-            <BookOpenIcon className="w-6 h-6" />
+            <BookOpenIcon className="w-5 h-5" />
             <span>Books</span>
           </Link>
-          <Link href={"/"} className="flex gap-2 hover:bg-slate-700 px-4 py-2">
-            <QuestionMarkCircleIcon className="w-6 h-6" />
-            <span>FAQs</span>
+          <Link href={routes.ADMIN_BORROW_ROUTE} className="flex gap-2 hover:bg-slate-700 text-base items-center px-4 py-2">
+            <ChatBubbleLeftEllipsisIcon className="w-5 h-5" />
+            <span>Borrow</span>
           </Link>
-          <Link href={"/"} className="flex gap-2 hover:bg-slate-700 px-4 py-2">
-            <RectangleGroupIcon className="w-6 h-6" />
-            <span>Testomonial</span>
+          <Link href={routes.ADMIN_RECOMMENDED_BOOKS_ROUTE} className="flex gap-2 hover:bg-slate-700 text-base items-center px-4 py-2">
+            <QuestionMarkCircleIcon className="w-5 h-5" />
+            <span>Recommended Books</span>
           </Link>
-          <Link href={"/"} className="flex gap-2 hover:bg-slate-700 px-4 py-2">
-            <Cog6ToothIcon className="w-6 h-6" />
+          <Link href={routes.ADMIN_RESERVE_ROUTE} className="flex gap-2 hover:bg-slate-700 text-base items-center px-4 py-2">
+            <RectangleGroupIcon className="w-5 h-5" />
+            <span>Reserve</span>
+          </Link>
+          <Link href={routes.ADMIN_SETTING_ROUTE} className="flex gap-2 hover:bg-slate-700 text-base items-center px-4 py-2">
+            <Cog6ToothIcon className="w-5 h-5" />
             <span>Setting</span>
           </Link>
         </div>
