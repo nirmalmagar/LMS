@@ -1,0 +1,17 @@
+.spinners {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid rgb(255, 255, 255, 0.2);
+  border-top-color: transparent;
+  animation: rot1 1.2s linear infinite;
+}
+.spinners.blue {
+  border: 2px solid rgb(31, 161, 242);
+  border-top-color: transparent;
+}
+@keyframes rot1 {
+  to {
+    transform: rotate(360deg);
+  }
+}
