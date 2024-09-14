@@ -14,7 +14,7 @@ import {
 const AdminSidebar = () => {
   return (
     <>
-      <aside className="bg-gray-800 h-screen w-[14rem] text-blue-100 px-4">
+      <aside className="bg-gray-800 w-[14rem] text-blue-100 px-4">
         <Link href={routes.ADMIN_DASHBOARD_ROUTE} className="flex justify-center pt-4">
           <Image
             height={100}

@@ -70,7 +70,6 @@ const CreateAccount = () => {
                   type="text"
                   wrapperClassName="flex"
                   value={inputFormValues?.first_name}
-                  // value={inputfieldValues?.name}
                   // fieldErrors={error?.name ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("first_name", e.target.value);

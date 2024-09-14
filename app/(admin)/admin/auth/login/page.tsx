@@ -1,6 +1,6 @@
 import React from "react";
 import LoginPage from "./_partials/LoginPage";
-const page = () => {
+const page:React.FC = () => {
   return (
     <div>
       <LoginPage />

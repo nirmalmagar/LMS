@@ -13,7 +13,7 @@ const DefaultLayout: React.FC<DefaultLayoutType> = ({ children }) => {
         <AdminSidebar />
         <div className="flex flex-1 w-full flex-col">
           <AdminNavbar />
-          <main>{children}</main>
+          <main className="p-8">{children}</main>
         </div>
       </div>
     </div>

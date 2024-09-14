@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree, Lora } from "next/font/google";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 const figTree = Figtree({ subsets: ["latin"], variable: "--font-figtree" });
@@ -25,6 +27,19 @@ export default function RootLayout({
         className={`${lora.variable} ${figTree.variable} ${figTree.className} overflow-x-hidden`}
       >
         {children}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          // transition: Bounce,
+        />
       </body>
     </html>
   );
