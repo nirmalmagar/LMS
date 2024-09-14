@@ -1,50 +1,53 @@
 "use client";
 import React from "react";
-import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
+import useSWR, { mutate } from "swr";
+import { toast } from "react-toastify";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { accessToken } from "@/helpers/TokenHelper";
 
 const TableList = () => {
   const GenresListURL = `${process.env.HOST}genres/`;
   const { data: genresData } = useSWR(GenresListURL, defaultFetcher);
-  // const showSwal = (id: string) => {
-  //   withReactContent(Swal)
-  //     .fire({
-  //       title: "Are you sure?",
-  //       text: "You won't be able to revert this!",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#d33",
-  //       cancelButtonColor: "#3085d6",
-  //       confirmButtonText: "Yes, remove it!",
-  //     })
-  //     .then(async (result) => {
-  //       if (result.isConfirmed) {
-  //         try {
-  //           const response = await fetch(
-  //             `${process.env.HOST}/api/blog-faqs/delete/${id}`,
-  //             {
-  //               method: "DELETE",
-  //               headers: {
-  //                 Authorization: `Bearer ${accessToken()}`,
-  //                 "Content-Type": "application/json",
-  //                 Accept: "applicaton/json",
-  //               },
-  //             }
-  //           );
 
-  //           const result = await response.json();
-  //           if (result.success) {
-  //             toast.success(result.message);
-  //             mutate?.();
-  //           } else {
-  //             toast.error(result.message ?? "Something went wrong!");
-  //           }
-  //         } catch (err) {
-  //           toast.error("Something went wrong!");
-  //         }
-  //       }
-  //     });
-  // };
+  const showSwal = (id: string) => {
+    withReactContent(Swal)
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, remove it!",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch(`${process.env.HOST}genres/${id}/`, {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${accessToken()}`,
+                "Content-Type": "application/json",
+                Accept: "application/json", // Fixed typo here
+              },
+            });
+            if (response.ok) {
+              toast.success("Genre removed successfully.");
+              mutate(GenresListURL);
+            } else {
+              const result = await response.json();
+              toast.error(result.message ?? "Something went wrong!");
+            }
+          } catch (err) {
+            toast.error("Something went wrong!");
+          }
+        }
+      });
+  };
+
   return (
     // dark:border-strokedark dark:bg-boxdark
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default sm:px-7.5 xl:pb-1">
@@ -52,11 +55,10 @@ const TableList = () => {
         <table className="w-full table-auto">
           <thead>
             {/* dark:bg-meta-4 */}
-            <tr className="bg-gray-200 text-left ">
+            <tr className="bg-gray-200 text-left">
               <th className=" px-4 py-4 font-medium text-black xl:pl-11">
                 S.N
               </th>
-
               <th className="min-w-[120px] px-4 py-4 font-medium text-black">
                 Name
               </th>
@@ -93,9 +95,20 @@ const TableList = () => {
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="text-black">
-                        {genresList?.created_by 
+                        {genresList?.created_by
                           ? genresList?.created_by
                           : genresList?.name}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                      <p className="text-black text-center">
+                        <button
+                          className="hover:text-red"
+                          onClick={() => showSwal(genresList?.id)}
+                        >
+                          {/* <EllipsisHorizontalIcon className="ml-2 cursor-pointer w-8 h-6" /> */}
+                          <TrashIcon className="h-[18px] w-[18px]" />
+                        </button>
                       </p>
                     </td>
                   </tr>
