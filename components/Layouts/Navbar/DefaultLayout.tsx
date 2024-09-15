@@ -9,9 +9,9 @@ const DefaultLayout: React.FC<DefaultLayoutType> = ({ children }) => {
   return (
     <div>
       {/* admin sidebar */}
-      <div className="flex">
+      <div className="flex h-screen">
         <AdminSidebar />
-        <div className="flex flex-1 w-full flex-col">
+        <div className="flex flex-1 overflow-x-hidden overflow-y-auto relative flex-col">
           <AdminNavbar />
           <main className="p-8">{children}</main>
         </div>
