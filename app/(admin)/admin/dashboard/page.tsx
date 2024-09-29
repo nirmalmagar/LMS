@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
 const page = () => {
   const [booksList, setBooksList] = useState({});
+  
 
   useEffect(() => {
     // Fetch data from the API
@@ -23,6 +24,12 @@ const page = () => {
 
     fetchData();
   }, []);
+  let flag = useRef(true);
+  useEffect(()=>{
+    if(!flag){
+      console.log("call me !!")
+    }
+  },[])
 
   return (
     <div>

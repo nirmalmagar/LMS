@@ -3,6 +3,7 @@ interface RoutesInterface {
 }
 export const routes: RoutesInterface = {
   ADMIN_DASHBOARD_ROUTE: "/admin/dashboard",
+  ADMIN_USERS_ROUTE: "/admin/users",
   ADMIN_BOOKS_ROUTE: "/admin/books",
   ADMIN_BOOKS_ADD: "/admin/books/add",
   ADMIN_BORROW_ROUTE: "/admin/borrow",

@@ -1,14 +1,12 @@
 "use client"
-import React, { useState } from "react";
-import ReactSwitch from "react-switch";
+import React from "react";
+import { DarkModeSwitcher } from "@/components/Elements/DarkModeSwitcher";
+
 const AdminNavbar = () => {
-  const [darkModeToggle, setDarkMode] = useState<boolean>(false);
   return (
     <div className="bg-slate-800 sticky top-0 flex justify-end items-center gap-20 px-12 text-white py-4">
-      <ReactSwitch
-        onChange={() => setDarkMode(!darkModeToggle)}
-        checked={darkModeToggle}
-      />
+    <DarkModeSwitcher/>
+    
       <div className="text-right text-sm">
         <h1>administrator@gmail.com</h1>
         <span>(admin)</span>

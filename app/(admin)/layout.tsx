@@ -1,10 +1,11 @@
+"use client"
 import { ReactNode, Suspense } from "react";
 import { ColorTheme } from "@/context/ColorTheme";
 
-const RootLayout = ({ children }: { children: ReactNode }) => {
+const AdminRootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <body suppressHydrationWarning>
+      <body className="" suppressHydrationWarning>
         <Suspense>
           <ColorTheme>{children}</ColorTheme>
         </Suspense>
@@ -12,4 +13,4 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     </html>
   );
 };
-export default RootLayout;
+export default AdminRootLayout;

@@ -7,11 +7,10 @@ import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
-import Image from "next/image";
 
-const BookTableList = () => {
-  const BooksListURL = `${process.env.HOST}books/`;
-  const { data: booksData } = useSWR(BooksListURL, defaultFetcher);
+const UsersListTable = () => {
+  const UsersListURL = `${process.env.HOST}user/`;
+  const { data: usersListData } = useSWR(UsersListURL, defaultFetcher);
 
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -27,7 +26,7 @@ const BookTableList = () => {
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(`${process.env.HOST}books/${id}/`, {
+            const response = await fetch(`${process.env.HOST}genres/${id}/`, {
               method: "DELETE",
               headers: {
                 Authorization: `Bearer ${accessToken()}`,
@@ -37,7 +36,7 @@ const BookTableList = () => {
             });
             if (response.ok) {
               toast.success("Genre removed successfully.");
-              mutate(BooksListURL);
+              mutate(UsersListURL);
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -48,9 +47,7 @@ const BookTableList = () => {
         }
       });
   };
-
-  // console.log("booksList?.Genres?.name",booksData?.results[0]?.genres[0]?.name)
-
+  console.log("error found ",usersListData)
   return (
     // dark:border-strokedark dark:bg-boxdark
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default sm:px-7.5 xl:pb-1">
@@ -59,70 +56,40 @@ const BookTableList = () => {
           <thead>
             {/* dark:bg-meta-4 */}
             <tr className="bg-gray-200 text-left">
-              <th className="px-4 py-4 font-medium text-black">S.N</th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black">
-                Cover
+              <th className=" px-4 py-4 font-medium text-black xl:pl-11">
+                S.N
               </th>
               <th className="min-w-[120px] px-4 py-4 font-medium text-black">
-                Title
-              </th>
-              <th className="max-w-[120px] px-4 py-4 font-medium text-black">
-                Author
+                Name
               </th>
               <th className="min-w-[120px] px-4 py-4 font-medium text-black">
-                Publisher
+                Email
               </th>
-              <th className="px-4 py-4 font-medium text-black">Genres Name</th>
-              <th className="px-4 py-4 font-medium text-black">Details</th>
               <th className="min-w-[120px] px-4 py-4 font-medium text-black">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {booksData?.results?.map(
-              (booksList: Record<string, any>, index: number) => {
+            {usersListData?.results?.map(
+              (genresList: Record<string, any>, index: number) => {
                 return (
                   <tr key={index}>
-                    <td className="border-b border-[#eee] px-6 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                       <h5 className="font-medium text-black">{index + 1}</h5>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <div className="relative w-12 h-12">
-                        <Image
-                          src={booksList?.cover}
-                          className="rounded"
-                          fill
-                          objectFit="cover"
-                          alt={booksList?.title}
-                        />
-                      </div>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black ">{booksList.title}</p>
                     </td>
 
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black ">{booksList?.author}</p>
+                      <p className="text-black">{genresList.name}</p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black">{booksList?.publisher}</p>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black">{booksList?.Genres?.name}</p>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black">
-                        {booksList?.created_by
-                          ? booksList?.created_by
-                          : booksList?.name}
-                      </p>
+                      <p className="text-black">{genresList.email}</p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="text-black text-center">
                         <button
                           className="hover:text-red"
-                          onClick={() => showSwal(booksList?.id)}
+                          onClick={() => showSwal(genresList?.id)}
                         >
                           {/* <EllipsisHorizontalIcon className="ml-2 cursor-pointer w-8 h-6" /> */}
                           <TrashIcon className="h-[18px] w-[18px]" />
@@ -140,4 +107,4 @@ const BookTableList = () => {
   );
 };
 
-export default BookTableList;
+export default UsersListTable;
