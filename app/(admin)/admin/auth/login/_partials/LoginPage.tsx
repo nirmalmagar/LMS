@@ -59,11 +59,17 @@ const LoginPage: React.FC = () => {
       setIsLoading(false);
     }
   };
+  const token = Cookie.get("LOGIN_TOKEN")
+
   useEffect(() => {
-    if (Cookie.get("LOGIN_TOKEN")) {
+    if (token) {
       route.push(routes.ADMIN_DASHBOARD_ROUTE);
     }
-  }, []);
+    else{
+      route.push(routes.ADMIN_AUTH_LOGIN)
+    }
+  }, [route,token]);
+  
   return (
     <div
       className={`flex justify-center items-center bg-gray-200 h-screen ${lora.className}`}

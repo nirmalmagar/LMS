@@ -2,6 +2,7 @@ interface RoutesInterface {
   [key: string]: string;
 }
 export const routes: RoutesInterface = {
+  ADMIN_AUTH_LOGIN: "/admin/auth/login",
   ADMIN_DASHBOARD_ROUTE: "/admin/dashboard",
   ADMIN_USERS_ROUTE: "/admin/users",
   ADMIN_BOOKS_ROUTE: "/admin/books",
