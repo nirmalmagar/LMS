@@ -10,6 +10,7 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import Image from "next/image";
 import { accessToken } from "@/helpers/TokenHelper";
+import { routes } from "@/utils/routes";
 
 const BookPage = () => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
@@ -33,7 +34,7 @@ const BookPage = () => {
 
   const handleAddBooks = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setShowPopUpModal(false);
+    // setShowPopUpModal(false);
 
     const InputFileData = {
       title: inputFieldValue?.title,
@@ -42,7 +43,7 @@ const BookPage = () => {
       publisher: inputFieldValue?.publisher,
     };
     try {
-      const response = await fetch(`${process.env.HOST}books/`, {
+      const response = await fetch(`${process.env.MAIN_URL}books/`, {
         method: "POST",
         body: JSON.stringify(InputFileData),
         headers: {
@@ -61,9 +62,9 @@ const BookPage = () => {
     <DefaultLayout>
       <TableHead
         tableName="Books List"
-        // routeLink={routes.ADMIN_BOOKS_ADD}
+        routeLink={routes.ADMIN_BOOKS_ADD}
         addTitle="Add Book"
-        onClick={() => setShowPopUpModal(true)}
+        // onClick={() => setShowPopUpModal(true)}
       />
       <Modal
         show={showPopUpModal}
@@ -166,7 +167,7 @@ const BookPage = () => {
 
             <div className="flex gap-x-4">
               <Btn type="submit" className="bg-blue-600 text-white">
-                Filter
+                Submit
               </Btn>
             </div>
           </div>

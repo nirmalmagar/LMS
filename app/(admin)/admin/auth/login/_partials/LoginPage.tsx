@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { routes } from "@/utils/routes";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const lora = Lora({ subsets: ["latin"], weight: ["400"] });
 
@@ -15,9 +16,10 @@ const LoginPage: React.FC = () => {
   const route = useRouter();
   const [hidePassword, setHidePassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [inputFormValue, setInputFormValue] = useState<Record<string, string>>(
-    {}
-  );
+  const [inputFormValue, setInputFormValue] = useState({
+    email: "",
+    password: "",
+  });
 
   const LoginURL = `${process.env.HOST}token/`;
 
@@ -27,10 +29,10 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading(true); 
     const LoginData = {
-      email: inputFormValue?.email,
-      password: inputFormValue?.password,
+      email: inputFormValue.email,
+      password: inputFormValue.password,
     };
     try {
       const response = await fetch(LoginURL, {
@@ -59,22 +61,20 @@ const LoginPage: React.FC = () => {
       setIsLoading(false);
     }
   };
-  const token = Cookie.get("LOGIN_TOKEN")
 
   useEffect(() => {
-    if (token) {
+    const token = Cookie.get("LOGIN_TOKEN");
+    if (typeof window !== "undefined" && token) {
       route.push(routes.ADMIN_DASHBOARD_ROUTE);
     }
-    else{
-      route.push(routes.ADMIN_AUTH_LOGIN)
-    }
-  }, [route,token]);
-  
+  }, [route]);
+
   return (
-    <div
-      className={`flex justify-center items-center bg-gray-200 h-screen ${lora.className}`}
-    >
+    <div className={`${lora.className} flex justify-center items-center bg-gray-200 h-screen`}>
       <div className="px-8 py-8 bg-white w-[30rem] shadow-md rounded-xl">
+        <div className="text-lg mb-2 font-semibold text-center">
+        <span>Login your Account</span>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <label className="mb-2 font-semibold mr-4" htmlFor="email">
@@ -109,15 +109,21 @@ const LoginPage: React.FC = () => {
             >
               {hidePassword ? <EyeIcon /> : <EyeSlashIcon />}
             </div>
-            <div className="mt-4 flex items-center justify-center">
-              <Btn
-                className="w-1/2 bg-blue-400"
-                type={"submit"}
-                disabled={isLoading}
-              >
-                {isLoading ? <Spinner /> : "Login"}
-              </Btn>
-            </div>
+          </div>
+          <div className="mt-4 flex items-center justify-center">
+            <Btn
+              className="w-1/2 bg-blue-400"
+              type={"submit"}
+              disabled={isLoading}
+            >
+              {isLoading ? <Spinner /> : "Login"}
+            </Btn>
+          </div>
+          <div className="text-sm tex-md mt-4">
+            Not a member ? {" "}
+            <Link href={routes.ADMIN_AUTH_REGISTER} className="text-blue-500">
+              Create an Account
+            </Link>
           </div>
         </form>
       </div>

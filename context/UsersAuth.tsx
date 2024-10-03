@@ -2,6 +2,9 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { createContext } from "react";
 import { UserInterface } from "@/interfaces/user.interface";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { routes } from "@/utils/routes";
 
 interface userAuthContextProps {
   fetchUser: (token: string) => Promise<void>;
@@ -24,11 +27,31 @@ const userAuthContext = createContext<userAuthContextProps>({
 
 const UsersAuthProvider: React.FC<userAuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<UserInterface | null>(null);
+  const router = useRouter();
 
-  const fetchUsers = async (responseToken: string): Promise<void> => {
-    setIsLoading(true);
+  const logOutURL = `${process.env.HOST}logout/`
+
+  const logout = async (): Promise<void> => {
+    const option = {
+      method: "POST",
+      headers: {
+        Authorization: `bearer ${token}`,
+        Accept: "Application/json",
+      },
+    };
+    try{
+      const response = await fetch(logOutURL,option)
+      const data = await response.json();
+      if(data.success){
+        router.replace(routes.ADMIN_AUTH_LOGIN)
+      }
+    }
+  };
+
+  const fetchUser = async (responseToken: string): Promise<void> => {
+    setLoading(true);
     setToken(responseToken);
     try {
       const response = await fetch(`${process.env.HOST}user/`, {
@@ -40,20 +63,21 @@ const UsersAuthProvider: React.FC<userAuthProviderProps> = ({ children }) => {
       });
       const data = await response.json();
       if (data) {
+        toast.error(data?.success);
         setUser(data?.data);
-        setIsLoading(false);
+        setLoading(false);
       } else {
-        setIsLoading(true);
+        setLoading(true);
         setToken(null);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   useEffect(() => {
     const cookies = Cookies.get("LOGIN_TOKEN");
-    if (cookies) fetchUsers(cookies);
+    if (cookies) fetchUser(cookies);
   }, []);
 
   return (

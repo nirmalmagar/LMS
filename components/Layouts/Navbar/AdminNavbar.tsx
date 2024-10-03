@@ -4,7 +4,7 @@ import { DarkModeSwitcher } from "@/components/Elements/DarkModeSwitcher";
 
 const AdminNavbar = () => {
   return (
-    <div className="bg-slate-800 sticky top-0 flex justify-end items-center gap-20 px-12 text-white py-4">
+    <div className="bg-slate-800 sticky z-20 top-0 flex justify-end items-center gap-20 px-12 text-white py-4">
     <DarkModeSwitcher/>
     
       <div className="text-right text-sm">

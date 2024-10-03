@@ -54,6 +54,7 @@ const InputField: React.FC<InputFieldProps> = ({
   className = "",
   id,
   wrapperClassName = "",
+  autocomplete = true,
   children,
   label,
   labelStyle = "label-left",
