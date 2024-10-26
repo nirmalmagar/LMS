@@ -26,10 +26,9 @@ export default function RootLayout({
       <body
         className={`${lora.variable} ${figTree.variable} ${figTree.className} overflow-x-hidden`}
       >
-        {children}
         <ToastContainer
           position="top-center"
-          autoClose={5000}
+          autoClose={2000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -40,6 +39,7 @@ export default function RootLayout({
           theme="light"
           // transition: Bounce,
         />
+        {children}
       </body>
     </html>
   );

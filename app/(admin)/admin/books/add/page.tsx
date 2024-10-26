@@ -42,7 +42,6 @@ const BooksAddPage = () => {
   // };
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
     const InputFormData = {
       title: inputFormValue?.title,
       description: inputFormValue?.description,
@@ -50,32 +49,27 @@ const BooksAddPage = () => {
       publisher: inputFormValue?.publisher,
     };
   
-    const apiUrl = `${process.env.HOST}books/`; // Ensure correct URL
-    console.log("access token",accessToken)
+    const addBookURL = `${process.env.HOST}books/`;
     try {
-      if (!process.env.HOST) {
-        throw new Error("HOST environment variable is not set.");
-      }
-  
-      const response = await fetch(apiUrl, {
+      const response = await fetch(addBookURL, {
         method: "POST",
         body: JSON.stringify(InputFormData),
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken()}`,
           "Content-Type": "application/json",
           Accept: "application/json",
         },
       });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
       const result = await response.json();
-      toast.success("Book added successfully");
+      if(response.ok){
+        toast.success("Book added successfully");
+      }
+      else {
+        toast.error(`something went wrong`);
+      }
     } catch (error: any) {
       console.log("Error during fetch:", error);
-      toast.error("An error occurred");
+      toast.error("Error during fetch:");
     }
   };
   

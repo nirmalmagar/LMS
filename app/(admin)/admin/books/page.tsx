@@ -43,11 +43,11 @@ const BookPage = () => {
       publisher: inputFieldValue?.publisher,
     };
     try {
-      const response = await fetch(`${process.env.MAIN_URL}books/`, {
+      const response = await fetch(`${process.env.HOST}books/`, {
         method: "POST",
         body: JSON.stringify(InputFileData),
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken()}`,
           Accept: "application/json",
           "Content-Type": "application/json",
         },
@@ -62,9 +62,9 @@ const BookPage = () => {
     <DefaultLayout>
       <TableHead
         tableName="Books List"
-        routeLink={routes.ADMIN_BOOKS_ADD}
+        // routeLink={routes.ADMIN_BOOKS_ADD}
         addTitle="Add Book"
-        // onClick={() => setShowPopUpModal(true)}
+        onClick={() => setShowPopUpModal(true)}
       />
       <Modal
         show={showPopUpModal}
