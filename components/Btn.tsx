@@ -16,7 +16,7 @@ interface BtnProps {
 const baseClasses = "font-semibold flex justify-center items-center";
 const colorClasses = {
   light: "bg-white border border-gray-300 text-gray-700",
-  primary: "bg-primary-500 border border-primary-500 text-white",
+  primary: "bg-blue-500 border border-blue-500 text-white",
   error: "bg-error-500 border border-error-500",
   warning: "bg-warning-500 text-dark",
 };

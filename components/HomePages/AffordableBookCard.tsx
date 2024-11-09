@@ -3,11 +3,11 @@ import { BookmarkSquareIcon } from "@heroicons/react/16/solid";
 import Container from "../Container";
 import Image from "next/image";
 
-interface ImageUrlProps{
-  imageUrl:string[];
+interface ImageUrlProps {
+  imageUrl: string[];
 }
 
-const CheapBookCard:React.FC<ImageUrlProps> = ({imageUrl}) => {
+const AffordableBookCard: React.FC<ImageUrlProps> = ({ imageUrl }) => {
   return (
     <>
       {/* book under 250 rs */}
@@ -50,4 +50,4 @@ const CheapBookCard:React.FC<ImageUrlProps> = ({imageUrl}) => {
   );
 };
 
-export default CheapBookCard;
+export default AffordableBookCard;

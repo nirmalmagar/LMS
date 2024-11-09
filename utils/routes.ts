@@ -3,6 +3,7 @@ interface RoutesInterface {
 }
 export const routes: RoutesInterface = {
   ADMIN_AUTH_LOGIN: "/admin/auth/login",
+  ADMIN_AUTH_SIGN_UP: "/admin/auth/sign-up",
   ADMIN_AUTH_REGISTER: "/admin/auth/register",
   ADMIN_BOOKS_ROUTE: "/admin/books",
   ADMIN_BOOKS_ADD: "/admin/books/add",

@@ -2,6 +2,7 @@ import React from "react";
 import Container from "../Container";
 import Image from "next/image";
 import { BookListProps } from "@/interfaces/book_list.interface";
+import Btn from "../Btn";
 
 interface ListBookObject {
   booksUrl: BookListProps;
@@ -36,6 +37,7 @@ const BookCard: React.FC<ListBookObject> = ({ booksUrl }) => {
               );
             })}
           </div>
+          <button className="w-full text-center mt-4 text-md">View All</button>
         </section>
       </Container>
     </>

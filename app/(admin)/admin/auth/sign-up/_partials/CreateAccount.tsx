@@ -2,11 +2,13 @@
 import React, { FormEvent, useState } from "react";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
+import Link from "next/link";
+import { routes } from "@/utils/routes";
+import { toast } from "react-toastify";
+
 const CreateAccount = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [inputFormValues, setInputFormValues] = useState<
-    Record<string, string>
-  >({});
+  const [inputFormValues, setInputFormValues] = useState<Record<string,string>>({});
 
   const RegisterURL = `${process.env.HOST}register/`;
 
@@ -20,26 +22,29 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const RegisterData = {
-      first_name: inputFormValues?.first_name,
-      middle_name: inputFormValues?.middle_name,
-      last_name: inputFormValues?.last_name,
-      email: inputFormValues?.email,
-      password: inputFormValues?.password,
+    const combineData = {
+      user_data: {
+        first_name: inputFormValues?.first_name,
+        middle_name: inputFormValues?.middle_name,
+        last_name: inputFormValues?.last_name,
+        email: inputFormValues?.email,
+        password: inputFormValues?.password,
+      },
     };
     try {
       const response = await fetch(RegisterURL, {
         method: "POST",
-        body: JSON.stringify(RegisterData),
+        body: JSON.stringify(combineData),
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/json",
         },
       });
       const data = await response.json();
-      // if(response?.ok){
-
-      // }
+      if (response?.ok) {
+        toast.success("register successfully");
+      } else {
+        toast.error("something went wrong");
+      }
     } catch (e) {
       console.error("error", e);
     }
@@ -48,12 +53,24 @@ const CreateAccount = () => {
     <>
       <div className="flex min-h-screen flex-1 justify-center items-center">
         <title>Create Student Account</title>
-        <div className="flex flex-1 flex-col justify-center mx-4 px-1 pb-6 sm:px-6 lg:flex-none lg:px-20 xl:px-24 w-fit lg:h-fit h-screen shadow-lg rounded-lg bg-slate-400">
+        <div
+          className="flex flex-1 flex-col justify-center mx-4 px-1 pb-6 sm:px-6 lg:flex-none
+        lg:px-20 xl:px-24 w-fit lg:h-fit h-screen shadow-lg rounded-lg bg-slate-100"
+        >
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-              <h2 className="mt-8 text-white text-2xl font-bold text-center leading-9 tracking-tight">
+              <h2 className="mt-8  text-2xl font-bold text-center leading-9 tracking-tight">
                 Create your account
               </h2>
+              <p className="mt-2 text-sm leading-6 text-gray-500 text-center">
+                Already have an account?{" "}
+                <Link
+                  href={routes.ADMIN_AUTH_LOGIN}
+                  className="font-semibold text-primary-600 hover:text-primary-500"
+                >
+                  Log-in
+                </Link>
+              </p>
             </div>
 
             <div className="mt-4">
@@ -157,10 +174,9 @@ const CreateAccount = () => {
 
                 <div className=" flex items-center justify-center">
                   <Btn
-                    color="primary"
-                    className="w-1/2"
+                    color="light"
+                    className="w-1/2 text-black"
                     type={"submit"}
-                    // disabled={isLoading}
                   >
                     {"Register"}
                   </Btn>

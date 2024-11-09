@@ -1,13 +1,16 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { routes } from "@/utils/routes";
+import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import Container from "@/components/Container";
 import Footer from "@/components/HomePages/Footer";
 import Heading from "@/components/HomePages/Heading";
-import CheapBookCard from "@/components/HomePages/CheapBookCard";
+import AffordableBookCard from "@/components/HomePages/AffordableBookCard";
 import BookCard from "@/components/HomePages/BookCard";
 
 const page = () => {
-  const CheapBooksList = [
+  const affordableBooksList = [
     "/assets/books/image.png",
     "/assets/books/image2.png",
     "/assets/books/image3.png",
@@ -16,6 +19,7 @@ const page = () => {
   ];
   const NewArrivalsBooks = [
     {
+      id: 1,
       cover: "/assets/latestBooks/latest_book_1.png",
       title:
         "J.R.R. Tolkien 4-Book Boxes set: The Hobbit and The Lord of the Rings",
@@ -23,24 +27,28 @@ const page = () => {
       price: 2838.33,
     },
     {
+      id: 2,
       cover: "/assets/latestBooks/latest_book_2.png",
       title: "Gone with the Wind",
       publisher: "Warner Books",
       price: 748.84,
     },
     {
+      id: 3,
       cover: "/assets/latestBooks/latest_book_3.png",
       title: "The Giving Tree",
       publisher: "HarperCollins Publishers",
       price: 653.55,
     },
     {
+      id: 4,
       cover: "/assets/latestBooks/latest_book_4.png",
       title: "The Princess Bride",
       publisher: "Ballantine Books",
       price: 836.07,
     },
     {
+      id: 5,
       cover: "/assets/latestBooks/latest_book_5.png",
       title: "Wuthering Heights",
       publisher: "Norton",
@@ -49,30 +57,35 @@ const page = () => {
   ];
   const BestSellerBooks = [
     {
+      id: 6,
       cover: "/assets/bestSellerBooks/book1.png",
       title: "Bhagavad Gita As It Is (Neplai Translation)",
       publisher: "Maharishi Vedvyas Ji",
       price: 650,
     },
     {
+      id: 7,
       cover: "/assets/bestSellerBooks/book2.png",
       title: "Atomic Habits",
       publisher: "James Clear",
       price: 1438,
     },
     {
+      id: 8,
       cover: "/assets/bestSellerBooks/book3.png",
       title: "The 48 Laws Of Power",
       publisher: "Robert Greene",
       price: 1598,
     },
     {
+      id: 9,
       cover: "/assets/bestSellerBooks/book4.png",
       title: "React Dady Poor Dad",
       publisher: "Robert T. Kiyoaki",
       price: 958,
     },
     {
+      id: 10,
       cover: "/assets/bestSellerBooks/book5.png",
       title: "Think Like A Monk",
       publisher: "Jay Shetty",
@@ -83,22 +96,32 @@ const page = () => {
     <>
       <div>
         {/* ----------------navbar---------------- */}
-        <Container>
-          <nav className="py-4">
-            <ul className="flex gap-x-20">
-              <li>Home</li>
-              <li>Login</li>
-              <li>Membership</li>
-              <li>USD</li>
-            </ul>
-          </nav>
-        </Container>
-        {/* -------------------section------------------------ */}
+        <div className="bg-gray-100 fixed top-0 z-40 w-full">
+          <Container>
+            <nav className=" items-center flex justify-between">
+              <div className="relative w-14 h-14">
+                <Image fill src={"/assets/logo.png"} alt="LMS logo" />
+              </div>
+              <ul className="flex gap-x-20 font-semibold text-[17px] cursor-pointer">
+                <li className="hover:text-blue-800">Home</li>
+                <li className="hover:text-blue-800">
+                  <Link href={routes.ADMIN_AUTH_LOGIN}>Login</Link>
+                </li>
+                <li className="hover:text-blue-800">Membership</li>
+                <li className="hover:text-blue-800">NPR</li>
+                <li className="hover:text-blue-800">
+                  <ShoppingBagIcon className="w-6 h-6" />
+                </li>
+              </ul>
+            </nav>
+          </Container>
+        </div>
+        {/* -------------------Hero page------------------------ */}
         <section className="relative">
           <Image
             width={800}
             height={0}
-            className="w-screen h-52"
+            className="w-screen h-80"
             src={"/assets/library.png"}
             alt="library image"
           />
@@ -119,9 +142,11 @@ const page = () => {
           </Heading>
         </Container>
         <BookCard booksUrl={NewArrivalsBooks} />
-
-        <CheapBookCard imageUrl={CheapBooksList} />
       </div>
+
+      {/* -------------------affordable books----------------------- */}
+      <AffordableBookCard imageUrl={affordableBooksList} />
+
       {/* ---------------------------Best sellers books----------------------- */}
       <Container>
         <Heading title="Best Sellers">
@@ -130,6 +155,8 @@ const page = () => {
         </Heading>
       </Container>
       <BookCard booksUrl={BestSellerBooks} />
+
+      {/* --------------------------footer-------------------- */}
       <Footer />
     </>
   );
