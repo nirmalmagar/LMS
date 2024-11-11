@@ -1,13 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { routes } from "@/utils/routes";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import Container from "@/components/Container";
-import Footer from "@/components/HomePages/Footer";
 import Heading from "@/components/HomePages/Heading";
 import AffordableBookCard from "@/components/HomePages/AffordableBookCard";
-import BookCard from "@/components/HomePages/BookCard";
+import BookCardStatic from "@/components/HomePages/BookCardStatic";
+import HomeLayout from "@/components/Layouts/HomeNavBar/HomeLayout";
 
 const page = () => {
   const affordableBooksList = [
@@ -94,70 +91,48 @@ const page = () => {
   ];
   return (
     <>
-      <div>
-        {/* ----------------navbar---------------- */}
-        <div className="bg-gray-100 fixed top-0 z-40 w-full">
+      <HomeLayout>
+        <div id="home">
+          {/* -------------------Hero page------------------------ */}
+          <section className="relative">
+            <Image
+              width={800}
+              height={0}
+              className="w-screen h-80"
+              src={"/assets/library.png"}
+              alt="library image"
+            />
+            <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] font-serif text-center text-white font-semibold">
+              <h1 className="text-3xl shadow-xl">
+                There are more than 500+ Books for Free
+              </h1>
+              <span className="shadow-xl">
+                Welcome to library management system. Goti Goti dhandyabad dina
+                chahanxu hjr hjr..
+              </span>
+            </div>
+          </section>
+          {/*--------------------latest books----------------------- */}
           <Container>
-            <nav className=" items-center flex justify-between">
-              <div className="relative w-14 h-14">
-                <Image fill src={"/assets/logo.png"} alt="LMS logo" />
-              </div>
-              <ul className="flex gap-x-20 font-semibold text-[17px] cursor-pointer">
-                <li className="hover:text-blue-800">Home</li>
-                <li className="hover:text-blue-800">
-                  <Link href={routes.ADMIN_AUTH_LOGIN}>Login</Link>
-                </li>
-                <li className="hover:text-blue-800">Membership</li>
-                <li className="hover:text-blue-800">NPR</li>
-                <li className="hover:text-blue-800">
-                  <ShoppingBagIcon className="w-6 h-6" />
-                </li>
-              </ul>
-            </nav>
+            <Heading title="New Arrivals">
+              Explore Fresh Arrivals and Find Your Next Great Read.
+            </Heading>
           </Container>
+          <BookCardStatic booksUrl={NewArrivalsBooks} />
         </div>
-        {/* -------------------Hero page------------------------ */}
-        <section className="relative">
-          <Image
-            width={800}
-            height={0}
-            className="w-screen h-80"
-            src={"/assets/library.png"}
-            alt="library image"
-          />
-          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] font-serif text-center text-white font-semibold">
-            <h1 className="text-3xl shadow-xl">
-              There are more than 500+ Books for Free
-            </h1>
-            <span className="shadow-xl">
-              Welcome to library management system. Goti Goti dhandyabad dina
-              chahanxu hjr hjr..
-            </span>
-          </div>
-        </section>
-        {/*--------------------latest books----------------------- */}
+
+        {/* -------------------affordable books----------------------- */}
+        <AffordableBookCard imageUrl={affordableBooksList} />
+
+        {/* ---------------------------Best sellers books----------------------- */}
         <Container>
-          <Heading title="New Arrivals">
-            Explore Fresh Arrivals and Find Your Next Great Read.
+          <Heading title="Best Sellers">
+            Discover the Most Popular Books in Our Frequently Updated Best
+            Sellers Collection.
           </Heading>
         </Container>
-        <BookCard booksUrl={NewArrivalsBooks} />
-      </div>
-
-      {/* -------------------affordable books----------------------- */}
-      <AffordableBookCard imageUrl={affordableBooksList} />
-
-      {/* ---------------------------Best sellers books----------------------- */}
-      <Container>
-        <Heading title="Best Sellers">
-          Discover the Most Popular Books in Our Frequently Updated Best Sellers
-          Collection.
-        </Heading>
-      </Container>
-      <BookCard booksUrl={BestSellerBooks} />
-
-      {/* --------------------------footer-------------------- */}
-      <Footer />
+        <BookCardStatic booksUrl={BestSellerBooks} />
+      </HomeLayout>
     </>
   );
 };

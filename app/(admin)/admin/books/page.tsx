@@ -10,7 +10,6 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import Image from "next/image";
 import { accessToken } from "@/helpers/TokenHelper";
-import { routes } from "@/utils/routes";
 
 const BookPage = () => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);

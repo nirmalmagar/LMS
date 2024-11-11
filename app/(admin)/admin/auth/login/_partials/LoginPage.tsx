@@ -4,7 +4,7 @@ import { Lora } from "next/font/google";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Spinner from "@/components/Spinner/Spinner";
 import Btn from "@/components/Btn";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { routes } from "@/utils/routes";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ const lora = Lora({ subsets: ["latin"], weight: ["400"] });
 
 const LoginPage: React.FC = () => {
   const route = useRouter();
+  const pathname = usePathname();
   const [hidePassword, setHidePassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [inputFormValue, setInputFormValue] = useState({
@@ -22,14 +23,13 @@ const LoginPage: React.FC = () => {
   });
 
   const LoginURL = `${process.env.HOST}token/`;
-
   const changeHandler = (key: string, value: string): void => {
     setInputFormValue((inputValue) => ({ ...inputValue, [key]: value }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    setIsLoading(true); 
+    setIsLoading(true);
     const LoginData = {
       email: inputFormValue.email,
       password: inputFormValue.password,
@@ -48,15 +48,14 @@ const LoginPage: React.FC = () => {
         const data = result;
         Cookie.set("LOGIN_TOKEN", data?.token?.access);
         route.push(routes.ADMIN_DASHBOARD_ROUTE);
-        toast.success("login successfully")
-      }
-      else{
-        toast.error("something went wrong!!")
-        Cookie.remove("LOGIN_TOKEN")
+        toast.success("login successfully");
+      } else {
+        toast.error("something went wrong!!");
+        Cookie.remove("LOGIN_TOKEN");
       }
     } catch (error) {
       console.log(error);
-      toast.error(" connect fail")
+      toast.error(" connect fail");
     } finally {
       setIsLoading(false);
     }
@@ -70,10 +69,16 @@ const LoginPage: React.FC = () => {
   }, [route]);
 
   return (
-    <div className={`${lora.className} flex justify-center items-center bg-gray-200 h-screen`}>
-      <div className="px-8 py-8 bg-white w-[30rem] shadow-md rounded-xl">
+    <div
+      className={`${lora.className} ${
+        pathname === "/admin/auth/login"
+          ? "flex justify-center items-center bg-gray-200 h-screen"
+          : "ml-8"
+      }`}
+    >
+      <div className={` px-8 py-8 bg-white w-[30rem] shadow-md rounded-xl`}>
         <div className="text-lg mb-2 font-semibold text-center">
-        <span>Login your Account</span>
+          <span>Login your Account</span>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col">
@@ -120,7 +125,7 @@ const LoginPage: React.FC = () => {
             </Btn>
           </div>
           <div className="text-sm tex-md mt-4">
-            Not a member ? {" "}
+            Not a member ?{" "}
             <Link href={routes.ADMIN_AUTH_SIGN_UP} className="text-blue-500">
               Create an Account
             </Link>

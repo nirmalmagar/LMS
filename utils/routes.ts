@@ -15,4 +15,5 @@ export const routes: RoutesInterface = {
   ADMIN_RESERVE_QUEUE_ROUTE: "/admin/reserve-queue",
   ADMIN_RESERVES_ROUTE: "/admin/reserves",
   ADMIN_USERS_ROUTE: "/admin/users",
+  BOOK_LIST:"/book-list"
 };
