@@ -15,7 +15,6 @@ const page = () => {
         }
         const data = await response.json();
         setBooksList(data);
-        console.log("books_data", booksList);
         // setBooks(data);
       } catch (error) {
         console.error("Error fetching data:", error);

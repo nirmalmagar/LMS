@@ -10,7 +10,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
     <>
       {/* ---------------navbar-------------- */}
       <Navbar />
-      <main className="mt-14">
+      <main className="mt-20">
         {children}
       </main>
       {/* ---------------footer--------------- */}

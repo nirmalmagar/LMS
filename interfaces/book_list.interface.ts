@@ -1,5 +1,5 @@
 export interface BookListProps {
-  [x: string]: any;
+  id:number;
   cover: string;
   title: string;
   publisher: string;

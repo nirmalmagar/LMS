@@ -14,12 +14,11 @@ import Spinner from "../Spinner/Spinner";
 import Link from "next/link";
 
 interface ListBookObject {
-  booksUrl: BookListProps;
+  booksUrl: BookListProps[];
 }
 
 const BookCardStatic: React.FC<ListBookObject> = ({ booksUrl }) => {
   const route = useRouter();
-  // const [checkToken, setCheckToken] = useState<boolean>(false);
   const [displayModal, setDisplayModal] = useState<boolean>(false);
   const [hidePassword, setHidePassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -65,14 +64,12 @@ const BookCardStatic: React.FC<ListBookObject> = ({ booksUrl }) => {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    const token = Cookie.get("LOGIN_TOKEN");
-    if (token) {
-      route.push(routes.BOOK_LIST);
-    }
-  }, []);
-
-
+  // useEffect(() => {
+  //   const token = Cookie.get("LOGIN_TOKEN");
+  //   if (token) {
+  //     route.push(routes.BOOK_LIST);
+  //   }
+  // }, []);
   return (
     <>
       <Container>

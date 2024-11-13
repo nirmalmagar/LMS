@@ -11,7 +11,6 @@ const BooksAddPage = () => {
   const handleChangeInput = (value: string, key: string) => {
     setInputFormValue((prev) => ({ ...prev, [key]: value }));
   };
-  console.log("env.local",`${process.env.HOST}books/`)
   // const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
 
@@ -68,7 +67,6 @@ const BooksAddPage = () => {
         toast.error(`something went wrong`);
       }
     } catch (error: any) {
-      console.log("Error during fetch:", error);
       toast.error("Error during fetch:");
     }
   };

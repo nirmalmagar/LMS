@@ -66,7 +66,7 @@ const LoginPage: React.FC = () => {
     if (typeof window !== "undefined" && token) {
       route.push(routes.ADMIN_DASHBOARD_ROUTE);
     }
-  }, [route]);
+  }, []);
 
   return (
     <div

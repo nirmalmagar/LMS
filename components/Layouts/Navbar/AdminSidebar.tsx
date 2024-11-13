@@ -17,7 +17,6 @@ import {
 
 const AdminSidebar = () => {
   const pathname = usePathname();
-  console.log("pathname", pathname);
 
   const navigation = [
     { name: "Dashboard", href: routes.ADMIN_DASHBOARD_ROUTE, icon: HomeIcon },
