@@ -13,9 +13,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   const [buttonsArray, setButtonsArray] = useState<(number | string)[]>([]);
-
-
-
+  
   const updateVisiblePages = (page: number) => {
     let pages: (number | string)[] = [];
 

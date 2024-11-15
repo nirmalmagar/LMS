@@ -2,15 +2,10 @@
 import React from "react";
 import Container from "../Container";
 import Image from "next/image";
-import { BookListProps } from "@/interfaces/book_list.interface";
 import Heading from "../HomePages/Heading";
 import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import Link from "next/link";
-
-// interface ListBookObject {
-//   booksListUrl: BookListProps[];
-// }
 
 const BookCardList = () => {
   const { data: BookListsURL } = useSWR(
