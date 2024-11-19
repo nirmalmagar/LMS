@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Image from "next/image";
 import { defaultFetcher } from "@/helpers/FetchHelper";
@@ -17,12 +17,17 @@ import { RiSubtractFill } from "react-icons/ri";
 import Heading from "@/components/HomePages/Heading";
 import DateToString from "@/components/DateConverter/DateToString";
 import Link from "next/link";
+import Pagination from "@/components/Pagination/Pagination";
 
 const page = () => {
   const [increment, setIncrement] = useState<number>(1);
   const { book_id } = useParams();
+  const [books, setBooks] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const { data: BookListsURL } = useSWR(
+  const { data: BookListsURL, mutate: mutateActivityLogData } = useSWR(
     `${process.env.HOST}books/`,
     defaultFetcher
   );
@@ -32,6 +37,15 @@ const page = () => {
     defaultFetcher
   );
 
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  useEffect(() => {
+    mutateActivityLogData(currentPage);
+  }, [currentPage]);
   return (
     <>
       <HomeLayout>
@@ -192,9 +206,7 @@ const page = () => {
                 );
               })}
             </div>
-            <button className="w-full text-center mt-4 text-md">
-              View All
-            </button>
+          <Pagination />
           </section>
         </Container>
       </HomeLayout>
