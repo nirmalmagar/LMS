@@ -153,7 +153,7 @@ const BookCardStatic: React.FC<ListBookObject> = ({ booksUrl }) => {
                       <Image fill src={value?.cover} alt="cover image" />
                     </div>
                     <div className="pl-4 pb-4">
-                      <h3 className="font-semibold">{value?.title}</h3>
+                      <h3 className="font-semibold" id="card_title">{value?.title}</h3>
                       <div className="flex gap-x-0.5">
                         <span className="font-semibold">by:</span>
                         <p>{value?.publisher}</p>

@@ -9,14 +9,14 @@ const AdminRootLayout = ({ children }: { children: ReactNode }) => {
   const route = useRouter();
   const token = Cookies.get("LOGIN_TOKEN")
 
-  // useEffect(() => {
-  //   if (token) {
-  //     route.push(routes.ADMIN_DASHBOARD_ROUTE);
-  //   }
-  //   else{
-  //     route.push(routes.ADMIN_AUTH_LOGIN)
-  //   }
-  // }, [route,token]);
+  useEffect(() => {
+    if (token) {
+      route.push(routes.ADMIN_DASHBOARD_ROUTE);
+    }
+    else{
+      route.push(routes.ADMIN_AUTH_LOGIN)
+    }
+  }, [route,token]);
 
   return (
     <html lang="en">

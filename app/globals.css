@@ -31,6 +31,13 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+#card_title{
+    display: -webkit-box;       /* Use for multi-line text truncation */
+    -webkit-line-clamp: 2;      /* Limit to 2 lines */
+    -webkit-box-orient: vertical; /* Set box orientation to vertical */
+    overflow: hidden;           /* Hide overflow */
+    text-overflow: ellipsis;    /* Add ellipsis (...) if text overflows */
+  }
 .list {
   border: 1px solid #fff;
   padding: 5px;

@@ -8,8 +8,9 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
 import Image from "next/image";
+import AddBookLists from "./AddBookLists";
 
-const BookTableList = () => {
+const UserasBooksTable = () => {
   const BooksListURL = `${process.env.HOST}books/`;
   const { data: booksData } = useSWR(BooksListURL, defaultFetcher);
 
@@ -53,39 +54,40 @@ const BookTableList = () => {
 
   return (
     // dark:border-strokedark dark:bg-boxdark
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default sm:px-7.5 xl:pb-1">
+    <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+        <AddBookLists />
       <div className="max-w-full overflow-x-auto">
-        <table className="w-full table-auto">
+        <table className="w-full text-sm table-auto">
           <thead>
             {/* dark:bg-meta-4 */}
-            <tr className="bg-gray-200 text-left">
-              <th className="px-4 py-4 font-medium text-black">S.N</th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black">
+            <tr className="border-b-2 text-left">
+              <th className="py-4 px-2 font-medium text-black">S.N</th>
+              <th className="min-w-[80px] py-4 px-2 font-medium text-black">
                 Cover
               </th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black">
+              <th className="min-w-[120px] py-4 px-2 font-medium text-black">
                 Title
               </th>
-              <th className="max-w-[120px] px-4 py-4 font-medium text-black">
+              <th className="max-w-[120px] py-4 px-2 font-medium text-black">
                 Author
               </th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black">
+              <th className="min-w-[120px] py-4 px-2 font-medium text-black">
                 Publisher
               </th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black">
+              <th className="min-w-[66px] py-4 px-2 font-medium text-black">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {booksData?.results?.map(
+            {booksData?.results?.slice(0,5).map(
               (booksList: Record<string, any>, index: number) => {
                 return (
                   <tr key={index}>
-                    <td className="border-b border-[#eee] px-6 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <h5 className="font-medium text-black">{index + 1}</h5>
                     </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <div className="relative w-12 h-12">
                         <Image
                           src={booksList?.cover}
@@ -96,27 +98,26 @@ const BookTableList = () => {
                         />
                       </div>
                     </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black ">{booksList.title}</p>
                     </td>
-
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black ">{booksList?.author}</p>
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                      <p className="text-black " id="card_title">{booksList?.author}</p>
                     </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black">{booksList?.publisher}</p>
                     </td>
-                    {/* <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    {/* <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black">{booksList?.Genres?.name}</p>
                     </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black">
                         {booksList?.created_by
                           ? booksList?.created_by
                           : booksList?.name}
                       </p>
                     </td> */}
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black text-center">
                         <button
                           className="hover:text-red"
@@ -138,4 +139,4 @@ const BookTableList = () => {
   );
 };
 
-export default BookTableList;
+export default UserasBooksTable;

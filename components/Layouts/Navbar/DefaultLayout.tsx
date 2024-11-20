@@ -7,7 +7,7 @@ interface DefaultLayoutType {
 }
 const DefaultLayout: React.FC<DefaultLayoutType> = ({ children }) => {
   return (
-    <div>
+    <div className="bg-gray-200">
       {/* admin sidebar */}
       <div className="flex h-screen">
         <AdminSidebar />

@@ -22,7 +22,7 @@ const BookCardList = () => {
             {BookListsURL?.results?.map((value: any, index: number) => {
               return (
                 <div key={index}>
-                  <div className="shadow-md hover:shadow-xl hover:scale-105  hover:duration-500">
+                  <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[25rem]">
                     <Link href={`/book-list/${value.id}`}>
                       <div className="relative w-60 h-72 mb-2">
                         <Image
@@ -32,7 +32,7 @@ const BookCardList = () => {
                         />
                       </div>
                       <div className=" pl-4 pb-2">
-                        <h3 className="font-semibold">{value?.title}</h3>
+                        <h3 className="font-semibold" id="card_title">{value?.title}</h3>
                         <div className="flex gap-x-0.5">
                           <span className="font-semibold">by:</span>
                           <p>{value?.publisher}</p>
