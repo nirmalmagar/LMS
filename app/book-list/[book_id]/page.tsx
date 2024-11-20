@@ -52,12 +52,11 @@ const page = () => {
         <Container>
           <div className="grid md:grid-cols-3 xl:grid-flow-col md:gap-[10rem] lg:gap-8 gap-y-6 mb-12 sm:text-left text-center">
             <div className="sm:w-fit w-screen sm:block flex items-center justify-center">
-              <div className="relative h-[24rem] w-[16rem]">
+              <div className="relative h-[20rem] w-[16rem]">
                 <Image
                   alt="student_image"
                   src={bookId?.cover}
                   fill
-                  // className="object-cover"
                 />
               </div>
               <div className="flex mt-4 gap-2 font-semibold">
@@ -66,7 +65,7 @@ const page = () => {
                   <DateToString inputDate={bookId?.publication_date} />
                 </div>
               </div>
-              <div className="flex mt-2 gap-2 font-semibold">
+              {/* <div className="flex mt-2 gap-2 font-semibold">
                 <span className="text-lg">Created Date:</span>
                 <div className="text-gray-600">
                   <DateToString inputDate={bookId?.created_on} />
@@ -77,15 +76,17 @@ const page = () => {
                 <div className="text-gray-600">
                   <DateToString inputDate={bookId?.modified_on} />
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="col-span-2">
               <span className="bg-gray-100 rounded-md px-3 py-1 font-semibold text-sm">
                 Paper Back
               </span>
               <h1 className="font-bold text-3xl py-2">{bookId?.title}</h1>
-              <span>by: {bookId?.author}</span>
-              <h2 className="font-semibold text-lg mb-4">
+              <h1>
+                <span className="font-semibold">by:</span> {bookId?.author}
+              </h1>
+              <h2 className="font-semibold text-md mt-2 mb-4">
                 Sold By: <span className="text-blue-800">Gyan Kosh Nepal </span>
               </h2>
               <div className="w-full h-[1px] bg-gray-200" />
@@ -178,36 +179,7 @@ const page = () => {
         </Container>
         <Container>
           <Heading children={"bookLiss"} title={"Books List"} />
-          <section className="my-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-12 gap-x-12">
-              {BookListsURL?.results?.map((value: any, index: number) => {
-                return (
-                  <div key={index}>
-                    <div>
-                      <Link href={`/book-list/${value.id}`}>
-                        <div className="relative w-60 h-72 mb-2">
-                          <Image fill src={value?.cover} alt="cover image" />
-                        </div>
-                        <h3 className="font-semibold">{value?.title}</h3>
-                        <div className="flex gap-x-0.5">
-                          <span className="font-semibold">by:</span>
-                          <p>{value?.publisher}</p>
-                        </div>
-                        <div className="flex gap-x-0.5 font-semibold text-lg">
-                          <p className="">Rs:</p>
-                          <span>{value?.price}</span>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="my-2 py-1 border-2 border-blue-400 text-center rounded-sm hover:bg-blue-400 font-semibold hover:text-white">
-                      ADD TO CART
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          <Pagination />
-          </section>
+            <Pagination />
         </Container>
       </HomeLayout>
     </>

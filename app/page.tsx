@@ -5,7 +5,7 @@ import Heading from "@/components/HomePages/Heading";
 import AffordableBookCard from "@/components/HomePages/AffordableBookCard";
 import BookCardStatic from "@/components/HomePages/BookCardStatic";
 import HomeLayout from "@/components/Layouts/HomeNavBar/HomeLayout";
-
+import BookCardList from "@/components/Elements/BookCardList";
 const page = () => {
   const affordableBooksList = [
     "/assets/books/image.png",
@@ -113,12 +113,13 @@ const page = () => {
             </div>
           </section>
           {/*--------------------latest books----------------------- */}
-          <Container>
+          {/* <Container>
             <Heading title="New Arrivals">
               Explore Fresh Arrivals and Find Your Next Great Read.
             </Heading>
-          </Container>
-          <BookCardStatic booksUrl={NewArrivalsBooks} />
+          </Container> */}
+          {/* <BookCardStatic booksUrl={NewArrivalsBooks} /> */}
+          <BookCardList/>
         </div>
 
         {/* -------------------affordable books----------------------- */}

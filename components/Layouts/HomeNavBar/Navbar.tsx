@@ -25,9 +25,9 @@ const Navbar = () => {
             <li className="hover:text-blue-800">
               <Link href={routes.ADMIN_AUTH_SIGN_UP}>Create Account</Link>
             </li>
-            <li className="hover:text-blue-800">
+            {/* <li className="hover:text-blue-800">
               <ShoppingBagIcon className="w-6 h-6" />
-            </li>
+            </li> */}
           </ul>
         </nav>
       </Container>

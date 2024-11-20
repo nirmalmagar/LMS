@@ -64,12 +64,7 @@ const BookCardStatic: React.FC<ListBookObject> = ({ booksUrl }) => {
       setIsLoading(false);
     }
   };
-  // useEffect(() => {
-  //   const token = Cookie.get("LOGIN_TOKEN");
-  //   if (token) {
-  //     route.push(routes.BOOK_LIST);
-  //   }
-  // }, []);
+
   return (
     <>
       <Container>
@@ -153,23 +148,25 @@ const BookCardStatic: React.FC<ListBookObject> = ({ booksUrl }) => {
             {booksUrl?.map((value: any, index: number) => {
               return (
                 <div key={index} className="">
-                  <div className="">
+                  <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500">
                     <div className="relative w-60 h-72 mb-2">
                       <Image fill src={value?.cover} alt="cover image" />
                     </div>
-                    <h3 className="font-semibold">{value?.title}</h3>
-                    <div className="flex gap-x-0.5">
-                      <span className="font-semibold">by:</span>
-                      <p>{value?.publisher}</p>
-                    </div>
-                    <div className="flex gap-x-0.5 font-semibold text-lg">
-                      <p className="">Rs:</p>
-                      <span>{value?.price}</span>
+                    <div className="pl-4 pb-4">
+                      <h3 className="font-semibold">{value?.title}</h3>
+                      <div className="flex gap-x-0.5">
+                        <span className="font-semibold">by:</span>
+                        <p>{value?.publisher}</p>
+                      </div>
+                      <div className="flex gap-x-0.5 font-semibold text-lg">
+                        <p className="">Rs:</p>
+                        <span>{value?.price}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="my-2 py-1 border-2 border-blue-400 text-center rounded-sm hover:bg-blue-400 font-semibold hover:text-white">
+                  {/* <div className="my-2 py-1 border-2 border-blue-400 text-center rounded-sm hover:bg-blue-400 font-semibold hover:text-white">
                     ADD TO CART
-                  </div>
+                  </div> */}
                 </div>
               );
             })}
