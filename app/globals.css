@@ -42,7 +42,9 @@
   border: 1px solid #fff;
   padding: 5px;
 }
-  
+  .page-item a.active {
+  background: #f87171;
+}
 .pagination {
   display: flex;
   border: 1px solid #fff;
@@ -55,7 +57,7 @@
 }
   
 .active {
-  background: black;
+  background: #f87171;
   color: #fff;
   border: 1px solid #fff;
 }

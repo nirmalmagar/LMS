@@ -35,7 +35,7 @@ const TableHead: React.FC<headListProps> = ({
             href={routeLink}
             className={`${
               size === "small" ? "text-sm py-1.5 px-2" : "p-2"
-            } bg-blue-600 text-white rounded-lg`}
+            } bg-red-400 text-white rounded-lg`}
             onClick={onClick}
           >
             {addTitle}
@@ -44,7 +44,7 @@ const TableHead: React.FC<headListProps> = ({
           <button
             className={`${
               size === "small" ? "text-sm py-1.5 px-2" : "p-2"
-            } bg-blue-600 text-white rounded-lg`}
+            } bg-red-400 text-white rounded-lg`}
             onClick={onClick}
           >
             {addTitle}

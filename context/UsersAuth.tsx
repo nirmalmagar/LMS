@@ -48,6 +48,9 @@ const UsersAuthProvider: React.FC<userAuthProviderProps> = ({ children }) => {
         router.replace(routes.ADMIN_AUTH_LOGIN)
       }
     }
+    catch(e){
+      console.error("error",e)
+    }
   };
 
   const fetchUser = async (responseToken: string): Promise<void> => {

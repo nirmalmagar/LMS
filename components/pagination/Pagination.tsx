@@ -34,7 +34,6 @@ const Pagination = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Books lists</h1>
       {loading ? (
         <p className="font-2xl text-center h-96">Loading...</p>
       ) : (
@@ -43,13 +42,13 @@ const Pagination = () => {
             {BookListsURL?.map((value: any, index: number) => {
               return (
                 <div key={index}>
-                  <div className="shadow-md hover:shadow-xl hover:scale-105  hover:duration-500">
+                  <div className="shadow-md hover:shadow-xl hover:scale-105 h-[25rem]  hover:duration-500">
                     <Link href={`/book-list/${value.id}`}>
                       <div className="relative w-60 h-72 mb-2">
                         <Image fill src={value?.cover} alt="cover image" />
                       </div>
                       <div className=" pl-4 pb-2">
-                        <h3 className="font-semibold">{value?.title}</h3>
+                        <h3 className="font-semibold" id="card_title">{value?.title}</h3>
                         <div className="flex gap-x-0.5">
                           <span className="font-semibold">by:</span>
                           <p>{value?.publisher}</p>
@@ -68,16 +67,8 @@ const Pagination = () => {
               );
             })}
           </div>
-          {/*<ul className="mb-4">
-            {books.map((book) => (
-              <li key={book?.id} className="mb-2 border p-4 rounded">
-                <h2 className="text-lg font-semibold">{book?.title}</h2>
-                <p>Author: {book.author}</p>
-                <p>Publisher: {book.publisher}</p>
-              </li>
-            ))} 
-          </ul>*/}
-          <div className="flex justify-center items-center space-x-2">
+        {/* Pagination */}
+          <div className="flex justify-center items-center space-x-2 mt-8">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}

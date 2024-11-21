@@ -1,17 +1,21 @@
-import React from "react";
-import { HiOutlineUsers } from "react-icons/hi2";
+import React, { ReactNode } from "react";
 
-const DashboardCard = () => {
+interface DashboardCardProps{
+  children:ReactNode;
+  totalList:number;
+  title:string;
+}
+const DashboardCard:React.FC<DashboardCardProps> = ({totalList,title,children}) => {
   return (
     <>
-      <div className="p-5 bg-slate-600 text-white rounded-2xl">
+      <div className="p-5 bg-slate-500 text-white rounded-2xl">
         <div className="flex justify-between items-center mb-4 ">
-          <div className="text-3xl font-semibold">345</div>
+          <div className="text-3xl font-semibold">{totalList}</div>
           <div>
-            <HiOutlineUsers className="w-11 h-11 p-2 rounded-full bg-blue-900" />
+            {children}
           </div>
         </div>
-        <div className="text-sm">Total Visitors</div>
+        <div className="text-sm">{title}</div>
       </div>
     </>
   );
