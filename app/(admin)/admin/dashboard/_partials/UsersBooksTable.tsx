@@ -108,7 +108,8 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
       {/* {isLoading ? (
         <p className="text-xl text-center h-40">Loading...</p>
       ) : ( */}
-        <div className="mt-8 w-[600px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+       {/* max-w-[640px] */}
+        <div className="mt-8 max-w-[680px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddBookLists />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
