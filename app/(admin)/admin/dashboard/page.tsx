@@ -1,71 +1,67 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
 import DashboardCard from "@/components/Elements/Dashboard/DashboardCard";
-import TryUsersBooksTable from "./_partials/TryUsersBooksTable";
+import UsersBooksTable from "./_partials/UsersBooksTable";
 import { HiOutlineUsers } from "react-icons/hi2";
-import { IoBookOutline } from "react-icons/io5";
-import { MdPendingActions, MdPeopleOutline } from "react-icons/md";
+import { MdPendingActions } from "react-icons/md";
+import { CgCalendarDue } from "react-icons/cg";
+import { FaPeopleGroup } from "react-icons/fa6";
+
+import OverdueBooks from "./_partials/OverdueBooks";
+import { defaultFetcher } from "@/helpers/FetchHelper";
+
+import useSWR from "swr";
 
 const page = () => {
-  // const [booksList, setBooksList] = useState({});
-  // useEffect(() => {
-  //   // Fetch data from the API
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(`${process.env.HOST}books/`);
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const data = await response.json();
-  //       setBooksList(data);
-  //       // setBooks(data);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-  // let flag = useRef(true);
-  // useEffect(() => {
-  //   if (!flag) {
-  //     console.log("call me !!");
-  //   }
-  // }, []);
-
+  const { data } = useSWR(
+    `${process.env.HOST}dashboard/admin/`,
+    defaultFetcher
+  );
   return (
     <div>
       <DefaultLayout>
         <div className="grid grid-cols-4 gap-8">
-          <DashboardCard totalList={340} title={"Total Visitors"}>
+          <DashboardCard
+            totalList={data?.total_students}
+            title={"Total Students"}
+          >
             {
               <HiOutlineUsers className="w-10 h-10 p-2 rounded-full bg-red-400" />
             }
           </DashboardCard>
-          <DashboardCard totalList={240} title={"Borrowed Books"}>
+          <DashboardCard totalList={data?.total_staff} title={"Total Staffs"}>
             {
-              <IoBookOutline className="w-10 h-10 p-2 rounded-full bg-red-400" />
+              <FaPeopleGroup className="w-10 h-10 p-2 rounded-full bg-red-400" />
             }
           </DashboardCard>
-          <DashboardCard totalList={560} title={"Overdue Books"}>
+          <DashboardCard
+            totalList={data?.overdue_books}
+            title={"Overdue Books"}
+          >
+            {
+              <CgCalendarDue className="w-10 h-10 p-2 rounded-full bg-red-400" />
+            }
+          </DashboardCard>
+          <DashboardCard
+            totalList={data?.pending_book_returns}
+            title={"Pending Books"}
+          >
             {
               <MdPendingActions className="w-10 h-10 p-2 rounded-full bg-red-400" />
-            }
-          </DashboardCard>
-          <DashboardCard totalList={770} title={"New Members"}>
-            {
-              <MdPeopleOutline className="w-10 h-10 p-2 rounded-full bg-red-400" />
             }
           </DashboardCard>
         </div>
         <div className="flex gap-8">
           <div>
-            <TryUsersBooksTable />
+            <UsersBooksTable showHeading={false} />
           </div>
           <div>
-            <TryUsersBooksTable />
+            <UsersBooksTable showHeading={false} />
           </div>
+        </div>
+        <div>
+          <OverdueBooks />
         </div>
       </DefaultLayout>
     </div>

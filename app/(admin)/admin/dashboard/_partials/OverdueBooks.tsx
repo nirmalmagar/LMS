@@ -10,9 +10,7 @@ import Image from "next/image";
 import AddBookLists from "./AddBookLists";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
-const UserasBooksTable = () => {
-  // const BooksListURL = `${process.env.HOST}books/`;
-  // const { data: booksData } = useSWR(BooksListURL, defaultFetcher);
+const OverdueBooks = () => {
 
   const [bookLists, setBookLists] = useState([]);
   const [totalPages, setTotalPages] = useState<number>();
@@ -97,13 +95,13 @@ const UserasBooksTable = () => {
   }, [currentPage]);
 
   return (
-    <div className="mt-8 w-[600px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-      <AddBookLists />
+    <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+      <h1 className="text-xl font-semibold ml-1.5 my-2 mt-4">Overdue Books list</h1>
       <div className="max-w-full overflow-x-auto">
         <table className="w-full text-sm table-auto">
           <thead>
             <tr className="border-b-2 text-left">
-              <th className="py-4 px-2 font-medium text-black">S.N</th>
+              <th className="min-w-[50px] py-4 px-2 font-medium text-black">S.N</th>
               <th className="min-w-[80px] py-4 px-2 font-medium text-black">
                 Cover
               </th>
@@ -116,9 +114,18 @@ const UserasBooksTable = () => {
               <th className="min-w-[120px] py-4 px-2 font-medium text-black">
                 Publisher
               </th>
-              <th className="min-w-[70px] py-4 px-2 font-medium text-black">
-                Action
+              <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                Publisher
               </th>
+              <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                Publisher
+              </th>
+              <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                Publisher
+              </th>
+              {/* <th className="min-w-[90px] py-4 px-2 font-medium text-black">
+                Action
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -157,6 +164,22 @@ const UserasBooksTable = () => {
                       </p>
                     </td>
                     <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                      <p className="text-black " id="card_title">
+                        {booksList?.author}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                      <p className="text-black " id="card_title">
+                        {booksList?.author}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                      <p className="text-black " id="card_title">
+                        {booksList?.publisher}
+                      </p>
+                    </td>
+                    
+                    {/* <td className="border-b border-[#eee] py-2 pr-2 dark:border-strokedark">
                       <p className="text-black text-center">
                         <button
                           className="hover:text-red"
@@ -168,7 +191,7 @@ const UserasBooksTable = () => {
                           <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                         </button>
                       </p>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}
@@ -195,4 +218,4 @@ const UserasBooksTable = () => {
   );
 };
 
-export default UserasBooksTable;
+export default OverdueBooks;
