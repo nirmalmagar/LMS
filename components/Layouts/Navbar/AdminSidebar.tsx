@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
-import Image from "next/image";
+import React, { useState } from "react";
 import Link from "next/link";
 import { routes } from "@/utils/routes";
-import { useParams } from "next/navigation";
 import { IoMenuSharp } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
 import { usePathname } from "next/navigation";
 import {
   Cog6ToothIcon,
@@ -14,9 +13,11 @@ import {
   QuestionMarkCircleIcon,
   RectangleGroupIcon,
   UsersIcon,
+  CreditCardIcon
 } from "@heroicons/react/24/outline";
 
 const AdminSidebar = () => {
+  const [navbarText, setNavbarText] = useState<boolean>(false);
   const pathname = usePathname();
   const navigation = [
     { name: "Dashboard", href: routes.ADMIN_DASHBOARD_ROUTE, icon: HomeIcon },
@@ -37,12 +38,17 @@ const AdminSidebar = () => {
       icon: QuestionMarkCircleIcon,
     },
     {
-      name: "Reserve Queue",
+      name: "Reserve",
       href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
       icon: RectangleGroupIcon,
     },
     {
-      name: "Reserves",
+      name: "Fine",
+      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      icon: CreditCardIcon,
+    },
+    {
+      name: "Settting",
       href: routes.ADMIN_RESERVES_ROUTE,
       icon: Cog6ToothIcon,
     },
@@ -61,9 +67,13 @@ const AdminSidebar = () => {
           alt="LMS logo"
         /> */}
       </Link>
-      <div className="list-none flex flex-col items-center text-lg gap-4 gap-y-4 mt-12">
-        <button>
-          <IoMenuSharp className="h-5 w-5 shrink-0" />
+      <div className="list-none flex flex-col  text-lg gap-4 gap-y-4 mt-12">
+        <button className="ml-4" onClick={() => setNavbarText(!navbarText)}>
+          {navbarText ? (
+            <RxCross2 className="h-5 w-5 shrink-0" />
+          ) : (
+            <IoMenuSharp className="h-5 w-5 shrink-0" />
+          )}
         </button>
         {/* <span className="text-xs text-blue-200 font-semibold px-4">BOOKS</span> */}
         <ul>
@@ -79,7 +89,9 @@ const AdminSidebar = () => {
                   } hover:bg-red-400 hover:rounded-xl hover:text-white text-base items-center px-4 py-2`}
                 >
                   <navbarList.icon className="h-5 w-5 shrink-0" />
-                  {/* <span className="text-sm">{navbarList.name}</span> */}
+                  {navbarText && (
+                    <span className="text-sm">{navbarList.name}</span>
+                  )}
                 </Link>
               );
             })}

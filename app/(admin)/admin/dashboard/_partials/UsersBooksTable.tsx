@@ -11,15 +11,18 @@ import AddBookLists from "./AddBookLists";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 interface ShowHeading {
-  showHeading: boolean;
+  showHeading?: boolean;
+  showMore?:boolean;
 }
 
-const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
+const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   let heading = showHeading;
-  const [bookLists, setBookLists] = useState([]);
+  let showLists = showMore;
+  // const [showMore, setShowMore] = useState<boolean>(false);
+  const [bookLists, setBookLists] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const showSwal = (id: string) => {
     withReactContent(Swal)
       .fire({
@@ -56,7 +59,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
       });
   };
   const BookLists = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const response = await fetch(
         `${process.env.HOST}books?page=${currentPage}`
@@ -70,7 +73,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
       }
     } catch (e) {
       console.log("error", e);
-    } 
+    }
   };
   let totalPageArray = bookLists
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -105,11 +108,12 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
 
   return (
     <>
-      {/* {isLoading ? (
-        <p className="text-xl text-center h-40">Loading...</p>
-      ) : ( */}
-       {/* max-w-[640px] */}
-        <div className="mt-8 max-w-[680px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+      {isLoading ? (
+        <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
+          <span>Loading...</span>
+        </p>
+      ) : (
+        <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddBookLists />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
@@ -126,8 +130,21 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
                     Author
                   </th>
                   <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                    ISBN
+                  </th>
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Publisher
                   </th>
+                  {showLists && (
+                    <>
+                      <th className="min-w-[40px] py-4 px-2 font-medium text-black">
+                        Price
+                      </th>
+                      <th className="min-w-[40px] py-4 px-2 font-medium text-black">
+                        Pages
+                      </th>
+                    </>
+                  )}
                   {/* <th className="min-w-[70px] py-4 px-2 font-medium text-black">
                     Action
                   </th> */}
@@ -155,14 +172,19 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
                             />
                           </div>
                         </td>
-                        <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {booksList.title}
+                            {booksList.publisher}
+                          </p>
+                        </td>
+                        <td className="max-w-[160px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <p className="text-black " id="card_title">
+                            {booksList?.author}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black " id="card_title">
-                            {booksList?.author}
+                          <p className="text-black" id="card_title">
+                            {booksList?.isbn}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -170,6 +192,21 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
                             {booksList?.publisher}
                           </p>
                         </td>
+
+                        {showLists && (
+                          <>
+                            <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                              <p className="text-black" id="card_title">
+                                {booksList?.price}
+                              </p>
+                            </td>
+                            <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                              <p className="text-black" id="card_title">
+                                {booksList?.pages}
+                              </p>
+                            </td>
+                          </>
+                        )}
                         {/* <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black text-center">
                             <button
@@ -205,7 +242,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading }) => {
             </div>
           </div>
         </div>
-      {/* )} */}
+      )}
     </>
   );
 };

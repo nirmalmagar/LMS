@@ -21,7 +21,7 @@ const page = () => {
   return (
     <div>
       <DefaultLayout>
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-8">
           <DashboardCard
             totalList={data?.total_students}
             title={"Total Students"}
@@ -52,7 +52,7 @@ const page = () => {
             }
           </DashboardCard>
         </div>
-        <div className="flex gap-8">
+        <div className="grid lg:grid-cols-2 gap-8">
           <div>
             <UsersBooksTable showHeading={false} />
           </div>

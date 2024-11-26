@@ -49,7 +49,6 @@ const AddBookLists = () => {
         },
       });
       const data = await response.json();
-      console.log("data is post", data);
     } catch (error) {
       console.error(error);
     }
