@@ -12,7 +12,7 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 interface ShowHeading {
   showHeading?: boolean;
-  showMore?:boolean;
+  showMore?: boolean;
 }
 
 const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
@@ -143,11 +143,12 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                       <th className="min-w-[40px] py-4 px-2 font-medium text-black">
                         Pages
                       </th>
+                      <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                        Action
+                      </th>
                     </>
                   )}
-                  {/* <th className="min-w-[70px] py-4 px-2 font-medium text-black">
-                    Action
-                  </th> */}
+                  
                 </tr>
               </thead>
               <tbody>
@@ -205,21 +206,21 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                                 {booksList?.pages}
                               </p>
                             </td>
+                            <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                              <p className="text-black text-center">
+                                <button
+                                  className="hover:text-red"
+                                  onClick={() => showSwal(booksList?.id)}
+                                >
+                                  <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
+                                </button>
+                                <button className="ml-3">
+                                  <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
+                                </button>
+                              </p>
+                            </td>
                           </>
                         )}
-                        {/* <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black text-center">
-                            <button
-                              className="hover:text-red"
-                              onClick={() => showSwal(booksList?.id)}
-                            >
-                              <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
-                            </button>
-                            <button className="ml-3">
-                              <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
-                            </button>
-                          </p>
-                        </td> */}
                       </tr>
                     );
                   })}
