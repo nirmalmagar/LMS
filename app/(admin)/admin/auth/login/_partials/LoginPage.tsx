@@ -13,7 +13,7 @@ import Link from "next/link";
 const lora = Lora({ subsets: ["latin"], weight: ["400"] });
 
 const LoginPage: React.FC = () => {
-  const route = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
   const [hidePassword, setHidePassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
       if (response.ok) {
         const data = result;
         Cookie.set("LOGIN_TOKEN", data?.token?.access);
-        route.push(routes.ADMIN_DASHBOARD_ROUTE);
+        router.replace(routes.ADMIN_DASHBOARD_ROUTE);
         toast.success("login successfully");
       } else {
         toast.error("something went wrong!!");
@@ -61,12 +61,12 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const token = Cookie.get("LOGIN_TOKEN");
   useEffect(() => {
-    const token = Cookie.get("LOGIN_TOKEN");
     if (typeof window !== "undefined" && token) {
-      route.push(routes.ADMIN_DASHBOARD_ROUTE);
+      router.push(routes.ADMIN_DASHBOARD_ROUTE);
     }
-  }, []);
+  }, [router,token]);
 
   return (
     <div

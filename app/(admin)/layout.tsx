@@ -1,22 +1,22 @@
-"use client"
-import { ReactNode, Suspense,useEffect } from "react";
+"use client";
+import { ReactNode, Suspense, useEffect } from "react";
 import { routes } from "@/utils/routes";
 import Cookies from "js-cookie";
 import { ColorTheme } from "@/context/ColorTheme";
-import {  useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const AdminRootLayout = ({ children }: { children: ReactNode }) => {
-  const route = useRouter();
-  const token = Cookies.get("LOGIN_TOKEN")
+  const router = useRouter();
+  const token = Cookies.get("LOGIN_TOKEN");
+  const pathname = usePathname();
 
   useEffect(() => {
     if (token) {
-      route.push(routes.ADMIN_DASHBOARD_ROUTE);
+      router.push(routes.ADMIN_DASHBOARD_ROUTE);
+    } else {
+      router.push(routes.ADMIN_AUTH_LOGIN);
     }
-    else{
-      route.push(routes.ADMIN_AUTH_LOGIN)
-    }
-  }, [route,token]);
+  }, [router, token, pathname]);
 
   return (
     <html lang="en">
