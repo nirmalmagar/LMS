@@ -207,7 +207,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                               </p>
                             </td>
                             <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                              <p className="text-black text-center">
+                              <p className="text-black">
                                 <button
                                   className="hover:text-red"
                                   onClick={() => showSwal(booksList?.id)}

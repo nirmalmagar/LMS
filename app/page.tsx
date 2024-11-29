@@ -14,44 +14,6 @@ const page = () => {
     "/assets/books/image4.png",
     "/assets/books/image5.png",
   ];
-  const NewArrivalsBooks = [
-    {
-      id: 1,
-      cover: "/assets/latestBooks/latest_book_1.png",
-      title:
-        "J.R.R. Tolkien 4-Book Boxes set: The Hobbit and The Lord of the Rings",
-      publisher: "Ballantine Books",
-      price: 2838.33,
-    },
-    {
-      id: 2,
-      cover: "/assets/latestBooks/latest_book_2.png",
-      title: "Gone with the Wind",
-      publisher: "Warner Books",
-      price: 748.84,
-    },
-    {
-      id: 3,
-      cover: "/assets/latestBooks/latest_book_3.png",
-      title: "The Giving Tree",
-      publisher: "HarperCollins Publishers",
-      price: 653.55,
-    },
-    {
-      id: 4,
-      cover: "/assets/latestBooks/latest_book_4.png",
-      title: "The Princess Bride",
-      publisher: "Ballantine Books",
-      price: 836.07,
-    },
-    {
-      id: 5,
-      cover: "/assets/latestBooks/latest_book_5.png",
-      title: "Wuthering Heights",
-      publisher: "Norton",
-      price: 366.37,
-    },
-  ];
   const BestSellerBooks = [
     {
       id: 6,

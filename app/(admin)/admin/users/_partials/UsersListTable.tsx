@@ -47,7 +47,6 @@ const UsersListTable = () => {
         }
       });
   };
-  console.log("error found ",usersListData)
   return (
     // dark:border-strokedark dark:bg-boxdark
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default sm:px-7.5 xl:pb-1">
@@ -78,7 +77,6 @@ const UsersListTable = () => {
                     <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                       <h5 className="font-medium text-black">{index + 1}</h5>
                     </td>
-
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="text-black">{genresList.name}</p>
                     </td>
@@ -86,7 +84,7 @@ const UsersListTable = () => {
                       <p className="text-black">{genresList.email}</p>
                     </td>
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black text-center">
+                      <p className="">
                         <button
                           className="hover:text-red"
                           onClick={() => showSwal(genresList?.id)}
