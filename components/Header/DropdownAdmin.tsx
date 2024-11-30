@@ -1,18 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { routes } from "@/utils/routes";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { RiLogoutBoxRLine } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 
 const DropdownAdmin = () => {
   const [dropdownMenu, setDropdownMenu] = useState<boolean>(false);
+  const closeDropdownRef: any = useRef();
+  const router = useRouter();
   const logout = () => {
     Cookies.remove("LOGIN_TOKEN");
+    router.replace(routes.ADMIN_AUTH_LOGIN);
   };
+  useEffect(() => {
+    let changeHandler = (e: any) => {
+      if (!closeDropdownRef.current.contains(e.target)) {
+        setDropdownMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", changeHandler);
+    return () => {
+      document.removeEventListener("mousedown", changeHandler);
+    };
+  }, []);
   return (
     <>
-      <div className="text-right text-sm">
+      <div ref={closeDropdownRef} className="text-right text-sm">
         <div
           className="flex items-center gap-x-8 cursor-pointer"
           onClick={() => setDropdownMenu(!dropdownMenu)}

@@ -16,7 +16,7 @@ const AdminRootLayout = ({ children }: { children: ReactNode }) => {
     } else {
       router.push(routes.ADMIN_AUTH_LOGIN);
     }
-  }, [router, token, pathname]);
+  }, [router, token]);
 
   return (
     <html lang="en">
