@@ -13,12 +13,20 @@ import {
   QuestionMarkCircleIcon,
   RectangleGroupIcon,
   UsersIcon,
-  CreditCardIcon
+  UserIcon,
+  CreditCardIcon,
+  AcademicCapIcon,
+  PresentationChartLineIcon,
+  UserCircleIcon,
+  UserGroupIcon,
+  BuildingLibraryIcon,
+  BuildingOffice2Icon
 } from "@heroicons/react/24/outline";
 
 const AdminSidebar = () => {
   const [navbarText, setNavbarText] = useState<boolean>(false);
   const pathname = usePathname();
+
   const navigation = [
     { name: "Dashboard", href: routes.ADMIN_DASHBOARD_ROUTE, icon: HomeIcon },
     {
@@ -43,6 +51,51 @@ const AdminSidebar = () => {
       icon: RectangleGroupIcon,
     },
     {
+      name: "Digital Resources",
+      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      icon: PresentationChartLineIcon,
+    },
+    {
+      name: "Academics",
+      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      icon: AcademicCapIcon,
+    },
+    // {
+    //   name: "grade",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: BookOpenIcon,
+    // },
+    // {
+    //   name: "Teachers",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: UserCircleIcon,
+    // },
+    // {
+    //   name: "Staff",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: UserGroupIcon,
+    // },
+    // {
+    //   name: "Department",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: BuildingLibraryIcon,
+    // },
+    // {
+    //   name: "Students",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: UserIcon,
+    // },
+    // {
+    //   name: "Library",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: BuildingOffice2Icon,
+    // },
+    // {
+    //   name: "Shelf",
+    //   href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+    //   icon: UserCircleIcon,
+    // },
+    {
       name: "Fine",
       href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
       icon: CreditCardIcon,
@@ -55,7 +108,7 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <aside className="bg-white text-black px-2">
+    <aside className="bg-white text-black px-2" id="">
       <Link
         href={routes.ADMIN_DASHBOARD_ROUTE}
         className="flex justify-center pt-4"
