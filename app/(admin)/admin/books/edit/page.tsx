@@ -166,4 +166,4 @@ const BooksAddPage = () => {
   );
 };
 
-// export default BooksAddPage;
+export default BooksAddPage;

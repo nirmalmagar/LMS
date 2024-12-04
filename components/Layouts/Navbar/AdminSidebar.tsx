@@ -52,7 +52,7 @@ const AdminSidebar = () => {
     },
     {
       name: "Digital Resources",
-      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      href: routes.DIGITAL_RESOURCE_LISTS,
       icon: PresentationChartLineIcon,
     },
     {

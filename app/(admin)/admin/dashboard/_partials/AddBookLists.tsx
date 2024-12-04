@@ -8,9 +8,12 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import Image from "next/image";
 import { accessToken } from "@/helpers/TokenHelper";
+import { toast } from "react-toastify";
 
 const AddBookLists = () => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [currentGenres, setCurrentGenres] = useState<string>("");
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
@@ -26,9 +29,16 @@ const AddBookLists = () => {
   };
 
   const handleFieldChange = (key: string, value: string): void => {
-    setInputFieldValue((prev) => ({ ...prev, [key]: value }));
+    if(key && value){
+      setInputFieldValue((prev) => ({ ...prev, [key]: value }));
+    }
+    else{
+      setGenres((prevGenres)=>[...prevGenres,currentGenres])
+    }
   };
-
+  // const handleGenresChange=(genKey:any,genValue:any)=>{
+  //   setGenres((prevGenres)=>[...prevGenres,[genKey],genValue])
+  // }
   const handleAddBooks = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // setShowPopUpModal(false);
@@ -37,6 +47,11 @@ const AddBookLists = () => {
       description: inputFieldValue?.description,
       author: inputFieldValue?.author,
       publisher: inputFieldValue?.publisher,
+      price: inputFieldValue?.price,
+      pages: inputFieldValue?.pages,
+      quantity: inputFieldValue?.quantity,
+      isbn: inputFieldValue?.isbn,
+      genres: genres
     };
     try {
       const response = await fetch(`${process.env.HOST}books/`, {
@@ -49,10 +64,16 @@ const AddBookLists = () => {
         },
       });
       const data = await response.json();
+      if (data.success) {
+        toast.success("data successfully insert");
+      } else {
+        toast.error("some error on field");
+      }
     } catch (error) {
       console.error(error);
     }
   };
+  console.log("currentGenres",currentGenres)
   return (
     <>
       <TableHead
@@ -112,6 +133,7 @@ const AddBookLists = () => {
                   labelClassName="text-black"
                   label="Title"
                   name="title"
+                  placeholder="enter title"
                   type="text"
                   value={inputFieldValue?.title}
                   onChange={(e: any) => {
@@ -122,6 +144,7 @@ const AddBookLists = () => {
                 <InputField
                   label="Author"
                   name="author"
+                  placeholder="enter author"
                   type="text"
                   value={inputFieldValue?.author}
                   onChange={(e: any) => {
@@ -131,17 +154,64 @@ const AddBookLists = () => {
                 <InputField
                   label="Publisher"
                   name="text"
+                  placeholder="enter publisher"
                   type="text"
                   value={inputFieldValue?.publisher}
                   onChange={(e: any) => {
                     handleFieldChange("publisher", e.target.value);
                   }}
                 />
-
+                <InputField
+                  label="Pages"
+                  name="pages"
+                  placeholder="Enter pages"
+                  value={inputFieldValue?.pages}
+                  onChange={(e: any) => {
+                    handleFieldChange("pages", e.target.value);
+                  }}
+                />
+                <InputField
+                  label="Price"
+                  name="price"
+                  placeholder="Enter price"
+                  value={inputFieldValue?.price}
+                  onChange={(e: any) => {
+                    handleFieldChange("price", e.target.value);
+                  }}
+                />
+                <InputField
+                  label="Quantity"
+                  name="quantity"
+                  placeholder="Enter quantity"
+                  value={inputFieldValue?.quantity}
+                  onChange={(e: any) => {
+                    handleFieldChange("quantity", e.target.value);
+                  }}
+                />
+                <InputField
+                  label="Isbn"
+                  name="isbn"
+                  placeholder="Enter isbn"
+                  value={inputFieldValue?.isbn}
+                  onChange={(e: any) => {
+                    handleFieldChange("isbn", e.target.value);
+                  }}
+                />
+                <InputField
+                  label="Genres"
+                  name="genres"
+                  placeholder="Enter genres"
+                  value={currentGenres}
+                  onChange={(e)=>setCurrentGenres(e.target.value)}
+                  // onChange={(e)=>{
+                  //   handleGenresChange("genres",e.target.value)
+                  // }}
+                  />
                 <InputField
                   type="textarea"
                   label="Description"
                   name="description"
+                  placeholder="enter description"
                   value={inputFieldValue?.description}
                   onChange={(e: any) => {
                     handleFieldChange("description", e.target.value);
