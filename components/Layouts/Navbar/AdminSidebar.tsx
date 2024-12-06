@@ -47,7 +47,7 @@ const AdminSidebar = () => {
     },
     {
       name: "Reserve",
-      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      href: routes.ADMIN_RESERVES_ROUTE,
       icon: RectangleGroupIcon,
     },
     {
@@ -57,7 +57,7 @@ const AdminSidebar = () => {
     },
     {
       name: "Academics",
-      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      href: routes.ACADEMICS,
       icon: AcademicCapIcon,
     },
     // {

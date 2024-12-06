@@ -4,6 +4,7 @@ import { routes } from "@/utils/routes";
 import Cookies from "js-cookie";
 import { ColorTheme } from "@/context/ColorTheme";
 import { usePathname, useRouter } from "next/navigation";
+import {AuthProvider} from "@/context/AuthContext";
 
 const AdminRootLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
@@ -22,7 +23,9 @@ const AdminRootLayout = ({ children }: { children: ReactNode }) => {
     <html lang="en">
       <body className="" suppressHydrationWarning>
         <Suspense>
-          <ColorTheme>{children}</ColorTheme>
+          <AuthProvider>
+            <ColorTheme>{children}</ColorTheme>
+          </AuthProvider>
         </Suspense>
       </body>
     </html>

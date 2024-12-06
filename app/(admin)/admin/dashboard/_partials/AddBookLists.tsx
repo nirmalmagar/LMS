@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import Modal from "@/components/Elements/Modal";
 import TableHead from "@/components/Elements/TableHead/TableHead";
 import { PhotoIcon } from "@heroicons/react/24/outline";
@@ -9,16 +9,21 @@ import Btn from "@/components/Btn";
 import Image from "next/image";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import { AuthContext } from "@/context/AuthContext";
 
 const AddBookLists = () => {
+
+  const {genres} = useContext(AuthContext);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [genres, setGenres] = useState<string[]>([]);
+  // const [genres, setGenres] = useState<string[]>([]);
+  let genresList = genres;
   const [currentGenres, setCurrentGenres] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string | null>("");
+  const [storeGenresId, setStoreGenresId] = useState({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
-  const [imageUrl, setImageUrl] = useState<string | null>("");
-
+  
   const ImageChangeHandler = (e: any) => {
     const imageURL = e.target.files[0];
     setImageUrl(URL.createObjectURL(imageURL));
@@ -33,7 +38,7 @@ const AddBookLists = () => {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
     }
     else{
-      setGenres((prevGenres)=>[...prevGenres,currentGenres])
+      // setGenres((prevGenres)=>[...prevGenres,currentGenres])
     }
   };
   // const handleGenresChange=(genKey:any,genValue:any)=>{
@@ -51,7 +56,7 @@ const AddBookLists = () => {
       pages: inputFieldValue?.pages,
       quantity: inputFieldValue?.quantity,
       isbn: inputFieldValue?.isbn,
-      genres: genres
+      genres: storeGenresId,
     };
     try {
       const response = await fetch(`${process.env.HOST}books/`, {
@@ -73,7 +78,6 @@ const AddBookLists = () => {
       console.error(error);
     }
   };
-  console.log("currentGenres",currentGenres)
   return (
     <>
       <TableHead
@@ -197,16 +201,29 @@ const AddBookLists = () => {
                     handleFieldChange("isbn", e.target.value);
                   }}
                 />
-                <InputField
+                <div className="flex justify-between">
+                <label htmlFor="">Genres</label>
+                <select name="" id=""
+                  onChange={(e)=>setStoreGenresId(e.target.value)}
+                >
+                  {
+                  genresList?.map((genres:any,index:number)=>{
+                    return(
+                      <option key={index} value={genres?.id}>{genres?.name}{genres?.id}</option>
+                    )
+                  })}
+                </select>
+                </div>
+                {/* <InputField
                   label="Genres"
                   name="genres"
                   placeholder="Enter genres"
                   value={currentGenres}
-                  onChange={(e)=>setCurrentGenres(e.target.value)}
-                  // onChange={(e)=>{
-                  //   handleGenresChange("genres",e.target.value)
-                  // }}
-                  />
+                  onChange={(e)=>setCurrentGenres(e.target.value)} 
+                  onChange={(e)=>{
+                    handleGenresChange("genres",e.target.value)
+                  }}
+                  />*/}
                 <InputField
                   type="textarea"
                   label="Description"

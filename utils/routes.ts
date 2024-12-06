@@ -16,5 +16,8 @@ export const routes: RoutesInterface = {
   ADMIN_RESERVES_ROUTE: "/admin/reserves",
   ADMIN_USERS_ROUTE: "/admin/users",
   BOOK_LIST:"/book-list",
-  DIGITAL_RESOURCE_LISTS:'/admin/digital-resource'
+  DIGITAL_RESOURCE_LISTS:'/admin/digital-resource',
+  ACADEMICS:'/admin/academics',
+  FINE:'admin/fine',
+  SETTING:'admin/setting'
 };
