@@ -20,7 +20,7 @@ import {
   UserCircleIcon,
   UserGroupIcon,
   BuildingLibraryIcon,
-  BuildingOffice2Icon
+  BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
 
 const AdminSidebar = () => {
@@ -131,21 +131,23 @@ const AdminSidebar = () => {
         {/* <span className="text-xs text-blue-200 font-semibold px-4">BOOKS</span> */}
         <ul>
           <li className="mt-4 flex flex-col gap-2">
-            {navigation.map((navbarList) => {
+            {navigation.map((navbarList, index: number) => {
               return (
-                <Link
-                  href={navbarList?.href}
-                  className={`flex gap-2 ${
-                    navbarList?.href === pathname
-                      ? "bg-red-400 text-white rounded-xl"
-                      : ""
-                  } hover:bg-red-400 hover:rounded-xl hover:text-white text-base items-center px-4 py-2`}
-                >
-                  <navbarList.icon className="h-5 w-5 shrink-0" />
-                  {navbarText && (
-                    <span className="text-sm">{navbarList.name}</span>
-                  )}
-                </Link>
+                <div key={index}>
+                  <Link
+                    href={navbarList?.href}
+                    className={`flex gap-2 ${
+                      navbarList?.href === pathname
+                        ? "bg-red-400 text-white rounded-xl"
+                        : ""
+                    } hover:bg-red-400 hover:rounded-xl hover:text-white text-base items-center px-4 py-2`}
+                  >
+                    <navbarList.icon className="h-5 w-5 shrink-0" />
+                    {navbarText && (
+                      <span className="text-sm">{navbarList.name}</span>
+                    )}
+                  </Link>
+                </div>
               );
             })}
           </li>

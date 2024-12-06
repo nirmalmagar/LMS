@@ -23,12 +23,12 @@ const UsersList = () => {
             | Promise<React.AwaitedReactNode>
             | null
             | undefined;
-        }) => {
+        },index:number) => {
           return (
-            <>
+            <div key={index}>
               <p>id name:</p>
               <h1>{usersList?.id}</h1>
-            </>
+            </div>
           );
         }
       )}

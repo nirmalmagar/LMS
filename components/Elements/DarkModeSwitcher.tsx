@@ -5,7 +5,6 @@ import { ColorThemeContext } from "@/context/ColorTheme";
 export const DarkModeSwitcher = () => {
   const { colorTheme, setColorTheme } = useContext(ColorThemeContext);
   const [changeColor, setChangeColor] = useState<boolean>(false);
-  console.log("theme color", changeColor)
   return (
     <>
       <ReactSwitch
