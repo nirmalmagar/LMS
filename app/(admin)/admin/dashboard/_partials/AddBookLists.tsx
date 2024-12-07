@@ -9,21 +9,33 @@ import Btn from "@/components/Btn";
 import Image from "next/image";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import Multiselect from "multiselect-react-dropdown";
 import { AuthContext } from "@/context/AuthContext";
 
+interface genresListProps{
+  id:number;
+  name:string;
+}
 const AddBookLists = () => {
-
-  const {genres} = useContext(AuthContext);
+  const { genres } = useContext(AuthContext);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  // const [genres, setGenres] = useState<string[]>([]);
-  let genresList = genres;
-  const [currentGenres, setCurrentGenres] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string | null>("");
-  const [storeGenresId, setStoreGenresId] = useState({});
-  const [inputFieldValue, setInputFieldValue] = useState<
-    Record<string, string>
-  >({});
-  
+  const [inputFieldValue, setInputFieldValue] = useState<Record<string, string>>({});
+  const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]); // Array to store selected genre IDs
+
+  // Callback for when an item is selected
+  const handleSelect = (selectedList:genresListProps[]) => {
+    const ids = selectedList.map((genre) => genre.id); // Extract IDs from selected items
+    setSelectedGenreIds(ids); // Update state
+  };
+
+  // Callback for when an item is removed
+  const handleRemove = (selectedList:genresListProps[]) => {
+    const ids = selectedList.map((genre) => genre.id); // Extract IDs from remaining items
+    setSelectedGenreIds(ids); // Update state
+  };
+
+  // image change handler
   const ImageChangeHandler = (e: any) => {
     const imageURL = e.target.files[0];
     setImageUrl(URL.createObjectURL(imageURL));
@@ -33,20 +45,19 @@ const AddBookLists = () => {
     setImageUrl(null);
   };
 
+  // input field
+
   const handleFieldChange = (key: string, value: string): void => {
-    if(key && value){
+    if (key && value) {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
-    }
-    else{
+    } else {
       // setGenres((prevGenres)=>[...prevGenres,currentGenres])
     }
   };
-  // const handleGenresChange=(genKey:any,genValue:any)=>{
-  //   setGenres((prevGenres)=>[...prevGenres,[genKey],genValue])
-  // }
+
+  // book add button
   const handleAddBooks = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setShowPopUpModal(false);
     const InputFileData = {
       title: inputFieldValue?.title,
       description: inputFieldValue?.description,
@@ -56,7 +67,7 @@ const AddBookLists = () => {
       pages: inputFieldValue?.pages,
       quantity: inputFieldValue?.quantity,
       isbn: inputFieldValue?.isbn,
-      genres: storeGenresId,
+      genres: selectedGenreIds,
     };
     try {
       const response = await fetch(`${process.env.HOST}books/`, {
@@ -78,13 +89,13 @@ const AddBookLists = () => {
       console.error(error);
     }
   };
+
   return (
     <>
       <TableHead
         className="px-2 py-4"
         size="small"
         tableName="Books List"
-        // routeLink={routes.ADMIN_BOOKS_ADD}
         addTitle="Add Book"
         onClick={() => setShowPopUpModal(true)}
       />
@@ -144,7 +155,6 @@ const AddBookLists = () => {
                     handleFieldChange("title", e.target.value);
                   }}
                 />
-
                 <InputField
                   label="Author"
                   name="author"
@@ -201,29 +211,16 @@ const AddBookLists = () => {
                     handleFieldChange("isbn", e.target.value);
                   }}
                 />
-                <div className="flex justify-between">
-                <label htmlFor="">Genres</label>
-                <select name="" id=""
-                  onChange={(e)=>setStoreGenresId(e.target.value)}
-                >
-                  {
-                  genresList?.map((genres:any,index:number)=>{
-                    return(
-                      <option key={index} value={genres?.id}>{genres?.name}{genres?.id}</option>
-                    )
-                  })}
-                </select>
+                <div className="flex gap-24">
+                  <label htmlFor="">Genres</label>
+                  <Multiselect
+                    className="text-sm leading-4 w-full flex-1"
+                    options={genres} // Data to display
+                    displayValue="name" // The key to display (update based on your object structure)
+                    onSelect={handleSelect} // Callback for when an item is selected
+                    onRemove={handleRemove} // Callback for when an item is removed
+                  />
                 </div>
-                {/* <InputField
-                  label="Genres"
-                  name="genres"
-                  placeholder="Enter genres"
-                  value={currentGenres}
-                  onChange={(e)=>setCurrentGenres(e.target.value)} 
-                  onChange={(e)=>{
-                    handleGenresChange("genres",e.target.value)
-                  }}
-                  />*/}
                 <InputField
                   type="textarea"
                   label="Description"
