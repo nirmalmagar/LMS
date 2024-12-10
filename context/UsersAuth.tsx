@@ -48,7 +48,7 @@ const UsersAuthProvider: React.FC<userAuthProviderProps> = ({ children }) => {
         router.replace(routes.ADMIN_AUTH_LOGIN)
       }
     }
-    catch(e){
+    catch(e:any){
       console.error("error",e)
     }
   };
