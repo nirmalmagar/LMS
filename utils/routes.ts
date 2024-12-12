@@ -18,6 +18,13 @@ export const routes: RoutesInterface = {
   BOOK_LIST:"/book-list",
   DIGITAL_RESOURCE_LISTS:'/admin/digital-resource',
   ACADEMICS:'/admin/academics',
-  FINE:'admin/fine',
-  SETTING:'admin/setting'
+  ACADEMIC_GRADE:'/admin/academics/grade',
+  ACADEMIC_TEACHER:'/admin/academics/teacher',
+  ACADEMIC_STAFF:'/admin/academics/staff',
+  ACADEMIC_DEPARTMENT:'/admin/academics/department',
+  ACADEMIC_STUDENT:'/admin/academics/student',
+  ACADEMIC_LIBRARY:'/admin/academics/library',
+  ACADEMIC_SHELF:'/admin/academics/shelf',
+  FINE:'/admin/fine',
+  SETTING:'/admin/setting',
 };

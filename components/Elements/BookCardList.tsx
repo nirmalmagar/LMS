@@ -7,11 +7,36 @@ import useSWR from "swr";
 import { getFetcher } from "@/helpers/FetchHelper";
 import Link from "next/link";
 
+
+const fetcher = async (url: string | URL | Request) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+};
+
 const BookCardList = () => {
-  const { data: BookListsURL, isLoading: loading } = useSWR(
+
+  const { data: BookListsURL, isLoading: loading, error } = useSWR(
     `${process.env.HOST}books/`,
-    getFetcher
+    fetcher
   );
+
+  // Handle loading state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Handle error state
+  if (error) {
+    return <div>Error loading data: {error.message}</div>;
+  }
+
+  // Ensure `BookListsURL` is valid and not null or undefined
+  if (!BookListsURL || !Array.isArray(BookListsURL)) {
+    return <div>No books found.</div>;
+  }
 
   return (
     <>
@@ -19,11 +44,13 @@ const BookCardList = () => {
         <Heading children={"Explore Fresh Arrivals and Find Your Next Great Read."} title={"New Arrivals"} />
         <section className="my-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-12 gap-x-12">
-            {BookListsURL?.results?.map((value: any, index: number) => {
+            
+            
+            { BookListsURL?.results?.map((value: any, index: number) => {
               return (
                 <div key={index}>
                   <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[25rem]">
-                    <Link href={`/book-list/${value.id}`}>
+                    <Link href={`/book-list/${value?.id}`}>
                       <div className="relative w-60 h-72 mb-2">
                         <Image
                           fill
