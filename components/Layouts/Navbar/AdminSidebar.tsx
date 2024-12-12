@@ -183,7 +183,7 @@ const AdminSidebar = () => {
                           </div>
                         </div>
                       </DisclosureButton>
-                      <DisclosurePanel className="text-gray-500 ml-4 flex flex-col gap-2">
+                      <DisclosurePanel className="text-gray-600 ml-4 flex flex-col gap-2">
                         {navbarList?.children.map((items, childIndex) => {
                           return (
                             <Link
@@ -195,7 +195,7 @@ const AdminSidebar = () => {
                                   : ""
                               } hover:bg-red-400 hover:rounded-xl hover:text-white text-base items-center px-4 py-2`}
                             >
-                              <items.icon className="h-5 w-5 text-gray-800 shrink-0" />
+                              <items.icon className="h-5 w-5 shrink-0" />
                               {navbarText && (
                                 <span className="text-sm">{items.name}</span>
                               )}
