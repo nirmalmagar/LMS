@@ -45,7 +45,7 @@ const Pagination = () => {
                   <div className="shadow-md hover:shadow-xl hover:scale-105 h-[25rem]  hover:duration-500">
                     <Link href={`/book-list/${value.id}`}>
                       <div className="relative w-60 h-72 mb-2">
-                        <Image fill src={value?.cover} alt="cover image" />
+                        {/* <Image fill src={value?.cover} alt="cover image" /> */}
                       </div>
                       <div className=" pl-4 pb-2">
                         <h3 className="font-semibold" id="card_title">{value?.title}</h3>

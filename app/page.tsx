@@ -6,6 +6,7 @@ import AffordableBookCard from "@/components/HomePages/AffordableBookCard";
 import BookCardStatic from "@/components/HomePages/BookCardStatic";
 import HomeLayout from "@/components/Layouts/HomeNavBar/HomeLayout";
 import BookCardList from "@/components/Elements/BookCardList";
+
 const page = () => {
   const affordableBooksList = [
     "/assets/books/image.png",

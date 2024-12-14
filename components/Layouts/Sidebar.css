@@ -1,0 +1,53 @@
+/* .navbar .tabpanel::-webkit-scrollbar {
+  width: 5px;
+}  */
+
+/* Track */
+/* .navbar .tabpanel::-webkit-scrollbar-track {
+  background: #f1f1f1;
+} */
+
+/* Handle */
+/* .navbar .tabpanel::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 8px;
+} */
+
+/* Handle on hover */
+/* .navbar .tabpanel::-webkit-scrollbar-thumb:hover {
+  background: #555;
+} */
+
+/* scroll bar */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.attendance-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.attendance-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 8px;
+}
+
+.attendance-scrollbar::-webkit-scrollbar {
+  cursor: pointer;
+  height: 8px;
+  padding-bottom: 10px;
+}

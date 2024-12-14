@@ -8,19 +8,19 @@ import { getFetcher } from "@/helpers/FetchHelper";
 import Link from "next/link";
 
 
-const fetcher = async (url: string | URL | Request) => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  return response.json();
-};
+// const fetcher = async (url: string | URL | Request) => {
+//   const response = await fetch(url);
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
+//   return response.json();
+// };
 
 const BookCardList = () => {
 
   const { data: BookListsURL, isLoading: loading, error } = useSWR(
     `${process.env.HOST}books/`,
-    fetcher
+    getFetcher
   );
 
   // Handle loading state

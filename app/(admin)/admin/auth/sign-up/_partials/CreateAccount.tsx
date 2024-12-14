@@ -5,11 +5,27 @@ import Btn from "@/components/Btn";
 import Link from "next/link";
 import { routes } from "@/utils/routes";
 import { toast } from "react-toastify";
+import SelectField from "@/components/Form/SelectField";
 
 const CreateAccount = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [inputFormValues, setInputFormValues] = useState<Record<string,string>>({});
-
+  const [inputFormValues, setInputFormValues] = useState<
+    Record<string, string>
+  >({});
+  const [userFormValues, setUserFormValues] = useState<Record<string, string>>(
+    {}
+  );
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  const stateOptions: any = [
+    { label: "Male", value: 1 },
+    { label: "Female", value: 0 },
+    { label: "Both", value: null },
+  ];
+  const handleStateChange = (name: string, choice: any): void => {
+    // let idArray : string[] = [];
+    // idArray.push(choice?.value)
+    setSelectValues((values) => ({ ...values, [name]: choice?.value }));
+  };
   const RegisterURL = `${process.env.HOST}register/`;
 
   const togglePasswordVisibility = (): void => {
@@ -18,6 +34,10 @@ const CreateAccount = () => {
 
   const handleFieldChange = (key: string, value: string): void => {
     setInputFormValues((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleUserFieldChange = (key: string, value: string): void => {
+    setUserFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -29,6 +49,13 @@ const CreateAccount = () => {
         last_name: inputFormValues?.last_name,
         email: inputFormValues?.email,
         password: inputFormValues?.password,
+      },
+      user_profile_data: {
+        address: userFormValues?.address,
+        phone_number: userFormValues?.phone_number,
+        date_of_birth: userFormValues?.date_of_birth,
+        gender: selectValues?.gender,
+        bio: userFormValues?.bio,
       },
     };
     try {
@@ -76,94 +103,177 @@ const CreateAccount = () => {
             <div className="mt-4">
               <form
                 onSubmit={handleSubmit}
-                className="max-w-[300px] flex flex-col justify-center mx-auto"
+                // className="max-w-[300px] flex flex-col justify-center mx-auto"
               >
-                <InputField
-                  name="first_name"
-                  label="First Name"
-                  id="name"
-                  labelClassName="!text-black-100"
-                  labelStyle="label-top"
-                  type="text"
-                  wrapperClassName="flex"
-                  value={inputFormValues?.first_name}
-                  // fieldErrors={error?.name ?? []}
-                  onChange={(e: any) => {
-                    handleFieldChange("first_name", e.target.value);
-                  }}
-                  className="mb-2"
-                  required
-                />
-                <InputField
-                  name="middle_name"
-                  label="Middle Name"
-                  id="name"
-                  labelClassName="!text-black-100"
-                  labelStyle="label-top"
-                  type="text"
-                  wrapperClassName="flex"
-                  value={inputFormValues?.middle_name}
-                  // fieldErrors={error?.name ?? []}
-                  onChange={(e: any) => {
-                    handleFieldChange("middle_name", e.target.value);
-                  }}
-                  className="mb-2"
-                />
-                <InputField
-                  name="last_name"
-                  label="last Name"
-                  id="name"
-                  labelClassName="!text-black-100"
-                  labelStyle="label-top"
-                  type="text"
-                  wrapperClassName="flex"
-                  value={inputFormValues?.last_name}
-                  // fieldErrors={error?.name ?? []}
-                  onChange={(e: any) => {
-                    handleFieldChange("last_name", e.target.value);
-                  }}
-                  className="mb-2"
-                  required
-                />
+                <div className="flex gap-4 justify-between">
+                <div>
+                  <InputField
+                    name="first_name"
+                    label="First Name"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="text"
+                    wrapperClassName="flex"
+                    value={inputFormValues?.first_name}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleFieldChange("first_name", e.target.value);
+                    }}
+                    className="mb-2"
+                    required
+                  />
+                  <InputField
+                    name="middle_name"
+                    label="Middle Name"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="text"
+                    wrapperClassName="flex"
+                    value={inputFormValues?.middle_name}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleFieldChange("middle_name", e.target.value);
+                    }}
+                    className="mb-2"
+                  />
+                  <InputField
+                    name="last_name"
+                    label="last Name"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="text"
+                    wrapperClassName="flex"
+                    value={inputFormValues?.last_name}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleFieldChange("last_name", e.target.value);
+                    }}
+                    className="mb-2"
+                    required
+                  />
 
-                <InputField
-                  name="email"
-                  label="Email Address"
-                  id="email"
-                  labelClassName="!text-black-100"
-                  labelStyle="label-top"
-                  type="email"
-                  wrapperClassName="flex"
-                  value={inputFormValues?.email}
-                  // fieldErrors={error?.email ?? []}
-                  onChange={(e: any) => {
-                    handleFieldChange("email", e.target.value);
-                  }}
-                  className="mb-2"
-                  required
-                />
+                  <InputField
+                    name="email"
+                    label="Email Address"
+                    id="email"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="email"
+                    wrapperClassName="flex"
+                    value={inputFormValues?.email}
+                    // fieldErrors={error?.email ?? []}
+                    onChange={(e: any) => {
+                      handleFieldChange("email", e.target.value);
+                    }}
+                    className="mb-2"
+                    required
+                  />
 
-                <InputField
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  label="Password"
-                  labelClassName="!text-black-100"
-                  id="password"
-                  required
-                  key={"3"}
-                  labelStyle="label-top"
-                  wrapperClassName="flex"
-                  className="mb-2 text-left"
-                  passwordField={true}
-                  value={inputFormValues?.password}
-                  // fieldErrors={error?.password ?? []}
-                  onChange={(e: any) => {
-                    handleFieldChange("password", e.target.value);
-                  }}
-                  togglePasswordVisibility={togglePasswordVisibility}
-                  showPassword={showPassword}
-                />
-
+                  <InputField
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    label="Password"
+                    labelClassName="!text-black-100"
+                    id="password"
+                    required
+                    key={"3"}
+                    labelStyle="label-top"
+                    wrapperClassName="flex"
+                    className="mb-2 text-left"
+                    passwordField={true}
+                    value={inputFormValues?.password}
+                    // fieldErrors={error?.password ?? []}
+                    onChange={(e: any) => {
+                      handleFieldChange("password", e.target.value);
+                    }}
+                    togglePasswordVisibility={togglePasswordVisibility}
+                    showPassword={showPassword}
+                  />
+                </div>
+                {/* ---------user Profile data------------ */}
+                <div>
+                  <InputField
+                    name="address"
+                    label="Address"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="text"
+                    wrapperClassName="flex"
+                    value={userFormValues?.address}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleUserFieldChange("address", e.target.value);
+                    }}
+                    className="mb-2"
+                    required
+                  />
+                  <InputField
+                    name="phone_number"
+                    label="Phone Number"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="text"
+                    wrapperClassName="flex"
+                    value={userFormValues?.phone_number}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleUserFieldChange("phone_number", e.target.value);
+                    }}
+                    className="mb-2"
+                  />
+                  <InputField
+                    name="date_of_birth"
+                    label="Date of Birth"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="date"
+                    wrapperClassName="flex"
+                    value={userFormValues?.date_of_birth}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleUserFieldChange("date_of_birth", e.target.value);
+                    }}
+                    className="mb-2"
+                    required
+                  />
+                  <SelectField
+                    className="mb-2"
+                    label="Gender"
+                    name="gender"
+                    labelStyle="label-top"
+                    options={stateOptions}
+                    // fieldErrors={errors?.is_present ?? []}
+                    // defaultValue={parseInt(searchParams?.get("is_present")!)}
+                    // value={userFormValues?.gender}
+                    value={selectValues?.gender}
+                    onChange={(choice: any) =>
+                      handleStateChange("is_present", choice)
+                    }
+                  />
+                  <InputField
+                    name="bio"
+                    label="Bio"
+                    id="name"
+                    labelClassName="!text-black-100"
+                    labelStyle="label-top"
+                    type="text"
+                    wrapperClassName="flex"
+                    value={userFormValues?.bio}
+                    // fieldErrors={error?.name ?? []}
+                    onChange={(e: any) => {
+                      handleUserFieldChange("bio", e.target.value);
+                    }}
+                    className="mb-2"
+                    required
+                  />
+                </div>
+                </div>
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
@@ -174,8 +284,8 @@ const CreateAccount = () => {
 
                 <div className=" flex items-center justify-center">
                   <Btn
-                    color="light"
-                    className="w-1/2 text-black"
+                    // color="light"
+                    className="w-1/2 text-black bg-blue-400"
                     type={"submit"}
                   >
                     {"Register"}

@@ -150,7 +150,7 @@ const AddBookLists = () => {
                   name="title"
                   placeholder="enter title"
                   type="text"
-                  value={inputFieldValue?.title}
+                  defaultValue={inputFieldValue?.title}
                   onChange={(e: any) => {
                     handleFieldChange("title", e.target.value);
                   }}
@@ -160,7 +160,7 @@ const AddBookLists = () => {
                   name="author"
                   placeholder="enter author"
                   type="text"
-                  value={inputFieldValue?.author}
+                  defaultValue={inputFieldValue?.author}
                   onChange={(e: any) => {
                     handleFieldChange("author", e.target.value);
                   }}
@@ -170,7 +170,7 @@ const AddBookLists = () => {
                   name="text"
                   placeholder="enter publisher"
                   type="text"
-                  value={inputFieldValue?.publisher}
+                  defaultValue={inputFieldValue?.publisher}
                   onChange={(e: any) => {
                     handleFieldChange("publisher", e.target.value);
                   }}
@@ -179,7 +179,7 @@ const AddBookLists = () => {
                   label="Pages"
                   name="pages"
                   placeholder="Enter pages"
-                  value={inputFieldValue?.pages}
+                  defaultValue={inputFieldValue?.pages}
                   onChange={(e: any) => {
                     handleFieldChange("pages", e.target.value);
                   }}
@@ -188,7 +188,7 @@ const AddBookLists = () => {
                   label="Price"
                   name="price"
                   placeholder="Enter price"
-                  value={inputFieldValue?.price}
+                  defaultValue={inputFieldValue?.price}
                   onChange={(e: any) => {
                     handleFieldChange("price", e.target.value);
                   }}
@@ -197,7 +197,7 @@ const AddBookLists = () => {
                   label="Quantity"
                   name="quantity"
                   placeholder="Enter quantity"
-                  value={inputFieldValue?.quantity}
+                  defaultValue={inputFieldValue?.quantity}
                   onChange={(e: any) => {
                     handleFieldChange("quantity", e.target.value);
                   }}
@@ -206,7 +206,7 @@ const AddBookLists = () => {
                   label="Isbn"
                   name="isbn"
                   placeholder="Enter isbn"
-                  value={inputFieldValue?.isbn}
+                  defaultValue={inputFieldValue?.isbn}
                   onChange={(e: any) => {
                     handleFieldChange("isbn", e.target.value);
                   }}
@@ -226,7 +226,7 @@ const AddBookLists = () => {
                   label="Description"
                   name="description"
                   placeholder="enter description"
-                  value={inputFieldValue?.description}
+                  defaultValue={inputFieldValue?.description}
                   onChange={(e: any) => {
                     handleFieldChange("description", e.target.value);
                   }}

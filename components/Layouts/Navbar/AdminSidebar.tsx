@@ -47,6 +47,11 @@ const AdminSidebar = () => {
       icon: BookOpenIcon,
       children: [
         {
+          name: "Book Lists",
+          href: routes.ADMIN_BOOKS_ROUTE,
+          icon: BookOpenIcon,
+        },
+        {
           name: "Borrow",
           href: routes.ADMIN_BORROW_ROUTE,
           icon: ChatBubbleLeftEllipsisIcon,
