@@ -5,7 +5,7 @@ import DigitalResourcesList from "./_partial/DigitalResourceLists";
 const page = () => {
   return (
     <DefaultLayout>
-      <DigitalResourcesList />
+      <DigitalResourcesList showHeading={true} showMore={true} />
     </DefaultLayout>
   );
 };

@@ -17,7 +17,7 @@ const FormLabel: React.FC<FormLabelProps> = ({
   const classes = classNames(
     // dark:text-white
     `block text-sm font-medium leading-6 text-gray-900 mb-2 ${
-      labelWidth ? labelWidth : "w-fit"
+      labelWidth ? labelWidth : "w-2/5"
     } `,
     className
   );
