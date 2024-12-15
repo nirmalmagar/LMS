@@ -93,7 +93,7 @@ const InputField: React.FC<InputFieldProps> = ({
     );
   }
   return (
-    <div className={`${wrapperClassName} flex`}>
+    <div className={`${wrapperClassName} flex my-2`}>
       {label && (
         <FormLabel labelWidth={labelWidth} id={id} className={`${labelClassName}`}>
           {label}
