@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import InputField from "@/components/Elements/InputField";
+import InputField from "@/components/Form/InputForm";
 import { Lora } from "next/font/google";
 import Btn from "@/components/Btn";
 import { routes } from "@/utils/routes";

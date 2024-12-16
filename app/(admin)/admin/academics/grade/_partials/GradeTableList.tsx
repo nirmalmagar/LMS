@@ -82,8 +82,8 @@ const GradeTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try{  
-    const response = await fetch(`${process.env.HOST}grades/${gradeId}`,{
-      method:"POST",
+    const response = await fetch(`${process.env.HOST}grades/${gradeId}/`,{
+      method:"PUT",
       body: formData,
       headers:{
         Authorization: `Bearer ${accessToken()}`,

@@ -85,8 +85,8 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(`${process.env.HOST}departments/${departmentId}`, {
-        method: "POST",
+      const response = await fetch(`${process.env.HOST}departments/${departmentId}/`, {
+        method: "PUT",
         body: formData,
         headers: {
           Authorization: `Bearer ${accessToken()}`,
@@ -184,7 +184,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
             <InputField
               type="text"
               label="Department head"
-              name="name"
+              name="head_of_department"
               placeholder="enter grade"
               defaultValue={departmentIdList?.head_of_department}
             />

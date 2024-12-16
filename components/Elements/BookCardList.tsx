@@ -50,7 +50,7 @@ const BookCardList = () => {
               return (
                 <div key={index}>
                   <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[25rem]">
-                    <Link href={`/book-list/${value?.id}`}>
+                    <Link href={`/book-list/${value?.id}/`}>
                       <div className="relative w-60 h-72 mb-2">
                         <Image
                           fill
