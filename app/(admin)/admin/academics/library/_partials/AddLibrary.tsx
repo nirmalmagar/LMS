@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "@/components/Elements/Modal";
 import TableHead from "@/components/Elements/TableHead/TableHead";
 import { useState, FormEvent } from "react";
@@ -8,7 +8,7 @@ import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
 
-const AddDepartment = () => {
+const AddLibrary = () => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
@@ -28,14 +28,11 @@ const AddDepartment = () => {
     e.preventDefault();
     const InputFileData = {
       name: inputFieldValue?.name,
-      head_of_department: inputFieldValue?.head_of_department,
       description: inputFieldValue?.description,
-      phone_number: inputFieldValue?.phone_number,
-      location: inputFieldValue?.location,
-      borrowing_period_days: inputFieldValue?.borrowing_period_days,
+      location: inputFieldValue?.location
     };
     try {
-      const response = await fetch(`${process.env.HOST}departments/`, {
+      const response = await fetch(`${process.env.HOST}library-sections/`, {
         method: "POST",
         body: JSON.stringify(InputFileData),
         headers: {
@@ -62,76 +59,47 @@ const AddDepartment = () => {
       <TableHead
         className="px-2 py-4"
         size="small"
-        tableName="Departments List"
-        addTitle="Add Departments"
+        tableName="Library List"
+        addTitle="Add Library"
         onClick={() => setShowPopUpModal(true)}
       />
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Department"
+        modalTitle="Add Library"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleAddGrade}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
             <InputField
               type="text"
-              label="Department name"
+              label="Library name"
               name="name"
-              placeholder="enter department name"
+              placeholder="Edit Library Name"
               // defaultValue={inputFieldValue?.name}
               onChange={(e: any) => {
                 handleFieldChange("name", e.target.value);
               }}
             />
-            <InputField
-              type="text"
-              label="Department Head"
-              name="head_of_department"
-              placeholder="enter department head name"
-              // defaultValue={inputFieldValue?.head_of_department}
-              onChange={(e: any) => {
-                handleFieldChange("head_of_department", e.target.value);
-              }}
-            />
+
             <InputField
               type="textarea"
               label="Description"
               name="description"
-              placeholder="enter description"
+              placeholder="Edit Description"
               // defaultValue={inputFieldValue?.description}
               onChange={(e: any) => {
                 handleFieldChange("description", e.target.value);
               }}
             />
             <InputField
-              type="number"
-              label="Phone no."
-              name="phone_number"
-              placeholder="enter phone number"
-              // defaultValue={inputFieldValue?.phone_number}
-              onChange={(e: any) => {
-                handleFieldChange("phone_number", e.target.value);
-              }}
-            />
-            <InputField
               type="text"
               label="Location"
               name="location"
-              placeholder="enter "
+              placeholder="Edit Location"
               // defaultValue={inputFieldValue?.location}
               onChange={(e: any) => {
                 handleFieldChange("location", e.target.value);
-              }}
-            />
-            <InputField
-              type="number"
-              label="Borrowing Days"
-              name="borrowing_period_days"
-              placeholder="enter "
-              // defaultValue={inputFieldValue?.borrowing_period_days}
-              onChange={(e: any) => {
-                handleFieldChange("borrowing_period_days", e.target.value);
               }}
             />
           </div>
@@ -159,4 +127,4 @@ const AddDepartment = () => {
   );
 };
 
-export default AddDepartment;
+export default AddLibrary;

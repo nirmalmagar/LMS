@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
-import AddDepartment from "./AddDepartment";
+import AddLibrary from "./AddLibrary";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/Elements/Modal";
@@ -18,7 +18,7 @@ interface ShowHeading {
   showMore?: boolean;
 }
 
-const DepartmentTableList: React.FC<ShowHeading> = ({
+const LibraryTableList: React.FC<ShowHeading> = ({
   showHeading,
   showMore,
 }) => {
@@ -26,15 +26,15 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   let showLists = showMore;
 
   // const [showMore, setShowMore] = useState<boolean>(false);
-  const [departmentsLists, setDepartmentsLists] = useState<any[]>([]);
-  const [totalPages, setTotalPages] = useState<number>();
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [librarySectionLists, setLibrarySectionLists] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [departmentId, setDepartmentId] = useState<number>();
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [libraryId, setLibraryId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
 
-  const DepartmentURL = `${process.env.HOST}departments/${departmentId}`;
-  const { data: departmentIdList } = useSWR(DepartmentURL, defaultFetcher);
+  const LibraryURL = `${process.env.HOST}library-sections/${libraryId}`;
+  const { data: libraryIdList } = useSWR(LibraryURL, defaultFetcher);
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -50,17 +50,20 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(`${process.env.HOST}departments/${id}/`, {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${accessToken()}`,
-                "Content-Type": "application/json",
-                Accept: "application/json", // Fixed typo here
-              },
-            });
+            const response = await fetch(
+              `${process.env.HOST}library-sections/${id}/`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${accessToken()}`,
+                  "Content-Type": "application/json",
+                  Accept: "application/json", // Fixed typo here
+                },
+              }
+            );
             if (response.ok) {
-              toast.success("Department removed successfully.");
-              mutate(departmentsLists);
+              toast.success("Library Section removed successfully.");
+              mutate(librarySectionLists);
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -75,27 +78,30 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   // edit icons box
   const editIconBox = (id: number) => {
     setShowPopUpModal(true);
-    setDepartmentId(id);
+    setLibraryId(id);
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
   };
   // edit handle submit
-  const handleEditDepartment = async (e: FormEvent<HTMLFormElement>) => {
+  const handleEditLibrary = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(`${process.env.HOST}departments/${departmentId}/`, {
-        method: "PUT",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${accessToken()}`,
-          Accept: "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.HOST}library-sections/${libraryId}/`,
+        {
+          method: "PUT",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            Accept: "application/json",
+          },
+        }
+      );
       // const data = await response.json();
       if (response.ok) {
-        toast.success("grade update successfully ");
+        toast.success("Library section update successfully ");
       } else {
         toast.error("some thing went wrong");
       }
@@ -104,12 +110,12 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
     }
   };
 
-  // fetch departments lists
-  const DepartmentList = async () => {
+  // fetch library-sections lists
+  const LibraryList = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${process.env.HOST}departments?page=${currentPage}`,
+        `${process.env.HOST}library-sections?page=${currentPage}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken()}`,
@@ -120,8 +126,8 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       const data = await response.json();
       setTotalPages(data?.total_pages);
       setCurrentPage(data?.current_page);
-      setDepartmentsLists(data?.results);
-        setIsLoading(false);
+      setLibrarySectionLists(data?.results);
+      setIsLoading(false);
     } catch (e) {
       console.log("error", e);
       setIsLoading(false);
@@ -129,13 +135,13 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   };
 
   // pagination number lists in array
-  let totalPageArray = departmentsLists
+  let totalPageArray = librarySectionLists
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
     : [];
 
   // pagination
   let paginationLinks =
-    departmentsLists &&
+    librarySectionLists &&
     totalPageArray.map((items: any, index: number) => {
       if (items < 10) {
         return (
@@ -158,62 +164,41 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       setCurrentPage(page);
     }
   };
-  useEffect(() => {
-    DepartmentList();
-  }, [currentPage]);
 
+  useEffect(() => {
+    // LibraryList();
+  }, [currentPage]);
   return (
     <>
       {/* edit Model popup  */}
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Department"
+        modalTitle="Add Library"
         size="lg"
       >
-        <form id="lead-form" onSubmit={handleEditDepartment}>
-          <div className=" px-4 py-4 rounded-lg border border-gray-200">
+        <form id="lead-form" onSubmit={handleEditLibrary}>
+          <div className="px-4 py-4 rounded-lg border border-gray-200">
             <InputField
               type="text"
-              label="Department"
+              label="Library"
               name="name"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.name}
-            />
-            <InputField
-              type="text"
-              label="Department head"
-              name="head_of_department"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.head_of_department}
+              placeholder="Edit Name"
+              defaultValue={libraryIdList?.name}
             />
             <InputField
               type="text"
               label="Description"
               name="description"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.description}
-            />
-            <InputField
-              type="text"
-              label="Phone no."
-              name="phone_number"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.phone_number}
+              placeholder="Edit Description"
+              defaultValue={libraryIdList?.description}
             />
             <InputField
               type="textarea"
               label="Location"
               name="location"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.location}
-            />
-            <InputField
-              type="number"
-              label="borrowing days"
-              name="borrowing_period_days"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.borrowing_period_days}
+              placeholder="Edit Location"
+              defaultValue={libraryIdList?.location}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -228,7 +213,9 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
             </Btn>
 
             <div className="flex gap-x-4">
-              <Btn type="submit" className="bg-blue-600 text-white"
+              <Btn
+                type="submit"
+                className="bg-blue-600 text-white"
                 onClick={() => {
                   setShowPopUpModal(false);
                   // setInputFieldValue({});
@@ -246,8 +233,8 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
           <span>Loading...</span>
         </p>
       ) : (
-        <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddDepartment />}
+        <div className="mt-8 max-w-[900px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+          {heading && <AddLibrary />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>
@@ -257,19 +244,10 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                     Name
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Department Head
-                  </th>
-                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Description
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Phone no.
-                  </th>
-                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Loacation
-                  </th>
-                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Borrow days
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
@@ -277,8 +255,8 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                 </tr>
               </thead>
               <tbody>
-                {departmentsLists?.map(
-                  (departmentsItems: Record<string, any>, index: number) => {
+                {librarySectionLists?.map(
+                  (libraryItems: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -288,45 +266,30 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.name}
+                            {libraryItems.name}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.head_of_department}
+                            {libraryItems.description}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.description}
-                          </p>
-                        </td>
-                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black" id="card_title">
-                            {departmentsItems.phone_number}
-                          </p>
-                        </td>
-                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black" id="card_title">
-                            {departmentsItems.location}
-                          </p>
-                        </td>
-                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black" id="card_title">
-                            {departmentsItems.borrowing_period_days}
+                            {libraryItems.location}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black">
                             <button
                               className="hover:text-red"
-                              onClick={() => showSwal(departmentsItems?.id)}
+                              onClick={() => showSwal(libraryItems?.id)}
                             >
                               <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
                             </button>
                             <button
                               className="ml-3"
-                              onClick={() => editIconBox(departmentsItems?.id)}
+                              onClick={() => editIconBox(libraryItems?.id)}
                             >
                               <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                             </button>
@@ -360,4 +323,4 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   );
 };
 
-export default DepartmentTableList;
+export default LibraryTableList;

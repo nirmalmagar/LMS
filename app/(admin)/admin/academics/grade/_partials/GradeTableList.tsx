@@ -17,7 +17,6 @@ interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
 }
-
 const GradeTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   let heading = showHeading;
   let showLists = showMore;
@@ -160,7 +159,7 @@ const GradeTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   };
   useEffect(() => {
     GradeList();
-  }, [currentPage]);
+  }, [currentPage,gradeList]);
 
   return (
     <>
@@ -197,7 +196,11 @@ const GradeTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             </Btn>
 
             <div className="flex gap-x-4">
-              <Btn type="submit" className="bg-blue-600 text-white">
+              <Btn type="submit" className="bg-blue-600 text-white"
+                onClick={() => {
+                  setShowPopUpModal(false);
+                }}
+              >
                 Edit
               </Btn>
             </div>
