@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
-import AddLibrary from "./AddLibrary";
+import AddTeacher from "./AddTeacher";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/Elements/Modal";
@@ -18,7 +18,7 @@ interface ShowHeading {
   showMore?: boolean;
 }
 
-const LibraryTableList: React.FC<ShowHeading> = ({
+const TeacherTableList: React.FC<ShowHeading> = ({
   showHeading,
   showMore,
 }) => {
@@ -26,15 +26,15 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   let showLists = showMore;
 
   // const [showMore, setShowMore] = useState<boolean>(false);
-  const [librarySectionLists, setLibrarySectionLists] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const [teachersLists, setTeachersLists] = useState<any[]>([]);
+  const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [libraryId, setLibraryId] = useState<number>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [teacherId, setTeacherId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
 
-  const LibraryURL = `${process.env.HOST}library-sections/${libraryId}`;
-  const { data: libraryIdList } = useSWR(LibraryURL, defaultFetcher);
+  const TeachersURL = `${process.env.HOST}teachers/${teacherId}`;
+  const { data: teacherIdList } = useSWR(TeachersURL, defaultFetcher);
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -50,20 +50,17 @@ const LibraryTableList: React.FC<ShowHeading> = ({
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(
-              `${process.env.HOST}library-sections/${id}/`,
-              {
-                method: "DELETE",
-                headers: {
-                  Authorization: `Bearer ${accessToken()}`,
-                  "Content-Type": "application/json",
-                  Accept: "application/json", // Fixed typo here
-                },
-              }
-            );
+            const response = await fetch(`${process.env.HOST}teachers/${id}/`, {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${accessToken()}`,
+                "Content-Type": "application/json",
+                Accept: "application/json", // Fixed typo here
+              },
+            });
             if (response.ok) {
-              toast.success("Library Section removed successfully.");
-              mutate(librarySectionLists);
+              toast.success("Teacher removed successfully.");
+              mutate(teachersLists);
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -78,30 +75,27 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   // edit icons box
   const editIconBox = (id: number) => {
     setShowPopUpModal(true);
-    setLibraryId(id);
+    setTeacherId(id);
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
   };
   // edit handle submit
-  const handleEditLibrary = async (e: FormEvent<HTMLFormElement>) => {
+  const handleEditTeacher = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(
-        `${process.env.HOST}library-sections/${libraryId}/`,
-        {
-          method: "PUT",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${process.env.HOST}teachers/${teacherId}/`, {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken()}`,
+          Accept: "application/json",
+        },
+      });
       // const data = await response.json();
       if (response.ok) {
-        toast.success("Library section update successfully ");
+        toast.success("Teacher update successfully ");
       } else {
         toast.error("some thing went wrong");
       }
@@ -110,12 +104,12 @@ const LibraryTableList: React.FC<ShowHeading> = ({
     }
   };
 
-  // fetch library-sections lists
-  const LibraryList = async () => {
+  // fetch teachers lists
+  const TeacherList = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${process.env.HOST}library-sections?page=${currentPage}`,
+        `${process.env.HOST}teachers/?page=${currentPage}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken()}`,
@@ -126,8 +120,8 @@ const LibraryTableList: React.FC<ShowHeading> = ({
       const data = await response.json();
       setTotalPages(data?.total_pages);
       setCurrentPage(data?.current_page);
-      setLibrarySectionLists(data?.results);
-      setIsLoading(false);
+      setTeachersLists(data?.results);
+        setIsLoading(false);
     } catch (e) {
       console.log("error", e);
       setIsLoading(false);
@@ -135,13 +129,13 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   };
 
   // pagination number lists in array
-  let totalPageArray = librarySectionLists
+  let totalPageArray = teachersLists
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
     : [];
 
   // pagination
   let paginationLinks =
-    librarySectionLists &&
+    teachersLists &&
     totalPageArray.map((items: any, index: number) => {
       if (items < 10) {
         return (
@@ -164,41 +158,62 @@ const LibraryTableList: React.FC<ShowHeading> = ({
       setCurrentPage(page);
     }
   };
-
   useEffect(() => {
-    LibraryList();
+    TeacherList();
   }, [currentPage]);
+
   return (
     <>
       {/* edit Model popup  */}
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Library"
+        modalTitle="Add Teacher"
         size="lg"
       >
-        <form id="lead-form" onSubmit={handleEditLibrary}>
-          <div className="px-4 py-4 rounded-lg border border-gray-200">
+        <form id="lead-form" onSubmit={handleEditTeacher}>
+          <div className=" px-4 py-4 rounded-lg border border-gray-200">
             <InputField
               type="text"
-              label="Library"
-              name="name"
-              placeholder="Edit Name"
-              defaultValue={libraryIdList?.name}
+              label="User"
+              name="user"
+              placeholder="Choose User"
+              defaultValue={teacherIdList?.user}
             />
             <InputField
               type="text"
-              label="Description"
-              name="description"
-              placeholder="Edit Description"
-              defaultValue={libraryIdList?.description}
+              label="Employee name"
+              name="employee_id"
+              placeholder="Choose Employee name"
+              defaultValue={teacherIdList?.employee_id}
+            />
+            <InputField
+              type="text"
+              label="Grade"
+              name="grade"
+              placeholder="Choose grade"
+              defaultValue={teacherIdList?.grade}
+            />
+            <InputField
+              type="text"
+              label="Department"
+              name="department"
+              placeholder="Choose Department"
+              defaultValue={teacherIdList?.department}
             />
             <InputField
               type="textarea"
-              label="Location"
-              name="location"
-              placeholder="Edit Location"
-              defaultValue={libraryIdList?.location}
+              label="Designation"
+              name="designation"
+              placeholder="Enter Designation"
+              defaultValue={teacherIdList?.designation}
+            />
+            <InputField
+              type="number"
+              label="borrowing days"
+              name="borrowing_period_days"
+              placeholder="enter grade"
+              defaultValue={teacherIdList?.borrowing_period_days}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -213,9 +228,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
             </Btn>
 
             <div className="flex gap-x-4">
-              <Btn
-                type="submit"
-                className="bg-blue-600 text-white"
+              <Btn type="submit" className="bg-blue-600 text-white"
                 onClick={() => {
                   setShowPopUpModal(false);
                   // setInputFieldValue({});
@@ -233,21 +246,30 @@ const LibraryTableList: React.FC<ShowHeading> = ({
           <span>Loading...</span>
         </p>
       ) : (
-        <div className="mt-8 max-w-[900px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddLibrary />}
+        <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+          {heading && <AddTeacher />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>
                 <tr className="border-b-2 text-left">
                   <th className="py-4 px-2 font-medium text-black">S.N</th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Name
+                    User
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Description
+                    Employee name
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Loacation
+                    Grade
+                  </th>
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                    Department
+                  </th>
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                    Designation
+                  </th>
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                    Borrow days
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
@@ -255,8 +277,8 @@ const LibraryTableList: React.FC<ShowHeading> = ({
                 </tr>
               </thead>
               <tbody>
-                {librarySectionLists?.map(
-                  (libraryItems: Record<string, any>, index: number) => {
+                {teachersLists?.map(
+                  (teachersItems: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -266,30 +288,45 @@ const LibraryTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {libraryItems.name}
+                            {teachersItems.user}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {libraryItems.description}
+                            {teachersItems.employee_id}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {libraryItems.location}
+                            {teachersItems.grade}
+                          </p>
+                        </td>
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <p className="text-black" id="card_title">
+                            {teachersItems.department}
+                          </p>
+                        </td>
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <p className="text-black" id="card_title">
+                            {teachersItems.designation}
+                          </p>
+                        </td>
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <p className="text-black" id="card_title">
+                            {teachersItems.borrowing_period_days}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black">
                             <button
                               className="hover:text-red"
-                              onClick={() => showSwal(libraryItems?.id)}
+                              onClick={() => showSwal(teachersItems?.id)}
                             >
                               <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
                             </button>
                             <button
                               className="ml-3"
-                              onClick={() => editIconBox(libraryItems?.id)}
+                              onClick={() => editIconBox(teachersItems?.id)}
                             >
                               <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                             </button>
@@ -323,4 +360,4 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   );
 };
 
-export default LibraryTableList;
+export default TeacherTableList;
