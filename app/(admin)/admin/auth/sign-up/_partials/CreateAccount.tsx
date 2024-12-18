@@ -6,9 +6,12 @@ import Link from "next/link";
 import { routes } from "@/utils/routes";
 import { toast } from "react-toastify";
 import SelectField from "@/components/Form/SelectField";
+import Spinner from "@/components/Spinner/Spinner";
+import VerifyOtp from "@/components/Elements/Authentication/VerifyOtp";
 
 const CreateAccount = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [inputFormValues, setInputFormValues] = useState<
     Record<string, string>
   >({});
@@ -42,6 +45,7 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    setIsLoading(true);
     const combineData = {
       user_data: {
         first_name: inputFormValues?.first_name,
@@ -67,19 +71,24 @@ const CreateAccount = () => {
         },
       });
       const data = await response.json();
-      if (response?.ok) {
-        toast.success("register successfully");
+      if (response?.ok && data) {
+        toast.success(data?.message);
       } else {
         toast.error("something went wrong");
       }
     } catch (e) {
       console.error("error", e);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
   return (
     <>
       <div className="flex min-h-screen flex-1 justify-center items-center">
         <title>Create Student Account</title>
+        
+        <Link href={routes.ADMIN_VERIFY_OTP} className="text-black">verify</Link>
         <div
           className="flex flex-1 flex-col justify-center mx-4 px-1 pb-6 sm:px-6 lg:flex-none
         lg:px-20 xl:px-24 w-fit lg:h-fit h-screen shadow-lg rounded-lg bg-slate-100"
@@ -107,7 +116,9 @@ const CreateAccount = () => {
               >
                 <div className="flex gap-4 justify-between">
                 <div>
+                  <h1 className="font-semibold text-gray-500 mb-4">Users Data</h1>
                   <InputField
+                  labelWidth="w-full"
                     name="first_name"
                     label="First Name"
                     id="name"
@@ -120,10 +131,11 @@ const CreateAccount = () => {
                     onChange={(e: any) => {
                       handleFieldChange("first_name", e.target.value);
                     }}
-                    className="mb-2"
+                    className="mb-2"  
                     required
                   />
                   <InputField
+                  labelWidth="w-full"
                     name="middle_name"
                     label="Middle Name"
                     id="name"
@@ -139,6 +151,7 @@ const CreateAccount = () => {
                     className="mb-2"
                   />
                   <InputField
+                  labelWidth="w-full"
                     name="last_name"
                     label="last Name"
                     id="name"
@@ -156,6 +169,7 @@ const CreateAccount = () => {
                   />
 
                   <InputField
+                  labelWidth="w-full"
                     name="email"
                     label="Email Address"
                     id="email"
@@ -173,6 +187,7 @@ const CreateAccount = () => {
                   />
 
                   <InputField
+                  labelWidth="w-full"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     label="Password"
@@ -195,7 +210,9 @@ const CreateAccount = () => {
                 </div>
                 {/* ---------user Profile data------------ */}
                 <div>
+                  <h1 className="font-semibold text-gray-500 mb-4">Users Profile Data</h1>
                   <InputField
+                  labelWidth="w-full"
                     name="address"
                     label="Address"
                     id="name"
@@ -212,6 +229,7 @@ const CreateAccount = () => {
                     required
                   />
                   <InputField
+                  labelWidth="w-full"
                     name="phone_number"
                     label="Phone Number"
                     id="name"
@@ -227,6 +245,7 @@ const CreateAccount = () => {
                     className="mb-2"
                   />
                   <InputField
+                  labelWidth="w-full"
                     name="date_of_birth"
                     label="Date of Birth"
                     id="name"
@@ -257,6 +276,7 @@ const CreateAccount = () => {
                     }
                   />
                   <InputField
+                  labelWidth="w-full"
                     name="bio"
                     label="Bio"
                     id="name"
@@ -287,8 +307,9 @@ const CreateAccount = () => {
                     // color="light"
                     className="w-1/2 text-black bg-blue-400"
                     type={"submit"}
+                    disabled={isLoading}
                   >
-                    {"Register"}
+                    {isLoading ? <Spinner /> : "Register"}
                   </Btn>
                 </div>
               </form>
