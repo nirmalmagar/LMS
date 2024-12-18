@@ -7,9 +7,11 @@ import { routes } from "@/utils/routes";
 import { toast } from "react-toastify";
 import SelectField from "@/components/Form/SelectField";
 import Spinner from "@/components/Spinner/Spinner";
+import { useRouter } from "next/navigation";
 import VerifyOtp from "@/components/Elements/Authentication/VerifyOtp";
 
 const CreateAccount = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputFormValues, setInputFormValues] = useState<
@@ -73,6 +75,7 @@ const CreateAccount = () => {
       const data = await response.json();
       if (response?.ok && data) {
         toast.success(data?.message);
+        router.push(routes.ADMIN_VERIFY_OTP);
       } else {
         toast.error("something went wrong");
       }
@@ -88,7 +91,7 @@ const CreateAccount = () => {
       <div className="flex min-h-screen flex-1 justify-center items-center">
         <title>Create Student Account</title>
         
-        <Link href={routes.ADMIN_VERIFY_OTP} className="text-black">verify</Link>
+        {/* <Link href={routes.ADMIN_VERIFY_OTP} className="text-black">verify</Link> */}
         <div
           className="flex flex-1 flex-col justify-center mx-4 px-1 pb-6 sm:px-6 lg:flex-none
         lg:px-20 xl:px-24 w-fit lg:h-fit h-screen shadow-lg rounded-lg bg-slate-100"
@@ -262,7 +265,7 @@ const CreateAccount = () => {
                     required
                   />
                   <SelectField
-                    className="mb-2"
+                    className="mb-4"
                     label="Gender"
                     name="gender"
                     labelStyle="label-top"
@@ -276,7 +279,7 @@ const CreateAccount = () => {
                     }
                   />
                   <InputField
-                  labelWidth="w-full"
+                    labelWidth="w-full"
                     name="bio"
                     label="Bio"
                     id="name"

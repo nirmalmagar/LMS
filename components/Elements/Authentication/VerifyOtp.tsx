@@ -75,7 +75,7 @@ const VerifyOtp: React.FC<{
       </h2>
       <form onSubmit={handleOTPFormSubmit} className="mt-2">
         <div className="flex flex-col">
-          <OTPForm numberOfDigits={5} onOtpChange={handleOtpChange} />
+          <OTPForm numberOfDigits={6} onOtpChange={handleOtpChange} />
           <span className="text-red-500 text-[12px] text-right mt-4">
             {!isOtpValid && error}
           </span>
