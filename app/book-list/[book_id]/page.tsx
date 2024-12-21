@@ -27,24 +27,24 @@ const page = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const { data: BookListsURL, mutate: mutateActivityLogData } = useSWR(
-    `${process.env.HOST}books/`,
+  const { data: recommendedBookURL} = useSWR(
+    `${process.env.HOST}books/${book_id}/recommended-books/`,
     defaultFetcher
   );
-
+console.log("recommended books", recommendedBookURL)
   const { data: bookId } = useSWR(
     `${process.env.HOST}books/${book_id}`,
     defaultFetcher
   );
 
-  const handlePageChange = (page:number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+  // const handlePageChange = (page: number) => {
+  //   if (page >= 1 && page <= totalPages) {
+  //     setCurrentPage(page);
+  //   }
+  // };
 
   useEffect(() => {
-    mutateActivityLogData(currentPage);
+    // mutateActivityLogData(currentPage);
   }, [currentPage]);
   return (
     <>
@@ -53,11 +53,7 @@ const page = () => {
           <div className="grid md:grid-cols-3 xl:grid-flow-col md:gap-[10rem] lg:gap-8 gap-y-6 mb-12 sm:text-left text-center">
             <div className="sm:w-fit w-screen sm:block flex items-center justify-center">
               <div className="relative h-[20rem] w-[16rem]">
-                <Image
-                  alt="student_image"
-                  src={bookId?.cover}
-                  fill
-                />
+                <Image alt="student_image" src={bookId?.cover} fill />
               </div>
               <div className="flex mt-4 gap-2 font-semibold">
                 <span className="text-lg">Publication Date:</span>
@@ -65,18 +61,6 @@ const page = () => {
                   <DateToString inputDate={bookId?.publication_date} />
                 </div>
               </div>
-              {/* <div className="flex mt-2 gap-2 font-semibold">
-                <span className="text-lg">Created Date:</span>
-                <div className="text-gray-600">
-                  <DateToString inputDate={bookId?.created_on} />
-                </div>
-              </div>
-              <div className="flex mt-2 gap-2 font-semibold">
-                <span className="text-lg">Modified Date:</span>
-                <div className="text-gray-600">
-                  <DateToString inputDate={bookId?.modified_on} />
-                </div>
-              </div> */}
             </div>
             <div className="col-span-2">
               <span className="bg-gray-100 rounded-md px-3 py-1 font-semibold text-sm">
@@ -178,8 +162,46 @@ const page = () => {
           </div>
         </Container>
         <Container>
-          <Heading children={"bookLiss"} title={"Books List"} />
-            <Pagination />
+          {/* Recommended books */}
+          <Heading title={"Recommended Books List"}>
+            Discover the Most Popular Recommended Books in Our Frequently
+            Updated Best Sellers Collection.
+          </Heading>
+          <section className="my-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-12 gap-x-12">
+            {recommendedBookURL?.map((value: any, index: number) => {
+              return (
+                <div key={index}>
+                  <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[25rem]">
+                    {/* <Link href={`/book-list/${value?.id}/`}> */}
+                      <div className="relative w-60 h-72 mb-2">
+                        {value?.cover && (
+                          <Image fill src={value?.cover} alt="cover image" />
+                        )}
+                      </div>
+                      <div className=" pl-4 pb-2">
+                        <h3 className="font-semibold" id="card_title">
+                          {value?.title}
+                        </h3>
+                        <div className="flex gap-x-0.5">
+                          <span className="font-semibold">by:</span>
+                          <p>{value?.publisher}</p>
+                        </div>
+                        <div className="flex gap-x-0.5 font-semibold text-lg">
+                          <p className="">Rs:</p>
+                          <span>{value?.price}</span>
+                        </div>
+                      </div>
+                    {/* </Link> */}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+        {loading && (
+          <div className="text-center text-xl h-96">Loading.....</div>
+        )}
         </Container>
       </HomeLayout>
     </>

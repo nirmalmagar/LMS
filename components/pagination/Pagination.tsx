@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const Pagination = () => {
+  const book_id = useParams();
   const [BookListsURL, setBookListsURL] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -11,7 +13,7 @@ const Pagination = () => {
   const fetchBooks = async (page: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.HOST}books?page=${page}`); // Replace `/api/books` with your API endpoint
+      const res = await fetch(`${process.env.HOST}books/${book_id}/recommended-books/?page=${page}`); // Replace `/api/books` with your API endpoint
       const data = await res.json();
       setBookListsURL(data.results);
       setTotalPages(data.total_pages);
@@ -26,7 +28,7 @@ const Pagination = () => {
     fetchBooks(currentPage);
   }, [currentPage]);
 
-  const handlePageChange = (page:number) => {
+  const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
@@ -43,12 +45,16 @@ const Pagination = () => {
               return (
                 <div key={index}>
                   <div className="shadow-md hover:shadow-xl hover:scale-105 h-[25rem]  hover:duration-500">
-                    <Link href={`/book-list/${value.id}`}>
+                    <Link href={`/books/${value.id}/recommended-books`}>
                       <div className="relative w-60 h-72 mb-2">
-                        {/* <Image fill src={value?.cover} alt="cover image" /> */}
+                        {value?.cover && (
+                          <Image fill src={value?.cover} alt="cover image" />
+                        )}
                       </div>
                       <div className=" pl-4 pb-2">
-                        <h3 className="font-semibold" id="card_title">{value?.title}</h3>
+                        <h3 className="font-semibold" id="card_title">
+                          {value?.title}
+                        </h3>
                         <div className="flex gap-x-0.5">
                           <span className="font-semibold">by:</span>
                           <p>{value?.publisher}</p>
@@ -60,14 +66,11 @@ const Pagination = () => {
                       </div>
                     </Link>
                   </div>
-                  {/* <div className="my-2 py-1 border-2 border-blue-400 text-center rounded-sm hover:bg-blue-400 font-semibold hover:text-white">
-                    ADD TO CART
-                  </div> */}
                 </div>
               );
             })}
           </div>
-        {/* Pagination */}
+          {/* Pagination */}
           <div className="flex justify-center items-center space-x-2 mt-8">
             <button
               onClick={() => handlePageChange(currentPage - 1)}

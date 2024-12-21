@@ -104,7 +104,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     }
   };
   useEffect(() => {
-    // BookLists();
+    BookLists();
   }, [currentPage]);
 
   return (
@@ -165,13 +165,13 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <div className="relative w-12 h-12">
-                            <Image
+                            {booksList?.cover && <Image
                               src={booksList?.cover}
                               className="rounded"
                               fill
                               objectFit="cover"
                               alt={booksList?.title}
-                            />
+                            />}
                           </div>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
