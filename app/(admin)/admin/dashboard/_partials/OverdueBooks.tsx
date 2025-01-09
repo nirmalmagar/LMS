@@ -143,7 +143,8 @@ const OverdueBooks = () => {
                           src={booksList?.cover}
                           className="rounded"
                           fill
-                          objectFit="cover"
+                          sizes="fit"
+                          style={{ objectFit: 'cover' }} 
                           alt={booksList?.title}
                         />}
                       </div>

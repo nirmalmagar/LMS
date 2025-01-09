@@ -65,7 +65,6 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         `${process.env.HOST}books?page=${currentPage}`
       );
       const data = await response.json();
-      console.log("booksss",data)
       setTotalPages(data?.total_pages);
       setCurrentPage(data?.current_page);
       setBookLists(data?.results);
@@ -169,7 +168,8 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                               src={booksList?.cover}
                               className="rounded"
                               fill
-                              objectFit="cover"
+                              sizes="fit"
+                              style={{ objectFit: 'cover' }} 
                               alt={booksList?.title}
                             />}
                           </div>

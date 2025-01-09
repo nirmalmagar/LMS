@@ -115,7 +115,7 @@ const AddBookLists = () => {
                       <Image
                         src={imageUrl}
                         className="rounded"
-                        objectFit="cover"
+                        // objectFit="cover"
                         fill
                         alt={"image link"}
                       />
