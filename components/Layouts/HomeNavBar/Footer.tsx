@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-12">
           <div className="inline-flex sm:col-span-2 mt-8">
             <div className="relative inline-flex mr-4 w-40 h-20">
-              <Image fill src={"/assets/books/Image.png"} alt="logo" />
+              <Image fill src={"/assets/books/Image.png"} alt="logo" sizes="fit" />
             </div>
             <p className="font-semibold text-lg leading-6">
               NeplaiBook offers a world of stories and insights. Discover our

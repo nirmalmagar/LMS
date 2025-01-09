@@ -29,7 +29,7 @@ const BookCardList = () => {
                     <Link href={`/book-list/${value?.id}/`}>
                       <div className="relative w-60 h-72 mb-2">
                         {value?.cover && (
-                          <Image fill src={value?.cover} alt="cover image" />
+                          <Image fill sizes="fit" src={value?.cover} alt="cover image" />
                         )}
                       </div>
                       <div className=" pl-4 pb-2">

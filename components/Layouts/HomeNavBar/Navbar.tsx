@@ -11,7 +11,7 @@ const Navbar = () => {
       <Container>
         <nav className=" items-center flex justify-between">
           <div className="relative w-14 h-14">
-            <Image fill src={"/assets/logo.png"} alt="LMS logo" />
+            <Image fill src={"/assets/logo.png"} alt="LMS logo" sizes="fit"/>
           </div>
           <ul className="flex gap-x-20 font-semibold text-[17px] cursor-pointer">
             <li className="hover:text-blue-800">

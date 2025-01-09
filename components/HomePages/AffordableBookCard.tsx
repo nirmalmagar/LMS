@@ -27,7 +27,7 @@ const AffordableBookCard: React.FC<ImageUrlProps> = ({ imageUrl }) => {
             </button>
           </div>
           <div className="relative z-20">
-            <div className="flex gap-x-4">
+            <div className="flex gap-x-4 w-auto h-auto">
               {imageUrl?.map((imageUrl, index) => {
                 return (
                   <Image
@@ -36,6 +36,7 @@ const AffordableBookCard: React.FC<ImageUrlProps> = ({ imageUrl }) => {
                     height={60}
                     src={imageUrl}
                     alt={imageUrl}
+                    style={{ width: 'auto', height: 'auto' }}
                   />
                 );
               })}
