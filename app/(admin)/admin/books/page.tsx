@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
-import UsersBooksTable from "../dashboard/_partials/UsersBooksTable";
+import UsersBooksTable from "./_partials/UsersBooksTable";
 
 const BookPage = () => {
   return (
@@ -12,5 +12,3 @@ const BookPage = () => {
 };
 
 export default BookPage;
-
-

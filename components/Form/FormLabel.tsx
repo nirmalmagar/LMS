@@ -29,9 +29,9 @@ const FormLabel: React.FC<FormLabelProps> = ({
   );
 };
 
-FormLabel.defaultProps = {
-  children: null,
-  labelHidden: false,
-};
+// FormLabel.defaultProps = {
+//   children: null,
+//   labelHidden: false,
+// };
 
 export default FormLabel;

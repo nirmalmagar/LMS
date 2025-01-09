@@ -2,7 +2,7 @@
 import React from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
 import DashboardCard from "@/components/Elements/Dashboard/DashboardCard";
-import UsersBooksTable from "./_partials/UsersBooksTable";
+import UsersBooksTable from "../books/_partials/UsersBooksTable";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { MdPendingActions } from "react-icons/md";
 import { CgCalendarDue } from "react-icons/cg";

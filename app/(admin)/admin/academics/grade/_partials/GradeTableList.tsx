@@ -159,7 +159,7 @@ const GradeTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   };
   useEffect(() => {
     GradeList();
-  }, [currentPage,gradeList]);
+  }, [currentPage]);
 
   return (
     <>

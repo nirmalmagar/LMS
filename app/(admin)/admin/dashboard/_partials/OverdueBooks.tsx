@@ -7,11 +7,10 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
 import Image from "next/image";
-import AddBookLists from "./AddBookLists";
+import AddBookLists from "../../books/_partials/AddBookLists";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 const OverdueBooks = () => {
-
   const [bookLists, setBookLists] = useState([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -96,12 +95,16 @@ const OverdueBooks = () => {
 
   return (
     <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-      <h1 className="text-xl font-semibold ml-1.5 my-2 mt-4">Overdue Books list</h1>
+      <h1 className="text-xl font-semibold ml-1.5 my-2 mt-4">
+        Overdue Books list
+      </h1>
       <div className="max-w-full overflow-x-auto">
         <table className="w-full text-sm table-auto">
           <thead>
             <tr className="border-b-2 text-left">
-              <th className="min-w-[50px] py-4 px-2 font-medium text-black">S.N</th>
+              <th className="min-w-[50px] py-4 px-2 font-medium text-black">
+                S.N
+              </th>
               <th className="min-w-[80px] py-4 px-2 font-medium text-black">
                 Cover
               </th>
@@ -139,14 +142,16 @@ const OverdueBooks = () => {
                     </td>
                     <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <div className="relative w-12 h-12">
-                      {booksList?.cover && <Image
-                          src={booksList?.cover}
-                          className="rounded"
-                          fill
-                          sizes="fit"
-                          style={{ objectFit: 'cover' }} 
-                          alt={booksList?.title}
-                        />}
+                        {booksList?.cover && (
+                          <Image
+                            src={booksList?.cover}
+                            className="rounded"
+                            fill
+                            sizes="fit"
+                            style={{ objectFit: "cover" }}
+                            alt={booksList?.title}
+                          />
+                        )}
                       </div>
                     </td>
                     <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -179,7 +184,7 @@ const OverdueBooks = () => {
                         {booksList?.publisher}
                       </p>
                     </td>
-                    
+
                     {/* <td className="border-b border-[#eee] py-2 pr-2 dark:border-strokedark">
                       <p className="text-black text-center">
                         <button
