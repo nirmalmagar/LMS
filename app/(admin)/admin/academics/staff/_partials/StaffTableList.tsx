@@ -12,10 +12,18 @@ import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import SelectField from "@/components/Form/SelectField";
+import { collectionToOptions } from "@/helpers/CollectionOption";
+import Multiselect from "multiselect-react-dropdown";
 
 interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
+}
+
+interface genresListProps {
+  id: number;
+  name: string;
 }
 
 const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
@@ -29,6 +37,41 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [staffId, setStaffId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>([]); // Array to store selected genre IDs
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  const LibraryURL = `${process.env.HOST}library-sections/`;
+  const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
+  const libraryList = libraryData?.results;
+
+  // Callback for when an item is selected
+  const handleSelect = (selectedList: genresListProps[]) => {
+    const ids = selectedList.map((genre) => genre.id); // Extract IDs from selected items
+    setSelectLibrarySection(ids); // Update state
+  };
+
+  // Callback for when an item is removed
+  const handleRemove = (selectedList: genresListProps[]) => {
+    const ids = selectedList.map((genre) => genre.id); // Extract IDs from remaining items
+    setSelectLibrarySection(ids); // Update state
+  };
+
+  const userURL = `${process.env.HOST}user/`;
+  const { data: userData } = useSWR(userURL, defaultFetcher);
+  const userOption = collectionToOptions(
+    userData?.results ? userData?.results : []
+  );
+
+  const departmentURL = `${process.env.HOST}departments/`;
+  const { data: departmentData } = useSWR(departmentURL, defaultFetcher);
+  const departmentOption = collectionToOptions(
+    departmentData?.results ? departmentData?.results : []
+  );
+
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((values) => ({ ...values, [key]: value }));
+  }
 
   const StaffURL = `${process.env.HOST}staffs/${staffId}`;
   const { data: staffIdList } = useSWR(StaffURL, defaultFetcher);
@@ -81,6 +124,18 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const handleEditStaff = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    formData.set(
+      "user",
+      selectValues?.user
+        // ? selectValues?.user
+        // : staffIdList?.user
+    );
+    formData.set(
+      "authorized_sections",
+      selectValues?.authorized_sections
+        // ? selectValues?.user
+        // : staffIdList?.user
+    );
     try {
       const response = await fetch(
         `${process.env.HOST}staffs/${staffId}/`,
@@ -173,13 +228,21 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       >
         <form id="lead-form" onSubmit={handleEditStaff}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
-              label="User"
-              name="user"
-              placeholder="Choose User"
-              defaultValue={staffIdList?.user}
-            />
+          <div className="w-full">
+              <SelectField
+                className="w-full ml-40"
+                options={userOption}
+                label="Users"
+                value={selectValues?.user}
+                defaultValue={staffIdList?.user?.id}
+                onChange={(e) => {
+                  handleSelectChange("user", {
+                    value: e.target.value,
+                  });
+                }}
+              />
+            </div>
+
             <InputField
               type="text"
               label="Employee name"
@@ -187,13 +250,18 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               placeholder="Choose Employee name"
               defaultValue={staffIdList?.employee_id}
             />
-            <InputField
-              type="text"
-              label="Department"
-              name="department"
-              placeholder="Choose Department"
-              defaultValue={staffIdList?.department}
-            />
+            <SelectField
+                className="w-full"
+                options={departmentOption}
+                label="Department"
+                value={selectValues?.department}
+                defaultValue={staffIdList?.department?.id}
+                onChange={(e) => {
+                  handleSelectChange("department", {
+                    value: e.target.value,
+                  });
+                }}
+              />
             <InputField
               type="text"
               label="Role"
@@ -201,13 +269,18 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               placeholder="Enter role"
               defaultValue={staffIdList?.role}
             />
-            <InputField
-              type="textarea"
-              label="Authorized section"
-              name="authorized_sections"
-              placeholder="Choose Authorized section"
-              defaultValue={staffIdList?.authorized_sections}
-            />
+            <div className="flex gap-[70px]">
+              <label htmlFor="" className="text-[15px]">Authorized</label>
+              <Multiselect
+                selectedValues={staffIdList?.authorized_sections}
+                placeholder="selcet library sections"
+                className="text-sm leading-4 w-full flex-1"
+                options={libraryList} // Data to display
+                displayValue="name" // The key to display (update based on your object structure)
+                onSelect={handleSelect} // Callback for when an item is selected
+                onRemove={handleRemove} // Callback for when an item is removed
+              />
+            </div>
             <InputField
               type="text"
               label="Tasks"
