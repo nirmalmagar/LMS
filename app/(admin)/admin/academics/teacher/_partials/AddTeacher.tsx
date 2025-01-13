@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import Modal from "@/components/Elements/Modal";
 import TableHead from "@/components/Elements/TableHead/TableHead";
 import { useState, FormEvent } from "react";
@@ -7,9 +7,21 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import { AuthContext } from "@/context/AuthContext";
+import Multiselect from "multiselect-react-dropdown";
+
+interface listProps {
+  id:number;
+  name:string;
+  type: 'department' | 'grades' | 'users'
+}
 
 const AddTeacher = () => {
+  const { department , grades , users } = useContext(AuthContext);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectDepartmentId, setSelectDepartmentId] = useState<number[]>([]);
+  const [selectGradeId, setSelectGradeId] = useState<number[]>([]);
+  const [selectUserId, setSelectUserId] = useState<number[]>([]);
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
@@ -23,19 +35,56 @@ const AddTeacher = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
   };
+
+  // select user lists
+  const handleSelectUser =(user:listProps[])=>{
+    const ids = user.map((id_list)=>id_list?.id);
+    setSelectUserId(ids);
+  }
+
+  // handle remove user list
+  const handleRemoveUser = (user:listProps[])=>{
+    const ids = user.map((id_list)=>id_list?.id)
+    setSelectUserId(ids);
+  }
+
+  // select department lists
+  const handleSelectDepartment=(department:listProps[])=>{
+    const ids = department.map((id_list)=>id_list?.id);
+    setSelectDepartmentId(ids);
+  }
+
+  // handle remove department list
+  const handleRemoveDepartment = (department:listProps[])=>{
+    const ids = department.map((id_list)=>id_list?.id)
+    setSelectDepartmentId(ids);
+  }
+
+  // select grade lists
+  const handleSelectGrades =(grade:listProps[])=>{
+    const ids = grade.map((id_list)=>id_list?.id);
+    setSelectGradeId(ids);
+  }
+
+  // handle remove grade list
+  const handleRemoveGrades = (grade:listProps[])=>{
+    const ids = grade.map((id_list)=>id_list?.id)
+    setSelectGradeId(ids);
+  }
+
   // book add button
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      user : inputFieldValue?.user,
+      user : selectUserId,
       employee_id : inputFieldValue?.employee_id,
-      grade : inputFieldValue?.grade,
-      department : inputFieldValue?.department,
+      grade : selectGradeId,
+      department : selectDepartmentId,
       designation : inputFieldValue?.designation,
       borrowing_period_days : inputFieldValue?.borrowing_period_days,
     }
       try {
-      const response = await fetch(`${process.env.HOST}departments/`, {
+      const response = await fetch(`${process.env.HOST}teachers/`, {
         method: "POST",
         body: JSON.stringify(InputFileData),
         headers: {
@@ -74,16 +123,17 @@ const AddTeacher = () => {
       >
         <form id="lead-form" onSubmit={handleAddGrade}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
-              label="user"
-              name="user"
-              placeholder="Enter User"
-              // defaultValue={inputFieldValue?.user}
-              onChange={(e: any) => {
-                handleFieldChange("user", e.target.value);
-              }}
-            />
+          <div className="flex gap-28">
+              <label htmlFor="">User</label>
+              <Multiselect
+                className="text-sm leading-4 flex-1"
+                displayValue="name"
+                options={users}
+                onSelect={handleSelectUser}
+                onRemove={handleRemoveUser}
+              />
+            </div>
+
             <InputField
               type="text"
               label="Enter Employee"
@@ -94,26 +144,28 @@ const AddTeacher = () => {
                 handleFieldChange("employee_id", e.target.value);
               }}
             />
-            <InputField
-              type="text"
-              label="Grade"
-              name="grade"
-              placeholder="Enter grade"
-              // defaultValue={inputFieldValue?.grade}
-              onChange={(e: any) => {
-                handleFieldChange("grade", e.target.value);
-              }}
-            />
-            <InputField
-              type="number"
-              label="Department"
-              name="department"
-              placeholder="Choose Department"
-              // defaultValue={inputFieldValue?.department}
-              onChange={(e: any) => {
-                handleFieldChange("department", e.target.value);
-              }}
-            />
+            <div className="flex gap-24">
+              <label htmlFor="">Grade</label>
+              <Multiselect
+                className="text-sm leading-4 w-full flex-1"
+                displayValue="name"
+                options={grades}
+                onSelect={handleSelectGrades}
+                onRemove={handleRemoveGrades}
+              />
+            </div>
+
+            <div className="flex gap-14 mt-2">
+              <label htmlFor="" className="text-base">Department</label>
+              <Multiselect
+                className="text-sm leading-4 w-full flex-1"
+                displayValue="name"
+                options={department}
+                onSelect={handleSelectDepartment}
+                onRemove={handleRemoveDepartment}
+              />
+            </div>
+
             <InputField
               type="text"
               label="Designation"

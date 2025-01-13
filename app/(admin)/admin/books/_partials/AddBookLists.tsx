@@ -46,7 +46,6 @@ const AddBookLists = () => {
   };
 
   // input field
-
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
@@ -80,8 +79,9 @@ const AddBookLists = () => {
         },
       });
       const data = await response.json();
-      if (data.success) {
-        toast.success("data successfully insert");
+      if (response.ok) {
+        toast.success(data?.message);
+        setShowPopUpModal(false);
       } else {
         toast.error("some error on field");
       }
