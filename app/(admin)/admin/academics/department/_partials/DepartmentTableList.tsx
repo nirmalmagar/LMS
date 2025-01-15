@@ -50,14 +50,17 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(`${process.env.HOST}departments/${id}/`, {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${accessToken()}`,
-                "Content-Type": "application/json",
-                Accept: "application/json", // Fixed typo here
-              },
-            });
+            const response = await fetch(
+              `${process.env.HOST}departments/${id}/`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${accessToken()}`,
+                  "Content-Type": "application/json",
+                  Accept: "application/json", // Fixed typo here
+                },
+              }
+            );
             if (response.ok) {
               toast.success("Department removed successfully.");
               mutate(departmentsLists);
@@ -85,14 +88,17 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(`${process.env.HOST}departments/${departmentId}/`, {
-        method: "PUT",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${accessToken()}`,
-          Accept: "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.HOST}departments/${departmentId}/`,
+        {
+          method: "PUT",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            Accept: "application/json",
+          },
+        }
+      );
       // const data = await response.json();
       if (response.ok) {
         toast.success("grade update successfully ");
@@ -121,7 +127,10 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       setTotalPages(data?.total_pages);
       setCurrentPage(data?.current_page);
       setDepartmentsLists(data?.results);
-        setIsLoading(false);
+      setIsLoading(false);
+      if (response.ok) {
+        setShowPopUpModal(false);
+      }
     } catch (e) {
       console.log("error", e);
       setIsLoading(false);
@@ -228,12 +237,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
             </Btn>
 
             <div className="flex gap-x-4">
-              <Btn type="submit" className="bg-blue-600 text-white"
-                onClick={() => {
-                  setShowPopUpModal(false);
-                  // setInputFieldValue({});
-                }}
-              >
+              <Btn type="submit" className="bg-blue-600 text-white">
                 Edit
               </Btn>
             </div>
@@ -288,32 +292,32 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.name}
+                            {departmentsItems?.name}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.head_of_department}
+                            {departmentsItems?.head_of_department}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.description}
+                            {departmentsItems?.description}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.phone_number}
+                            {departmentsItems?.phone_number}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.location}
+                            {departmentsItems?.location}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems.borrowing_period_days}
+                            {departmentsItems?.borrowing_period_days}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">

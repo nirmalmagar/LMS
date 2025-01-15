@@ -39,6 +39,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>([]); // Array to store selected genre IDs
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  
   const LibraryURL = `${process.env.HOST}library-sections/`;
   const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
   const libraryList = libraryData?.results;
@@ -75,6 +76,8 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
 
   const StaffURL = `${process.env.HOST}staffs/${staffId}`;
   const { data: staffIdList } = useSWR(StaffURL, defaultFetcher);
+  // console.log("datalist",staffIdList);
+  
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -133,8 +136,8 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     formData.set(
       "authorized_sections",
       selectValues?.authorized_sections
-        // ? selectValues?.user
-        // : staffIdList?.user
+        ? selectValues?.authorized_sections
+        : staffIdList?.authorized_sections
     );
     try {
       const response = await fetch(
@@ -234,7 +237,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 options={userOption}
                 label="Users"
                 value={selectValues?.user}
-                defaultValue={staffIdList?.user?.id}
+                defaultValue={staffIdList?.user?.id as string}
                 onChange={(e) => {
                   handleSelectChange("user", {
                     value: e.target.value,
@@ -255,7 +258,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 options={departmentOption}
                 label="Department"
                 value={selectValues?.department}
-                defaultValue={staffIdList?.department?.id}
+                defaultValue={staffIdList?.department?.id as string}
                 onChange={(e) => {
                   handleSelectChange("department", {
                     value: e.target.value,
@@ -272,8 +275,8 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             <div className="flex gap-[70px]">
               <label htmlFor="" className="text-[15px]">Authorized</label>
               <Multiselect
-                selectedValues={staffIdList?.authorized_sections}
-                placeholder="selcet library sections"
+                selectedValues={staffIdList?.authorized_sections as string}
+                // placeholder="selcet library sections"
                 className="text-sm leading-4 w-full flex-1"
                 options={libraryList} // Data to display
                 displayValue="name" // The key to display (update based on your object structure)

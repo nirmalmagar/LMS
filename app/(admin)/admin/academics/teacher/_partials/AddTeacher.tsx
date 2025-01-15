@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 import Modal from "@/components/Elements/Modal";
 import TableHead from "@/components/Elements/TableHead/TableHead";
 import { useState, FormEvent } from "react";
@@ -7,24 +7,41 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
-import { AuthContext } from "@/context/AuthContext";
-import Multiselect from "multiselect-react-dropdown";
-
-interface listProps {
-  id:number;
-  name:string;
-  type: 'department' | 'grades' | 'users'
-}
+import useSWR from "swr";
+import { defaultFetcher } from "@/helpers/FetchHelper";
+import { collectionToOptions } from "@/helpers/CollectionOption";
+import SelectField from "@/components/Form/SelectField";
 
 const AddTeacher = () => {
-  const { department , grades , users } = useContext(AuthContext);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [selectDepartmentId, setSelectDepartmentId] = useState<number[]>([]);
-  const [selectGradeId, setSelectGradeId] = useState<number[]>([]);
-  const [selectUserId, setSelectUserId] = useState<number[]>([]);
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
+
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((values) => ({ ...values, [key]: value }));
+  }
+
+  const gradeUser = `${process.env.HOST}grades/`;
+  const { data: gradeData } = useSWR(gradeUser, defaultFetcher);
+  const gradeOption = collectionToOptions(
+    gradeData?.results ? gradeData?.results : []
+  );
+
+  const userURL = `${process.env.HOST}user/`;
+  const { data: userData } = useSWR(userURL, defaultFetcher);
+  const userOption = collectionToOptions(
+    userData?.results ? userData?.results : []
+  );
+
+  const departmentURL = `${process.env.HOST}departments/`;
+  const { data: departmentData } = useSWR(departmentURL, defaultFetcher);
+  const departmentOption = collectionToOptions(
+    departmentData?.results ? departmentData?.results : []
+  );
 
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
@@ -36,50 +53,14 @@ const AddTeacher = () => {
     setInputFieldValue({});
   };
 
-  // select user lists
-  const handleSelectUser =(user:listProps[])=>{
-    const ids = user.map((id_list)=>id_list?.id);
-    setSelectUserId(ids);
-  }
-
-  // handle remove user list
-  const handleRemoveUser = (user:listProps[])=>{
-    const ids = user.map((id_list)=>id_list?.id)
-    setSelectUserId(ids);
-  }
-
-  // select department lists
-  const handleSelectDepartment=(department:listProps[])=>{
-    const ids = department.map((id_list)=>id_list?.id);
-    setSelectDepartmentId(ids);
-  }
-
-  // handle remove department list
-  const handleRemoveDepartment = (department:listProps[])=>{
-    const ids = department.map((id_list)=>id_list?.id)
-    setSelectDepartmentId(ids);
-  }
-
-  // select grade lists
-  const handleSelectGrades =(grade:listProps[])=>{
-    const ids = grade.map((id_list)=>id_list?.id);
-    setSelectGradeId(ids);
-  }
-
-  // handle remove grade list
-  const handleRemoveGrades = (grade:listProps[])=>{
-    const ids = grade.map((id_list)=>id_list?.id)
-    setSelectGradeId(ids);
-  }
-
   // book add button
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      user : selectUserId,
+      user : selectValues?.user,
       employee_id : inputFieldValue?.employee_id,
-      grade : selectGradeId,
-      department : selectDepartmentId,
+      grade : selectValues?.grade,
+      department : selectValues?.department,
       designation : inputFieldValue?.designation,
       borrowing_period_days : inputFieldValue?.borrowing_period_days,
     }
@@ -103,6 +84,7 @@ const AddTeacher = () => {
       console.error(error);
     } finally {
       setInputFieldValue({});
+      setSelectValues({});
       setShowPopUpModal(false);
     }
   };
@@ -123,16 +105,18 @@ const AddTeacher = () => {
       >
         <form id="lead-form" onSubmit={handleAddGrade}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-          <div className="flex gap-28">
-              <label htmlFor="">User</label>
-              <Multiselect
-                className="text-sm leading-4 flex-1"
-                displayValue="name"
-                options={users}
-                onSelect={handleSelectUser}
-                onRemove={handleRemoveUser}
+          <SelectField
+                className="w-full"
+                options={userOption}
+                label="User"
+                value={selectValues?.user}
+                defaultValue={""}
+                onChange={(e) => {
+                  handleSelectChange("user", {
+                    value: e.target.value,
+                  });
+                }}
               />
-            </div>
 
             <InputField
               type="text"
@@ -144,27 +128,30 @@ const AddTeacher = () => {
                 handleFieldChange("employee_id", e.target.value);
               }}
             />
-            <div className="flex gap-24">
-              <label htmlFor="">Grade</label>
-              <Multiselect
-                className="text-sm leading-4 w-full flex-1"
-                displayValue="name"
-                options={grades}
-                onSelect={handleSelectGrades}
-                onRemove={handleRemoveGrades}
+            <SelectField
+                className="w-full"
+                options={gradeOption}
+                label="grade"
+                value={selectValues?.grade}
+                defaultValue={""}
+                onChange={(e) => {
+                  handleSelectChange("grade", {
+                    value: e.target.value,
+                  });
+                }}
               />
-            </div>
 
-            <div className="flex gap-14 mt-2">
-              <label htmlFor="" className="text-base">Department</label>
-              <Multiselect
-                className="text-sm leading-4 w-full flex-1"
-                displayValue="name"
-                options={department}
-                onSelect={handleSelectDepartment}
-                onRemove={handleRemoveDepartment}
+            <SelectField
+                className="w-full"
+                options={departmentOption}
+                label="Department"
+                value={selectValues?.department}
+                onChange={(e) => {
+                  handleSelectChange("department", {
+                    value: e.target.value,
+                  });
+                }}
               />
-            </div>
 
             <InputField
               type="text"

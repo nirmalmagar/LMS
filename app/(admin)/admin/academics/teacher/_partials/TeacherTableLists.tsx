@@ -12,6 +12,8 @@ import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import SelectField from "@/components/Form/SelectField";
+import { collectionToOptions } from "@/helpers/CollectionOption";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -32,9 +34,34 @@ const TeacherTableList: React.FC<ShowHeading> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [teacherId, setTeacherId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectValue, setSelectValue] = useState<Record<string,any>>({});
+  const [error, setError] = useState<Record<string,any>>({});
+
 
   const TeachersURL = `${process.env.HOST}teachers/${teacherId}`;
   const { data: teacherIdList } = useSWR(TeachersURL, defaultFetcher);
+  console.log("user",teacherIdList)
+  // users list
+  const UserURL = `${process.env.HOST}user/`;
+  const { data: userList } = useSWR(UserURL, defaultFetcher);
+  const userOption = collectionToOptions(userList?.results ? userList?.results : []);
+
+  // grade list
+  const gradeURL = `${process.env.HOST}grades/`
+  const {data: gradeList} = useSWR(gradeURL, defaultFetcher);
+  const gradeOption = collectionToOptions(gradeList?.results ? gradeList?.results : []);
+
+  // department
+  const departmentURL = `${process.env.HOST}departments/`
+  const {data: departmentList} = useSWR(departmentURL, defaultFetcher);
+  const departmentOption = collectionToOptions(departmentList?.results ? departmentList?.results : []);
+
+  // handle select change
+  const handleSelectChange = (name:string , choice:Record<string,any>)=>{
+    const key = name;
+    const value = choice?.value;
+    setSelectValue((prev)=>({...prev,[key]:value}))
+  }
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -84,6 +111,9 @@ const TeacherTableList: React.FC<ShowHeading> = ({
   const handleEditTeacher = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    formData.set("user",selectValue?.user);
+    formData.set("grade",selectValue?.grade);
+    formData.set("department",selectValue?.department);
     try {
       const response = await fetch(`${process.env.HOST}teachers/${teacherId}/`, {
         method: "PUT",
@@ -93,17 +123,23 @@ const TeacherTableList: React.FC<ShowHeading> = ({
           Accept: "application/json",
         },
       });
-      // const data = await response.json();
-      if (response.ok) {
+      const data = await response.json();
+      
+      if (data?.results || data?.result){
+        // setError(data?.error)
+      }
+      else if (response.ok) {
         toast.success("Teacher update successfully ");
+        setShowPopUpModal(false);
       } else {
-        toast.error("some thing went wrong");
+        toast.error("something went wrong");
+        setError(data?.error)
       }
     } catch (e: any) {
       console.error(e);
     }
   };
-
+console.log("nirmal aa",selectValue);
   // fetch teachers lists
   const TeacherList = async () => {
     setIsLoading(true);
@@ -173,37 +209,56 @@ const TeacherTableList: React.FC<ShowHeading> = ({
       >
         <form id="lead-form" onSubmit={handleEditTeacher}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
-              label="User"
-              name="user"
-              placeholder="Choose User"
-              defaultValue={teacherIdList?.user}
+            <SelectField 
+              className="w-full ml-40"
+              options={userOption}
+              value={selectValue?.user}
+              defaultValue={teacherIdList?.user?.id}
+              label="Users"
+              fieldErrors={error?.users}
+              onChange={(e) => {
+                handleSelectChange("user", {
+                  value: e.target.value,
+                });
+              }}
             />
             <InputField
               type="text"
               label="Employee name"
+              fieldErrors={error?.employee_id}
               name="employee_id"
               placeholder="Choose Employee name"
               defaultValue={teacherIdList?.employee_id}
             />
-            <InputField
-              type="text"
+            <div className="mb-2">
+            <SelectField
+              className="mb-8"
               label="Grade"
-              name="grade"
-              placeholder="Choose grade"
-              defaultValue={teacherIdList?.grade}
+              options={gradeOption}
+              value={selectValue?.grade}
+              defaultValue={teacherIdList?.grade?.id}
+              onChange={(e)=>{
+                handleSelectChange("grade",{
+                  value: e.target.value
+                })
+              }}
             />
-            <InputField
-              type="text"
+            </div>
+            <SelectField
               label="Department"
-              name="department"
-              placeholder="Choose Department"
-              defaultValue={teacherIdList?.department}
+              options={departmentOption}
+              value={selectValue?.department}
+              defaultValue={teacherIdList?.department?.id}
+              onChange={(e)=>{
+                handleSelectChange("department",{
+                  value: e.target.value
+                })
+              }}
             />
             <InputField
               type="textarea"
               label="Designation"
+              fieldErrors={error?.designation}
               name="designation"
               placeholder="Enter Designation"
               defaultValue={teacherIdList?.designation}
@@ -229,10 +284,6 @@ const TeacherTableList: React.FC<ShowHeading> = ({
 
             <div className="flex gap-x-4">
               <Btn type="submit" className="bg-blue-600 text-white"
-                onClick={() => {
-                  setShowPopUpModal(false);
-                  // setInputFieldValue({});
-                }}
               >
                 Edit
               </Btn>
