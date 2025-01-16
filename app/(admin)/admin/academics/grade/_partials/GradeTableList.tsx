@@ -11,6 +11,7 @@ import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import Pagination from "@/components/Pagination/Pagination";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -195,6 +196,7 @@ const GradeTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data, mu
                   })}
               </tbody>
             </table>
+            <Pagination total_Pages={data?.total_pages} current_Page={data?.current_page} results={data?.results} mutate={mutate} />
           </div>
         </div>
     </>

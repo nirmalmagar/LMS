@@ -16,8 +16,6 @@ import { IoMdAdd } from "react-icons/io";
 import { RiSubtractFill } from "react-icons/ri";
 import Heading from "@/components/HomePages/Heading";
 import DateToString from "@/components/DateConverter/DateToString";
-import Link from "next/link";
-import Pagination from "@/components/Pagination/Pagination";
 
 const page = () => {
   const [increment, setIncrement] = useState<number>(1);
