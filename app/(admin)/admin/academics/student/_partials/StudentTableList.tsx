@@ -57,7 +57,7 @@ const StudentTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             });
             if (response.ok) {
               toast.success("Student removed successfully.");
-              mutate(studentList);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");

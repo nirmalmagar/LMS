@@ -42,6 +42,7 @@ const AddGrade = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("data successfully insert");
+        setShowPopUpModal(false);
       } else {
         toast.error("some error on field");
       }
@@ -49,7 +50,7 @@ const AddGrade = () => {
       console.error(error);
     } finally {
       setInputFieldValue({});
-      setShowPopUpModal(false);
+      
     }
   };
   return (

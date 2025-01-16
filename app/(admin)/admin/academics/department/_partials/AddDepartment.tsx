@@ -112,7 +112,7 @@ const AddDepartment = () => {
               label="Phone no."
               name="phone_number"
               placeholder="enter phone number"
-              // fieldErrors={error?.phone_number[0] }
+              fieldErrors={error?.phone_number ?? [] }
               // defaultValue={inputFieldValue?.phone_number}
               onChange={(e: any) => {
                 handleFieldChange("phone_number", e.target.value);

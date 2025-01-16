@@ -1,12 +1,11 @@
 "use client";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import useSWR, { mutate } from "swr";
 import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
 import AddTeacher from "./AddTeacher";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
@@ -18,20 +17,20 @@ import { collectionToOptions } from "@/helpers/CollectionOption";
 interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
+  data:Record<string,any>[];
+  mutate:()=>void;
 }
 
 const TeacherTableList: React.FC<ShowHeading> = ({
   showHeading,
   showMore,
+  data,
+  mutate
 }) => {
   let heading = showHeading;
   let showLists = showMore;
 
   // const [showMore, setShowMore] = useState<boolean>(false);
-  const [teachersLists, setTeachersLists] = useState<any[]>([]);
-  const [totalPages, setTotalPages] = useState<number>();
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [teacherId, setTeacherId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState<Record<string,any>>({});
@@ -39,8 +38,8 @@ const TeacherTableList: React.FC<ShowHeading> = ({
 
 
   const TeachersURL = `${process.env.HOST}teachers/${teacherId}`;
-  const { data: teacherIdList } = useSWR(TeachersURL, defaultFetcher);
-  console.log("user",teacherIdList)
+  const { data: teacherIdList , mutate: editMutate } = useSWR(TeachersURL, defaultFetcher);
+
   // users list
   const UserURL = `${process.env.HOST}user/`;
   const { data: userList } = useSWR(UserURL, defaultFetcher);
@@ -87,7 +86,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
             });
             if (response.ok) {
               toast.success("Teacher removed successfully.");
-              mutate(teachersLists);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -131,6 +130,8 @@ const TeacherTableList: React.FC<ShowHeading> = ({
       else if (response.ok) {
         toast.success("Teacher update successfully ");
         setShowPopUpModal(false);
+        mutate();
+        editMutate();
       } else {
         toast.error("something went wrong");
         setError(data?.error)
@@ -139,64 +140,6 @@ const TeacherTableList: React.FC<ShowHeading> = ({
       console.error(e);
     }
   };
-console.log("nirmal aa",selectValue);
-  // fetch teachers lists
-  const TeacherList = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.HOST}teachers/?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setTeachersLists(data?.results);
-        setIsLoading(false);
-    } catch (e) {
-      console.log("error", e);
-      setIsLoading(false);
-    }
-  };
-
-  // pagination number lists in array
-  let totalPageArray = teachersLists
-    ? Array.from({ length: totalPages }, (_, index) => index + 1)
-    : [];
-
-  // pagination
-  let paginationLinks =
-    teachersLists &&
-    totalPageArray.map((items: any, index: number) => {
-      if (items < 10) {
-        return (
-          <span
-            key={index}
-            onClick={() => setCurrentPage(items)}
-            className={`page-item ${
-              currentPage === items ? "active" : ""
-            } mx-0.5 text-xs cursor-pointer px-1.5`}
-          >
-            {items}
-          </span>
-        );
-      }
-    });
-
-  // handle page change
-  const handlePageChange = (page: number) => {
-    if (currentPage >= 1 && currentPage <= 10) {
-      setCurrentPage(page);
-    }
-  };
-  useEffect(() => {
-    TeacherList();
-  }, [currentPage]);
 
   return (
     <>
@@ -291,12 +234,6 @@ console.log("nirmal aa",selectValue);
           </div>
         </form>
       </Modal>
-
-      {isLoading ? (
-        <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
-          <span>Loading...</span>
-        </p>
-      ) : (
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddTeacher />}
           <div className="max-w-full overflow-x-auto">
@@ -328,7 +265,7 @@ console.log("nirmal aa",selectValue);
                 </tr>
               </thead>
               <tbody>
-                {teachersLists?.map(
+                {data?.results?.map(
                   (teachersItems: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
@@ -389,24 +326,8 @@ console.log("nirmal aa",selectValue);
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <MdChevronLeft className="w-5 h-5" />
-              </button>
-              {paginationLinks}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <MdChevronRight className="w-5 h-5" />
-              </button>
-            </div>
           </div>
         </div>
-      )}
     </>
   );
 };

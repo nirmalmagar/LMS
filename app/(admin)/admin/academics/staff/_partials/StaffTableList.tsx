@@ -19,6 +19,8 @@ import Multiselect from "multiselect-react-dropdown";
 interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
+  data: Record<string,any>[];
+  mutate: ()=>void;
 }
 
 interface genresListProps {
@@ -26,15 +28,12 @@ interface genresListProps {
   name: string;
 }
 
-const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
+const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , mutate }) => {
   let heading = showHeading;
   let showLists = showMore;
 
   // const [showMore, setShowMore] = useState<boolean>(false);
   const [staffList, setStaffList] = useState<any[]>([]);
-  const [totalPages, setTotalPages] = useState<number>();
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [staffId, setStaffId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>([]); // Array to store selected genre IDs
@@ -103,7 +102,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             });
             if (response.ok) {
               toast.success("Staff removed successfully.");
-              mutate(staffList);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -154,6 +153,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       // const data = await response.json();
       if (response.ok) {
         toast.success("Staff update successfully ");
+      setShowPopUpModal(false);
       } else {
         toast.error("some thing went wrong");
       }
@@ -161,64 +161,6 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       console.error(e);
     }
   };
-
-  // fetch staff lists
-  const StaffList = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.HOST}staffs/?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setStaffList(data?.results);
-      setIsLoading(false);
-    } catch (e) {
-      console.log("error", e);
-      setIsLoading(false);
-    }
-  };
-
-  // pagination number lists in array
-  let totalPageArray = staffList
-    ? Array.from({ length: totalPages }, (_, index) => index + 1)
-    : [];
-
-  // pagination
-  let paginationLinks =
-    staffList &&
-    totalPageArray.map((items: any, index: number) => {
-      if (items < 10) {
-        return (
-          <span
-            key={index}
-            onClick={() => setCurrentPage(items)}
-            className={`page-item ${
-              currentPage === items ? "active" : ""
-            } mx-0.5 text-xs cursor-pointer px-1.5`}
-          >
-            {items}
-          </span>
-        );
-      }
-    });
-
-  // handle page change
-  const handlePageChange = (page: number) => {
-    if (currentPage >= 1 && currentPage <= 10) {
-      setCurrentPage(page);
-    }
-  };
-  useEffect(() => {
-    StaffList();
-  }, [currentPage]);
 
   return (
     <>
@@ -314,10 +256,6 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               <Btn
                 type="submit"
                 className="bg-blue-600 text-white"
-                onClick={() => {
-                  setShowPopUpModal(false);
-                  // setInputFieldValue({});
-                }}
               >
                 Edit
               </Btn>
@@ -325,12 +263,6 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
           </div>
         </form>
       </Modal>
-
-      {isLoading ? (
-        <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
-          <span>Loading...</span>
-        </p>
-      ) : (
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddStaff />}
           <div className="max-w-full overflow-x-auto">
@@ -365,7 +297,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 </tr>
               </thead>
               <tbody>
-                {staffList?.map(
+                {data?.results?.map(
                   (staffItem: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
@@ -394,7 +326,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                             {staffItem.role}
                           </p>
                         </td>
-                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="min-w-[70px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
                             {staffItem.authorized_sections}
                           </p>
@@ -409,7 +341,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                             {staffItem.borrowing_period_days}
                           </p>
                         </td>
-                        <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="border-b border-[#eee] py-2 dark:border-strokedark">
                           <p className="text-black">
                             <button
                               className="hover:text-red"
@@ -431,24 +363,8 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <MdChevronLeft className="w-5 h-5" />
-              </button>
-              {paginationLinks}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <MdChevronRight className="w-5 h-5" />
-              </button>
-            </div>
           </div>
         </div>
-      )}
     </>
   );
 };

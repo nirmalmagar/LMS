@@ -16,11 +16,15 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
+  data: Record<string,any>[];
+  mutate: ()=>void;
 }
 
 const DepartmentTableList: React.FC<ShowHeading> = ({
   showHeading,
   showMore,
+  data,
+  mutate
 }) => {
   let heading = showHeading;
   let showLists = showMore;
@@ -34,7 +38,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
 
   const DepartmentURL = `${process.env.HOST}departments/${departmentId}`;
-  const { data: departmentIdList } = useSWR(DepartmentURL, defaultFetcher);
+  const { data: departmentIdList , mutate:editMutate } = useSWR(DepartmentURL, defaultFetcher);
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -63,7 +67,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
             );
             if (response.ok) {
               toast.success("Department removed successfully.");
-              mutate(departmentsLists);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -102,38 +106,14 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       // const data = await response.json();
       if (response.ok) {
         toast.success("grade update successfully ");
+        setShowPopUpModal(false);
+        mutate();
+        editMutate();
       } else {
         toast.error("some thing went wrong");
       }
     } catch (e: any) {
       console.error(e);
-    }
-  };
-
-  // fetch departments lists
-  const DepartmentList = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.HOST}departments?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setDepartmentsLists(data?.results);
-      setIsLoading(false);
-      if (response.ok) {
-        setShowPopUpModal(false);
-      }
-    } catch (e) {
-      console.log("error", e);
-      setIsLoading(false);
     }
   };
 
@@ -168,7 +148,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
     }
   };
   useEffect(() => {
-    DepartmentList();
+    mutate();
   }, [currentPage]);
 
   return (
@@ -245,11 +225,6 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
         </form>
       </Modal>
 
-      {isLoading ? (
-        <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
-          <span>Loading...</span>
-        </p>
-      ) : (
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddDepartment />}
           <div className="max-w-full overflow-x-auto">
@@ -281,7 +256,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                 </tr>
               </thead>
               <tbody>
-                {departmentsLists?.map(
+                {data?.results?.map(
                   (departmentsItems: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
@@ -359,7 +334,6 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
             </div>
           </div>
         </div>
-      )}
     </>
   );
 };

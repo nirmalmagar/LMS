@@ -13,12 +13,18 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 
+interface ShowHeading {
+  // showHeading?: boolean;
+  // showMore?: boolean;
+  // data: Record<string,any>[];
+  mutate: ()=>void;
+}
 interface genresListProps {
   id: number;
   name: string;
 }
 
-const AddStaff = () => {
+const AddStaff: React.FC<ShowHeading> = ({  mutate }) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
@@ -95,14 +101,14 @@ const AddStaff = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("Add staff successfully");
+        mutate();
+        setInputFieldValue({});
+        setShowPopUpModal(false);
       } else {
         toast.error("some error on field");
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
-      setShowPopUpModal(false);
     }
   };
   return (
