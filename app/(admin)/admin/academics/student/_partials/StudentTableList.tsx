@@ -12,6 +12,8 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import Pagination from "@/components/Pagination/Pagination";
+import SelectField from "@/components/Form/SelectField";
+import { collectionToOptions } from "@/helpers/CollectionOption";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -19,7 +21,40 @@ interface ShowHeading {
   studentData: Record<string, any>[];
   mutate: () => void;
 }
-
+const semesterOptions = [
+  {
+    value: "first",
+    label: "first",
+  },
+  {
+    value: "second ",
+    label: "second",
+  },
+  {
+    value: "third",
+    label: "third",
+  },
+  {
+    value: "fourth",
+    label: "fourth",
+  },
+  {
+    value: "fifth",
+    label: "fifth",
+  },
+  {
+    value: "sixth",
+    label: "sixth",
+  },
+  {
+    value: "seventh",
+    label: "seventh",
+  },
+  {
+    value: "eighth",
+    label: "eighth",
+  },
+];
 const StudentTableList: React.FC<ShowHeading> = ({
   showHeading,
   showMore,
@@ -31,12 +66,40 @@ const StudentTableList: React.FC<ShowHeading> = ({
 
   const [studentId, setStudentId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectValue, setSelectValue] = useState<Record<string,any>>({});
+  const [inputFieldValue, setInputFieldValue] = useState<Record<string,any>>({});
+
+  const { data: userData } = useSWR(`${process.env.HOST}user/`, defaultFetcher);
+  const userList = collectionToOptions(
+    userData?.results ? userData?.results : []
+  );
+
+  const { data: departmentData } = useSWR(
+    `${process.env.HOST}departments/`,
+    defaultFetcher
+  );
+  const departmentOption = collectionToOptions(
+    departmentData?.results ? departmentData?.results : []
+  );
 
   const StudentURL = `${process.env.HOST}students/${studentId}`;
   const { data: studentIdList, mutate: editMutate } = useSWR(
     StudentURL,
     defaultFetcher
   );
+
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValue((prev) => ({ ...prev, [key]: value }));
+  }
+
+  const handleFieldChange = (key: string, value: string): void => {
+    if (key && value) {
+      setInputFieldValue((prev) => ({ ...prev, [key]: value }));
+    }
+  };
+
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -102,7 +165,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
       if (response.ok) {
         toast.success("Student update successfully ");
         setShowPopUpModal(false);
-        // mutate();
+        mutate();
         editMutate();
       } else {
         toast.error("something went wrong");
@@ -122,27 +185,39 @@ const StudentTableList: React.FC<ShowHeading> = ({
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditStudent}>
-          <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
+        <div className=" px-4 py-4 rounded-lg border border-gray-200">
+            <SelectField
               label="user"
-              name="user"
-              placeholder="Enter User"
-              defaultValue={studentIdList?.user}
+              options={userList}
+              defaultValue={studentIdList?.user?.id}
+              value={selectValue?.user}
+              onChange={(e) => {
+                handleSelectChange("user", {
+                  value: e.target.value,
+                });
+              }}
             />
+
             <InputField
-              type="text"
+              type="number"
               label="Roll no."
               name="roll_number"
               placeholder="enter roll number"
               defaultValue={studentIdList?.roll_number}
+              onChange={(e: any) => {
+                handleFieldChange("roll_number", e.target.value);
+              }}
             />
             <InputField
-              type="date"
-              label="Registration number"
+              type="text"
+              label="Registration no."
               name="registration_number"
               placeholder="Enter registration_number"
               defaultValue={studentIdList?.registration_number}
+              value={inputFieldValue?.registration_number}
+              onChange={(e: any) => {
+                handleFieldChange("registration_number", e.target.value);
+              }}
             />
             <InputField
               type="number"
@@ -150,6 +225,10 @@ const StudentTableList: React.FC<ShowHeading> = ({
               name="symbol_number"
               placeholder="Enter Symbol no."
               defaultValue={studentIdList?.symbol_number}
+              value={inputFieldValue?.symbol_number}
+              onChange={(e: any) => {
+                handleFieldChange("symbol_number", e.target.value);
+              }}
             />
             <InputField
               type="text"
@@ -157,20 +236,42 @@ const StudentTableList: React.FC<ShowHeading> = ({
               name="grade"
               placeholder="enter grade"
               defaultValue={studentIdList?.grade}
+              value={inputFieldValue?.grade}
+              onChange={(e: any) => {
+                handleFieldChange("grade", e.target.value);
+              }}
             />
-            <InputField
-              type="text"
+            <SelectField
               label="Department"
+              options={departmentOption}
               name="department"
-              placeholder="Choose Department"
-              defaultValue={studentIdList?.department}
+              value={selectValue?.department}
+              defaultValue={studentIdList?.department?.id}
+              onChange={(e: any) => {
+                handleSelectChange("department", e.target.value);
+              }}
             />
+            {/* <SelectField
+              label="Semester"
+              options={semesterOptions}
+              value={selectValue?.semester}
+              defaultValue={studentIdList?.semester}
+              onChange={(e) => {
+                handleSelectChange("semester", {
+                  value: e.target.value,
+                });
+              }}
+            /> */}
+            
             <InputField
               type="text"
               label="Semester"
               name="semester"
               placeholder="enter semester"
               defaultValue={studentIdList?.semester}
+              onChange={(e: any) => {
+                handleFieldChange("semester", e.target.value);
+              }}
             />
             <InputField
               type="number"
@@ -178,8 +279,12 @@ const StudentTableList: React.FC<ShowHeading> = ({
               name="borrowing_period_days"
               placeholder="enter borrowing period days"
               defaultValue={studentIdList?.borrowing_period_days}
+              onChange={(e: any) => {
+                handleFieldChange("borrowing_period_days", e.target.value);
+              }}
             />
           </div>
+
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
@@ -305,12 +410,12 @@ const StudentTableList: React.FC<ShowHeading> = ({
               )}
             </tbody>
           </table>
-          <Pagination
+          {/* <Pagination
             total_Pages={studentData?.total_pages}
             current_Page={studentData?.current_page}
             results={studentData?.results}
             mutate={mutate}
-          />
+          /> */}
         </div>
       </div>
     </>

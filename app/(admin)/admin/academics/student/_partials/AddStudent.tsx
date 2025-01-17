@@ -7,33 +7,96 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import SelectField from "@/components/Form/SelectField";
+import useSWR from "swr";
+import { defaultFetcher } from "@/helpers/FetchHelper";
+import { collectionToOptions } from "@/helpers/CollectionOption";
+
+const semesterOptions = [
+  {
+    value: "first",
+    label: "first",
+  },
+  {
+    value: "second ",
+    label: "second",
+  },
+  {
+    value: "third",
+    label: "third",
+  },
+  {
+    value: "fourth",
+    label: "fourth",
+  },
+  {
+    value: "fifth",
+    label: "fifth",
+  },
+  {
+    value: "sixth",
+    label: "sixth",
+  },
+  {
+    value: "seventh",
+    label: "seventh",
+  },
+  {
+    value: "eighth",
+    label: "eighth",
+  },
+];
 
 const AddStudent = () => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectValue, setSelectValue] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
+
+  const { data: userData } = useSWR(`${process.env.HOST}user/`, defaultFetcher);
+  const userList = collectionToOptions(
+    userData?.results ? userData?.results : []
+  );
+
+  const { data: departmentData } = useSWR(
+    `${process.env.HOST}departments/`,
+    defaultFetcher
+  );
+  const departmentOption = collectionToOptions(
+    departmentData?.results ? departmentData?.results : []
+  );
 
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
     }
   };
+
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValue((prev) => ({ ...prev, [key]: value }));
+  }
+
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setSelectValue({});
   };
+
   // book add button
   const handleAddStudent = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      user: inputFieldValue?.user,
+      user: selectValue?.user,
       roll_number: inputFieldValue?.roll_number,
       registration_number: inputFieldValue?.registration_number,
       symbol_number: inputFieldValue?.symbol_number,
       grade: inputFieldValue?.grade,
-      department: inputFieldValue?.department,
-      semester: inputFieldValue?.semester,
+      department: selectValue?.department,
+      semester: selectValue?.semester,
+      // semester: selectValue?.semester,
       borrowing_period_days: inputFieldValue?.borrowing_period_days,
     };
     try {
@@ -49,14 +112,14 @@ const AddStudent = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("studnet data successfully insert");
+        setInputFieldValue({});
+        setSelectValue({});
+        setShowPopUpModal(false);
       } else {
         toast.error("some error on field");
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
-      setShowPopUpModal(false);
     }
   };
   return (
@@ -76,18 +139,20 @@ const AddStudent = () => {
       >
         <form id="lead-form" onSubmit={handleAddStudent}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
+            <SelectField
               label="user"
-              name="user"
-              placeholder="Enter User"
-              // defaultValue={inputFieldValue?.user}
-              onChange={(e: any) => {
-                handleFieldChange("user", e.target.value);
+              options={userList}
+              defaultValue={selectValue?.user}
+              value={selectValue?.user}
+              onChange={(e) => {
+                handleSelectChange("user", {
+                  value: e.target.value,
+                });
               }}
             />
+
             <InputField
-              type="text"
+              type="number"
               label="Roll no."
               name="roll_number"
               placeholder="enter roll number"
@@ -101,7 +166,7 @@ const AddStudent = () => {
               label="Registration no."
               name="registration_number"
               placeholder="Enter registration_number"
-              // defaultValue={inputFieldValue?.registration_number}
+              defaultValue={inputFieldValue?.registration_number}
               onChange={(e: any) => {
                 handleFieldChange("registration_number", e.target.value);
               }}
@@ -121,21 +186,32 @@ const AddStudent = () => {
               label="Grade"
               name="grade"
               placeholder="enter grade"
-              // defaultValue={inputFieldValue?.grade}
+              defaultValue={inputFieldValue?.grade}
               onChange={(e: any) => {
                 handleFieldChange("grade", e.target.value);
               }}
             />
-            <InputField
-              type="text"
+            <SelectField
               label="Department"
+              options={departmentOption}
               name="department"
-              placeholder="Choose Department"
+              value={selectValue?.department}
               // defaultValue={inputFieldValue?.department}
               onChange={(e: any) => {
-                handleFieldChange("department", e.target.value);
+                handleSelectChange("department", e.target.value);
               }}
             />
+            {/* <SelectField
+              label="Semester"
+              options={semesterOptions}
+              value={selectValue?.semester}
+              onChange={(e) => {
+                handleSelectChange("semester", {
+                  value: e.target.value,
+                });
+              }}
+            />
+             */}
             <InputField
               type="text"
               label="Semester"
@@ -164,6 +240,7 @@ const AddStudent = () => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setSelectValue({});
               }}
             >
               Cancel

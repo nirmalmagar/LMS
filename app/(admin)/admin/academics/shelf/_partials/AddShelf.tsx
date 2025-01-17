@@ -7,12 +7,28 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import useSWR from "swr";
+import { defaultFetcher } from "@/helpers/FetchHelper";
+import { collectionToOptions } from "@/helpers/CollectionOption";
+import SelectField from "@/components/Form/SelectField";
 
 const AddShelves = () => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectValues, setSelectValues] = useState<Record<string,any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
+
+  // library section lists
+  const {data:libraryData} = useSWR(`${process.env.HOST}library-sections/`, defaultFetcher);
+  const libraryOptions = collectionToOptions(libraryData?.results ? libraryData?.results : [])
+
+  // change handler
+  function handleSelectChange(name:string, choice:Record<string,any>){
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((prev)=>({...prev,[key]:value}));
+  } 
 
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
@@ -74,34 +90,35 @@ const AddShelves = () => {
             <InputField
               type="text"
               label="shelves name"
-              name="name"
-              placeholder="Edit shelves Name"
+              name="number"
+              placeholder="shelves Name"
               // defaultValue={inputFieldValue?.name}
               onChange={(e: any) => {
-                handleFieldChange("name", e.target.value);
+                handleFieldChange("number", e.target.value);
               }}
             />
 
-            <InputField
-              type="textarea"
-              label="Description"
-              name="description"
-              placeholder="Edit Description"
-              // defaultValue={inputFieldValue?.description}
-              onChange={(e: any) => {
-                handleFieldChange("description", e.target.value);
-              }}
-            />
-            <InputField
-              type="text"
-              label="Section"
+            <SelectField
+              label="section"
               name="section"
-              placeholder="Choose Section"
-              // defaultValue={inputFieldValue?.section}
-              onChange={(e: any) => {
-                handleFieldChange("section", e.target.value);
+              options={libraryOptions}
+              onChange={(e)=>{
+                handleSelectChange("section",{
+                  value:e.target.value
+                });
               }}
             />
+
+              <InputField
+                type="textarea"
+                label="Description"
+                name="description"
+                placeholder="Edit Description"
+                // defaultValue={inputFieldValue?.description}
+                onChange={(e: any) => {
+                  handleFieldChange("description", e.target.value);
+                }}
+              />
           </div>
 
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">

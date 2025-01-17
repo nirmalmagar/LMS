@@ -12,6 +12,8 @@ import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import SelectField from "@/components/Form/SelectField";
+import { collectionToOptions } from "@/helpers/CollectionOption";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -29,9 +31,28 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [shelvesId, setShelvesId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectValues, setSelectValues] = useState<Record<string,any>>({});
 
-  const ShelvesURL = `${process.env.HOST}shelves/${shelvesId}`;
-  const { data: shelvesIdList } = useSWR(ShelvesURL, defaultFetcher);
+  const { data:shelvesData, mutate } = useSWR(`${process.env.HOST}shelves/`, defaultFetcher);
+
+  const ShelvesURL = `${process.env.HOST}shelves/${shelvesId}`;  
+  const { data: shelvesIdList, mutate:editMutate } = useSWR(ShelvesURL, defaultFetcher);
+
+  // library section lists
+  const { data: libraryData } = useSWR(
+    `${process.env.HOST}library-sections/`,
+    defaultFetcher
+  );
+  const libraryOptions = collectionToOptions(
+    libraryData?.results ? libraryData?.results : []
+  );
+
+  // change handler
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((prev) => ({ ...prev, [key]: value }));
+  }
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -57,7 +78,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             });
             if (response.ok) {
               toast.success("Shelves removed successfully.");
-              mutate(shelvesList);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -93,6 +114,8 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       // const data = await response.json();
       if (response.ok) {
         toast.success("Shelves update successfully ");
+        setShowPopUpModal(false);
+        editMutate();
       } else {
         toast.error("some thing went wrong");
       }
@@ -119,6 +142,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       setCurrentPage(data?.current_page);
       setShelvesList(data?.results);
       setIsLoading(false);
+      mutate();
     } catch (e) {
       console.log("error", e);
       setIsLoading(false);
@@ -177,6 +201,18 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               placeholder="Enter number"
               defaultValue={shelvesIdList?.number}
             />
+            <SelectField
+              label="section"
+              name="section"
+              options={libraryOptions}
+              value={selectValues?.section}
+              defaultValue={shelvesIdList?.section?.id}
+              onChange={(e) => {
+                handleSelectChange("section", {
+                  value: e.target.value,
+                });
+              }}
+            />
             <InputField
               type="text"
               label="Description"
@@ -184,20 +220,12 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               placeholder="Enter Description"
               defaultValue={shelvesIdList?.description}
             />
-            <InputField
-              type="text"
-              label="Section"
-              name="section"
-              placeholder="Choose library Section"
-              defaultValue={shelvesIdList?.section}
-            />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
-                // setInputFieldValue({});
               }}
             >
               Cancel
@@ -207,10 +235,6 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               <Btn
                 type="submit"
                 className="bg-blue-600 text-white"
-                onClick={() => {
-                  setShowPopUpModal(false);
-                  // setInputFieldValue({});
-                }}
               >
                 Edit
               </Btn>
@@ -246,7 +270,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 </tr>
               </thead>
               <tbody>
-                {shelvesList?.map(
+                {shelvesData?.results?.map(
                   (shelvesItem: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>

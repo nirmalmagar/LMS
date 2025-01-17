@@ -1,6 +1,6 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -35,6 +35,9 @@ const LibraryTableList: React.FC<ShowHeading> = ({
 
   const LibraryURL = `${process.env.HOST}library-sections/${libraryId}`;
   const { data: libraryIdList } = useSWR(LibraryURL, defaultFetcher);
+
+  const {data:libraryData, mutate} = useSWR(`${process.env.HOST}library-sections?page=${currentPage}`, defaultFetcher);
+
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -63,7 +66,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
             );
             if (response.ok) {
               toast.success("Library Section removed successfully.");
-              mutate(librarySectionLists);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -102,6 +105,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
       // const data = await response.json();
       if (response.ok) {
         toast.success("Library section update successfully ");
+        mutate();
       } else {
         toast.error("some thing went wrong");
       }
@@ -109,6 +113,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
       console.error(e);
     }
   };
+  
 
   // fetch library-sections lists
   const LibraryList = async () => {
@@ -128,6 +133,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
       setCurrentPage(data?.current_page);
       setLibrarySectionLists(data?.results);
       setIsLoading(false);
+      mutate();
     } catch (e) {
       console.log("error", e);
       setIsLoading(false);
@@ -167,7 +173,8 @@ const LibraryTableList: React.FC<ShowHeading> = ({
 
   useEffect(() => {
     LibraryList();
-  }, [currentPage]);
+    mutate();
+  }, [currentPage,mutate]);
   return (
     <>
       {/* edit Model popup  */}
@@ -255,7 +262,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
                 </tr>
               </thead>
               <tbody>
-                {librarySectionLists?.map(
+                {libraryData?.results?.map(
                   (libraryItems: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
@@ -266,17 +273,17 @@ const LibraryTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {libraryItems.name}
+                            {libraryItems?.name}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {libraryItems.description}
+                            {libraryItems?.description}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {libraryItems.location}
+                            {libraryItems?.location}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
