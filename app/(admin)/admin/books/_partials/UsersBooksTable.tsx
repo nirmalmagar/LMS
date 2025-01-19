@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -9,6 +9,10 @@ import { accessToken } from "@/helpers/TokenHelper";
 import Image from "next/image";
 import AddBookLists from "./AddBookLists";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { defaultFetcher } from "@/helpers/FetchHelper";
+import Btn from "@/components/Btn";
+import Modal from "@/components/Elements/Modal";
+import InputField from "@/components/Form/InputForm";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -18,11 +22,18 @@ interface ShowHeading {
 const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   let heading = showHeading;
   let showLists = showMore;
-  // const [showMore, setShowMore] = useState<boolean>(false);
-  const [bookLists, setBookLists] = useState<any[]>([]);
-  const [totalPages, setTotalPages] = useState<number>();
+
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [editValue, setEditValue] = useState<Record<string,any>>({});
+  const [id, setId] = useState<number>();
+
+  const {data:editBookList} = useSWR(`${process.env.HOST}books/${id}`,defaultFetcher)
+
+  // books lists
+  const {data:bookData, isLoading, mutate} = useSWR(`${process.env.HOST}books/?page=${currentPage}`, defaultFetcher);
+
+  // delete modal
   const showSwal = (id: string) => {
     withReactContent(Swal)
       .fire({
@@ -47,7 +58,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             });
             if (response.ok) {
               toast.success("Genre removed successfully.");
-              mutate(bookLists);
+              mutate();
             } else {
               const result = await response.json();
               toast.error(result.message ?? "Something went wrong!");
@@ -58,29 +69,51 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         }
       });
   };
-  const BookLists = async () => {
-    // setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.HOST}books?page=${currentPage}`
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setBookLists(data?.results);
-      if (data && bookLists) {
-        setIsLoading(false);
+  const openEditBox=(editId:number)=>{
+    setId(editId);
+    setShowPopUpModal(true);
+  }
+  
+  // edit handler
+  const handleEditBook = async (e: FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    try{
+    const response = await fetch(`${process.env.HOST}books/${id}`,{
+      method: "PUT",
+      body: formData,
+      headers:{
+        Authorization: `Bearer ${accessToken()}`,
+        Accept: "application/json"
       }
-    } catch (e) {
-      console.log("error", e);
+  })
+  const data = response.json();
+  if(response.ok){  
+    toast.success("update book successfully")
+  }
+}
+    catch(e){
+      console.error("error ", e);
     }
-  };
-  let totalPageArray = bookLists
-    ? Array.from({ length: totalPages }, (_, index) => index + 1)
+  }
+
+  const handleFieldChange=(key:string, value:any)=>{
+    if(key && value){
+      setEditValue((prev)=>({...prev,[key]:value}))
+    }
+  }
+
+  function handleCloseTap(){
+    setShowPopUpModal(false);
+    setEditValue({});
+  }
+
+  let totalPageArray = bookData?.results
+    ? Array.from({ length: bookData?.total_pages }, (_, index) => index + 1)
     : [];
 
   let paginationLinks =
-    bookLists &&
+    bookData?.results &&
     totalPageArray.map((items: any, index: number) => {
       if (items < 10) {
         return (
@@ -102,12 +135,181 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       setCurrentPage(page);
     }
   };
+
   useEffect(() => {
-    BookLists();
+    mutate();
   }, [currentPage]);
 
   return (
     <>
+    <Modal
+        show={showPopUpModal}
+        handleClose={handleCloseTap}
+        modalTitle="Add Department"
+        size="lg"
+      >
+        <form id="lead-form" onSubmit={handleEditBook}>
+        <div className=" px-4 py-4 rounded-lg border border-gray-200">
+            <div>
+              <div className=" flex flex-col gap-y-4">
+                {/* <div className="flex gap-x-4 items-center">
+                  <div className="relative w-12 h-12">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        className="rounded"
+                        // objectFit="cover"
+                        fill
+                        alt={"image link"}
+                      />
+                    ) : (
+                      <PhotoIcon
+                        className="h-full w-full text-primary-500"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+                  <InputField
+                    labelClassName="text-black"
+                    className="flex flex-col"
+                    label="Cover"
+                    name="cover"
+                    type="file"
+                    onChange={(e) => ImageChangeHandler(e)}
+                  />
+                  {imageUrl && (
+                    <Btn
+                      onClick={removeImage}
+                      className="bg-red-500 text-white font-semibold mb-0"
+                    >
+                      remove
+                    </Btn>
+                  )}
+                </div> */}
+
+                <InputField
+                  labelClassName="text-black"
+                  label="Title"
+                  name="title"
+                  placeholder="enter title"
+                  type="text"
+                  // default={}
+                  defaultValue={editBookList?.title}
+                  onChange={(e: any) => {
+                    handleFieldChange("title", e.target.value);
+                  }}
+                />
+                <InputField
+                  label="Author"
+                  name="author"
+                  placeholder="enter author"
+                  type="text"
+                  // default={}
+                  defaultValue={editBookList?.author}
+                  onChange={(e: any) => {
+                    handleFieldChange("author", e.target.value);
+                  }}
+                />
+                <InputField
+                  label="Publisher"
+                  name="text"
+                  placeholder="enter publisher"
+                  type="text"
+                  // default={}
+                  defaultValue={editBookList?.publisher}
+                  onChange={(e: any) => {
+                    handleFieldChange("publisher", e.target.value);
+                  }}
+                />
+                <InputField
+                  type="number"
+                  label="Pages"
+                  name="pages"
+                  placeholder="Enter pages"
+                  // default={}
+                  defaultValue={editBookList?.pages}
+                  onChange={(e: any) => {
+                    handleFieldChange("pages", e.target.value);
+                  }}
+                />
+                <InputField
+                  type="number"
+                  label="Price"
+                  name="price"
+                  placeholder="Enter price"
+                  // default={}
+                  defaultValue={editBookList?.price}
+                  onChange={(e: any) => {
+                    handleFieldChange("price", e.target.value);
+                  }}
+                />
+                <InputField
+                  type="number"
+                  label="Quantity"
+                  name="quantity"
+                  placeholder="Enter quantity"
+                  // default={}
+                  defaultValue={editBookList?.quantity}
+                  onChange={(e: any) => {
+                    handleFieldChange("quantity", e.target.value);
+                  }}
+                />
+                <InputField
+                  type="number"
+                  label="Isbn"
+                  name="isbn"
+                  placeholder="Enter isbn"
+                  // default={}
+                  defaultValue={editBookList?.isbn}
+                  onChange={(e: any) => {
+                    handleFieldChange("isbn", e.target.value);
+                  }}
+                />
+                {/*
+                <div className="flex gap-24">
+                  <label htmlFor="">Genres</label>
+                  <Multiselect
+                    className="text-sm leading-4 w-full flex-1"
+                    options={genres} // Data to display
+                    displayValue="name" // The key to display (update based on your object structure)
+                    onSelect={handleSelect} // Callback for when an item is selected
+                    onRemove={handleRemove} // Callback for when an item is removed
+                  /> 
+                </div>
+                */}
+                <InputField
+                  type="textarea"
+                  label="Description"
+                  name="description"
+                  placeholder="enter description"
+                  // default={}
+                  defaultValue={editBookList?.description}
+                  onChange={(e: any) => {
+                    handleFieldChange("description", e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
+            <Btn
+              outline="error"
+              onClick={() => {
+                setShowPopUpModal(false);
+              }}
+            >
+              Cancel
+            </Btn>
+
+            <div className="flex gap-x-4">
+              <Btn type="submit" className="bg-blue-600 text-white">
+                Edit
+              </Btn>
+            </div>
+          </div>
+        </form>
+      </Modal>
       {isLoading ? (
         <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
           <span>Loading...</span>
@@ -151,7 +353,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 </tr>
               </thead>
               <tbody>
-                {bookLists
+                {bookData?.results
                   ?.slice(0, 5)
                   ?.map((booksList: Record<string, any>, index: number) => {
                     return (
@@ -216,7 +418,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                                 >
                                   <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
                                 </button>
-                                <button className="ml-3">
+                                <button onClick={()=>openEditBox(booksList?.id)} className="ml-3">
                                   <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                                 </button>
                               </p>
@@ -238,7 +440,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               {paginationLinks}
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                disabled={currentPage === bookData?.total_pages}
               >
                 <MdChevronRight className="w-5 h-5" />
               </button>

@@ -11,6 +11,7 @@ import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
 import Multiselect from "multiselect-react-dropdown";
 import { AuthContext } from "@/context/AuthContext";
+import useSWR from "swr";
 
 interface genresListProps{
   id:number;
@@ -81,6 +82,7 @@ const AddBookLists = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success(data?.message);
+        setInputFieldValue({})
         setShowPopUpModal(false);
       } else {
         toast.error("some error on field");
@@ -176,6 +178,7 @@ const AddBookLists = () => {
                   }}
                 />
                 <InputField
+                  type="number"
                   label="Pages"
                   name="pages"
                   placeholder="Enter pages"
@@ -185,6 +188,7 @@ const AddBookLists = () => {
                   }}
                 />
                 <InputField
+                  type="number"
                   label="Price"
                   name="price"
                   placeholder="Enter price"
@@ -194,6 +198,7 @@ const AddBookLists = () => {
                   }}
                 />
                 <InputField
+                  type="number"
                   label="Quantity"
                   name="quantity"
                   placeholder="Enter quantity"
@@ -203,6 +208,7 @@ const AddBookLists = () => {
                   }}
                 />
                 <InputField
+                  type="number"
                   label="Isbn"
                   name="isbn"
                   placeholder="Enter isbn"
