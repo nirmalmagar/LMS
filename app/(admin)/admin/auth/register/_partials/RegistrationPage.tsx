@@ -13,7 +13,7 @@ const lora = Lora({
 
 const RegistrationPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const registerUrl = {{main_url}}register/
+  // const registerUrl = `{{main_url}}register/`
   const handleSubmitRegistration = () => {
     return (
       <>

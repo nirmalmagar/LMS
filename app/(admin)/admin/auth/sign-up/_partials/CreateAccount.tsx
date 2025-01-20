@@ -264,6 +264,8 @@ const CreateAccount = () => {
                     className="mb-2"
                     required
                   />
+                  
+                  <div className="mt-10"/>
                   <SelectField
                     className="mb-4"
                     label="Gender"
@@ -278,6 +280,7 @@ const CreateAccount = () => {
                       handleStateChange("is_present", choice)
                     }
                   />
+                  <div className="mt-2"/>
                   <InputField
                     labelWidth="w-full"
                     name="bio"

@@ -16,10 +16,9 @@ const BookCardList = () => {
   return (
     <>
       <Container>
-        <Heading
-          children={"Explore Fresh Arrivals and Find Your Next Great Read."}
-          title={"Books"}
-        />
+        <Heading title={"Books"}>
+          {"Explore Fresh Arrivals and Find Your Next Great Read."}
+        </Heading>
         <section className="my-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-12 gap-x-12">
             {BookListsURL?.results?.map((value: any, index: number) => {
@@ -29,7 +28,12 @@ const BookCardList = () => {
                     <Link href={`/book-list/${value?.id}/`}>
                       <div className="relative w-60 h-72 mb-2">
                         {value?.cover && (
-                          <Image fill sizes="fit" src={value?.cover} alt="cover image" />
+                          <Image
+                            fill
+                            sizes="fit"
+                            src={value?.cover}
+                            alt="cover image"
+                          />
                         )}
                       </div>
                       <div className=" pl-4 pb-2">

@@ -13,7 +13,7 @@ const AddDepartment = () => {
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
-  const [error, setError] = useState<Record<string,any>>({});
+  const [error, setError] = useState("");
 
   const handleFieldChange = (key: string, value: string): void => {
     // if (key && value) {
@@ -50,9 +50,8 @@ const AddDepartment = () => {
         toast.success("data successfully insert");
         setShowPopUpModal(false);
       } else {
-        // toast.error("nirmalqq",data?.phone_number[0]);
-        // setError(data);
-        toast.error(` ${data?.phone_number[0]}`);
+        toast.error(data?.phone_number[0]);
+        setError(data?.phone_number[0]);
       }
     } catch (error) {
       console.error(error);
@@ -87,7 +86,9 @@ const AddDepartment = () => {
                 handleFieldChange("name", e.target.value);
               }}
             />
+
             <InputField
+              labelStyle="label-left"
               type="text"
               label="Department Head"
               name="head_of_department"
@@ -97,6 +98,7 @@ const AddDepartment = () => {
                 handleFieldChange("head_of_department", e.target.value);
               }}
             />
+            
             <InputField
               type="textarea"
               label="Description"
@@ -107,12 +109,14 @@ const AddDepartment = () => {
                 handleFieldChange("description", e.target.value);
               }}
             />
+            
             <InputField
               type="number"
               label="Phone no."
               name="phone_number"
               placeholder="enter phone number"
-              fieldErrors={error?.phone_number ?? [] }
+              // fieldErrors={error?.phone_number ?? [] }
+              // fieldErrors={error?.phone_number[0] ?? ["hello error"] }
               // defaultValue={inputFieldValue?.phone_number}
               onChange={(e: any) => {
                 handleFieldChange("phone_number", e.target.value);
@@ -122,7 +126,7 @@ const AddDepartment = () => {
               type="text"
               label="Location"
               name="location"
-              placeholder="enter "
+              placeholder="enter location"
               // defaultValue={inputFieldValue?.location}
               onChange={(e: any) => {
                 handleFieldChange("location", e.target.value);

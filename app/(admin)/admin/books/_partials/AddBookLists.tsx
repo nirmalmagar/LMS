@@ -11,28 +11,28 @@ import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
 import Multiselect from "multiselect-react-dropdown";
 import { AuthContext } from "@/context/AuthContext";
-import useSWR from "swr";
 
 interface genresListProps{
   id:number;
   name:string;
 }
+
 const AddBookLists = () => {
   const { genres } = useContext(AuthContext);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null>("");
   const [inputFieldValue, setInputFieldValue] = useState<Record<string, string>>({});
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]); // Array to store selected genre IDs
-
+  const [error, setError] = useState<Record<string,any>>({});
   // Callback for when an item is selected
   const handleSelect = (selectedList:genresListProps[]) => {
-    const ids = selectedList.map((genre) => genre.id); // Extract IDs from selected items
+    const ids = selectedList?.map((genre) => genre?.id); // Extract IDs from selected items
     setSelectedGenreIds(ids); // Update state
   };
 
   // Callback for when an item is removed
   const handleRemove = (selectedList:genresListProps[]) => {
-    const ids = selectedList.map((genre) => genre.id); // Extract IDs from remaining items
+    const ids = selectedList?.map((genre) => genre?.id); // Extract IDs from remaining items
     setSelectedGenreIds(ids); // Update state
   };
 
@@ -42,16 +42,10 @@ const AddBookLists = () => {
     setImageUrl(URL.createObjectURL(imageURL));
   };
 
-  const removeImage = () => {
-    setImageUrl(null);
-  };
-
   // input field
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
-    } else {
-      // setGenres((prevGenres)=>[...prevGenres,currentGenres])
     }
   };
 
@@ -138,7 +132,7 @@ const AddBookLists = () => {
                   />
                   {imageUrl && (
                     <Btn
-                      onClick={removeImage}
+                      onClick={()=>setImageUrl(null)}
                       className="bg-red-500 text-white font-semibold mb-0"
                     >
                       remove
@@ -152,6 +146,7 @@ const AddBookLists = () => {
                   name="title"
                   placeholder="enter title"
                   type="text"
+                  // fieldErrors={}
                   defaultValue={inputFieldValue?.title}
                   onChange={(e: any) => {
                     handleFieldChange("title", e.target.value);

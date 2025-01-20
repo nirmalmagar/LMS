@@ -26,7 +26,7 @@ const UsersListTable = () => {
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(`${process.env.HOST}genres/${id}/`, {
+            const response = await fetch(`${process.env.HOST}user/${id}/`, {
               method: "DELETE",
               headers: {
                 Authorization: `Bearer ${accessToken()}`,

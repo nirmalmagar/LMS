@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
 import GradeTableList from "./_partials/GradeTableList";
 import useSWR from "swr";
@@ -13,6 +13,9 @@ const page = () => {
     mutate,
   } = useSWR(`${process.env.HOST}grades/`, defaultFetcher);
   
+  useEffect(()=>{
+    mutate();
+  },[mutate])
   return (
     <DefaultLayout>
       {isLoading ? (

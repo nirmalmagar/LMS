@@ -25,13 +25,20 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [editValue, setEditValue] = useState<Record<string,any>>({});
+  const [editValue, setEditValue] = useState<Record<string, any>>({});
   const [id, setId] = useState<number>();
 
-  const {data:editBookList} = useSWR(`${process.env.HOST}books/${id}`,defaultFetcher)
+  const { data: editBookList } = useSWR(
+    `${process.env.HOST}books/${id}`,
+    defaultFetcher
+  );
 
   // books lists
-  const {data:bookData, isLoading, mutate} = useSWR(`${process.env.HOST}books/?page=${currentPage}`, defaultFetcher);
+  const {
+    data: bookData,
+    isLoading,
+    mutate,
+  } = useSWR(`${process.env.HOST}books/?page=${currentPage}`, defaultFetcher);
 
   // delete modal
   const showSwal = (id: string) => {
@@ -69,41 +76,40 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         }
       });
   };
-  const openEditBox=(editId:number)=>{
+  const openEditBox = (editId: number) => {
     setId(editId);
     setShowPopUpModal(true);
-  }
-  
+  };
+
   // edit handler
-  const handleEditBook = async (e: FormEvent<HTMLFormElement>)=>{
+  const handleEditBook = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    try{
-    const response = await fetch(`${process.env.HOST}books/${id}`,{
-      method: "PUT",
-      body: formData,
-      headers:{
-        Authorization: `Bearer ${accessToken()}`,
-        Accept: "application/json"
+    try {
+      const response = await fetch(`${process.env.HOST}books/${id}`, {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken()}`,
+          Accept: "application/json",
+        },
+      });
+      const data = response.json();
+      if (response.ok) {
+        toast.success("update book successfully");
       }
-  })
-  const data = response.json();
-  if(response.ok){  
-    toast.success("update book successfully")
-  }
-}
-    catch(e){
+    } catch (e) {
       console.error("error ", e);
     }
-  }
+  };
 
-  const handleFieldChange=(key:string, value:any)=>{
-    if(key && value){
-      setEditValue((prev)=>({...prev,[key]:value}))
+  const handleFieldChange = (key: string, value: any) => {
+    if (key && value) {
+      setEditValue((prev) => ({ ...prev, [key]: value }));
     }
-  }
+  };
 
-  function handleCloseTap(){
+  function handleCloseTap() {
     setShowPopUpModal(false);
     setEditValue({});
   }
@@ -142,17 +148,16 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
 
   return (
     <>
-    <Modal
+      <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
         modalTitle="Add Department"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditBook}>
-        <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <div>
-              <div className=" flex flex-col gap-y-4">
-                {/* <div className="flex gap-x-4 items-center">
+          <div className=" px-4 py-4 rounded-lg border border-gray-200">
+            <div className=" flex flex-col gap-y-4">
+              {/* <div className="flex gap-x-4 items-center">
                   <div className="relative w-12 h-12">
                     {imageUrl ? (
                       <Image
@@ -187,85 +192,85 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                   )}
                 </div> */}
 
-                <InputField
-                  labelClassName="text-black"
-                  label="Title"
-                  name="title"
-                  placeholder="enter title"
-                  type="text"
-                  // default={}
-                  defaultValue={editBookList?.title}
-                  onChange={(e: any) => {
-                    handleFieldChange("title", e.target.value);
-                  }}
-                />
-                <InputField
-                  label="Author"
-                  name="author"
-                  placeholder="enter author"
-                  type="text"
-                  // default={}
-                  defaultValue={editBookList?.author}
-                  onChange={(e: any) => {
-                    handleFieldChange("author", e.target.value);
-                  }}
-                />
-                <InputField
-                  label="Publisher"
-                  name="text"
-                  placeholder="enter publisher"
-                  type="text"
-                  // default={}
-                  defaultValue={editBookList?.publisher}
-                  onChange={(e: any) => {
-                    handleFieldChange("publisher", e.target.value);
-                  }}
-                />
-                <InputField
-                  type="number"
-                  label="Pages"
-                  name="pages"
-                  placeholder="Enter pages"
-                  // default={}
-                  defaultValue={editBookList?.pages}
-                  onChange={(e: any) => {
-                    handleFieldChange("pages", e.target.value);
-                  }}
-                />
-                <InputField
-                  type="number"
-                  label="Price"
-                  name="price"
-                  placeholder="Enter price"
-                  // default={}
-                  defaultValue={editBookList?.price}
-                  onChange={(e: any) => {
-                    handleFieldChange("price", e.target.value);
-                  }}
-                />
-                <InputField
-                  type="number"
-                  label="Quantity"
-                  name="quantity"
-                  placeholder="Enter quantity"
-                  // default={}
-                  defaultValue={editBookList?.quantity}
-                  onChange={(e: any) => {
-                    handleFieldChange("quantity", e.target.value);
-                  }}
-                />
-                <InputField
-                  type="number"
-                  label="Isbn"
-                  name="isbn"
-                  placeholder="Enter isbn"
-                  // default={}
-                  defaultValue={editBookList?.isbn}
-                  onChange={(e: any) => {
-                    handleFieldChange("isbn", e.target.value);
-                  }}
-                />
-                {/*
+              <InputField
+                labelClassName="text-black"
+                label="Title"
+                name="title"
+                placeholder="enter title"
+                type="text"
+                // default={}
+                defaultValue={editBookList?.title}
+                onChange={(e: any) => {
+                  handleFieldChange("title", e.target.value);
+                }}
+              />
+              <InputField
+                label="Author"
+                name="author"
+                placeholder="enter author"
+                type="text"
+                // default={}
+                defaultValue={editBookList?.author}
+                onChange={(e: any) => {
+                  handleFieldChange("author", e.target.value);
+                }}
+              />
+              <InputField
+                label="Publisher"
+                name="text"
+                placeholder="enter publisher"
+                type="text"
+                // default={}
+                defaultValue={editBookList?.publisher}
+                onChange={(e: any) => {
+                  handleFieldChange("publisher", e.target.value);
+                }}
+              />
+              <InputField
+                type="number"
+                label="Pages"
+                name="pages"
+                placeholder="Enter pages"
+                // default={}
+                defaultValue={editBookList?.pages}
+                onChange={(e: any) => {
+                  handleFieldChange("pages", e.target.value);
+                }}
+              />
+              <InputField
+                type="number"
+                label="Price"
+                name="price"
+                placeholder="Enter price"
+                // default={}
+                defaultValue={editBookList?.price}
+                onChange={(e: any) => {
+                  handleFieldChange("price", e.target.value);
+                }}
+              />
+              <InputField
+                type="number"
+                label="Quantity"
+                name="quantity"
+                placeholder="Enter quantity"
+                // default={}
+                defaultValue={editBookList?.quantity}
+                onChange={(e: any) => {
+                  handleFieldChange("quantity", e.target.value);
+                }}
+              />
+              <InputField
+                type="number"
+                label="Isbn"
+                name="isbn"
+                placeholder="Enter isbn"
+                // default={}
+                defaultValue={editBookList?.isbn}
+                onChange={(e: any) => {
+                  handleFieldChange("isbn", e.target.value);
+                }}
+              />
+              {/*
                 <div className="flex gap-24">
                   <label htmlFor="">Genres</label>
                   <Multiselect
@@ -277,18 +282,17 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                   /> 
                 </div>
                 */}
-                <InputField
-                  type="textarea"
-                  label="Description"
-                  name="description"
-                  placeholder="enter description"
-                  // default={}
-                  defaultValue={editBookList?.description}
-                  onChange={(e: any) => {
-                    handleFieldChange("description", e.target.value);
-                  }}
-                />
-              </div>
+              <InputField
+                type="textarea"
+                label="Description"
+                name="description"
+                placeholder="enter description"
+                // default={}
+                defaultValue={editBookList?.description}
+                onChange={(e: any) => {
+                  handleFieldChange("description", e.target.value);
+                }}
+              />
             </div>
           </div>
 
@@ -418,7 +422,10 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                                 >
                                   <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
                                 </button>
-                                <button onClick={()=>openEditBox(booksList?.id)} className="ml-3">
+                                <button
+                                  onClick={() => openEditBox(booksList?.id)}
+                                  className="ml-3"
+                                >
                                   <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                                 </button>
                               </p>

@@ -149,7 +149,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   };
   useEffect(() => {
     mutate();
-  }, [currentPage]);
+  }, [currentPage,mutate]);
 
   return (
     <>
