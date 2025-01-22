@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import SelectField from "@/components/Form/SelectField";
 import Spinner from "@/components/Spinner/Spinner";
 import { useRouter } from "next/navigation";
-import VerifyOtp from "@/components/Elements/Authentication/VerifyOtp";
 
 const CreateAccount = () => {
   const router = useRouter();
@@ -21,6 +20,7 @@ const CreateAccount = () => {
     {}
   );
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  console.log("email",inputFormValues?.email);
   const stateOptions: any = [
     { label: "Male", value: 1 },
     { label: "Female", value: 0 },
@@ -75,7 +75,7 @@ const CreateAccount = () => {
       const data = await response.json();
       if (response?.ok && data) {
         toast.success(data?.message);
-        router.push(routes.ADMIN_VERIFY_OTP);
+        router.push(`${routes.ADMIN_VERIFY_OTP}?query=${inputFormValues?.email}`);
       } else {
         toast.error("something went wrong");
       }
