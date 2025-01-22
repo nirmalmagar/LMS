@@ -148,10 +148,10 @@ const AddGenre = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        toast.success("data successfully insert");
+        toast.success("genres successfully added");
         setShowPopUpModal(false);
       } else {
-        toast.error("some error on field");
+        toast.error(data?.name[0]);
       }
     } catch (error) {
       console.error(error);

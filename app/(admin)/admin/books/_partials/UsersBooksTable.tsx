@@ -86,7 +86,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(`${process.env.HOST}books/${id}`, {
+      const response = await fetch(`${process.env.HOST}books/${id}/`, {
         method: "PUT",
         body: formData,
         headers: {
@@ -369,7 +369,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <div className="relative w-12 h-12">
-                            {booksList?.cover && (
+                            {booksList?.cover ? (
                               <Image
                                 src={booksList?.cover}
                                 className="rounded"
@@ -378,12 +378,21 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                                 style={{ objectFit: "cover" }}
                                 alt={booksList?.title}
                               />
+                            ) : (
+                              <Image
+                                src={"/assets/noimage.jpg"}
+                                className="rounded"
+                                fill
+                                sizes="fit"
+                                style={{ objectFit: "cover" }}
+                                alt={"no image"}
+                              />
                             )}
                           </div>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {booksList.publisher}
+                            {booksList.title}
                           </p>
                         </td>
                         <td className="max-w-[160px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">

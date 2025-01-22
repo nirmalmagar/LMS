@@ -51,7 +51,7 @@ const AddDepartment = () => {
         setShowPopUpModal(false);
       } else {
         toast.error(data?.phone_number[0]);
-        setError(data?.phone_number[0]);
+        setError(data?.phone_number[0] );
       }
     } catch (error) {
       console.error(error);

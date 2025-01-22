@@ -44,7 +44,7 @@ const AddGrade = () => {
         toast.success("data successfully insert");
         setShowPopUpModal(false);
       } else {
-        toast.error("some error on field");
+        toast.error(data?.name[0]);
       }
     } catch (error) {
       console.error(error);

@@ -39,6 +39,7 @@ const AddBookLists = () => {
   // image change handler
   const ImageChangeHandler = (e: any) => {
     const imageURL = e.target.files[0];
+    setError(imageURL);
     setImageUrl(URL.createObjectURL(imageURL));
   };
 
@@ -52,7 +53,8 @@ const AddBookLists = () => {
   // book add button
   const handleAddBooks = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const InputFileData = {
+    const formData = {
+      cover: error,
       title: inputFieldValue?.title,
       description: inputFieldValue?.description,
       author: inputFieldValue?.author,
@@ -66,7 +68,7 @@ const AddBookLists = () => {
     try {
       const response = await fetch(`${process.env.HOST}books/`, {
         method: "POST",
-        body: JSON.stringify(InputFileData),
+        body: JSON.stringify(formData),
         headers: {
           Authorization: `Bearer ${accessToken()}`,
           Accept: "application/json",
@@ -128,6 +130,7 @@ const AddBookLists = () => {
                     label="Cover"
                     name="cover"
                     type="file"
+                    accept="image/*"
                     onChange={(e) => ImageChangeHandler(e)}
                   />
                   {imageUrl && (
@@ -139,7 +142,7 @@ const AddBookLists = () => {
                     </Btn>
                   )}
                 </div>
-
+              
                 <InputField
                   labelClassName="text-black"
                   label="Title"

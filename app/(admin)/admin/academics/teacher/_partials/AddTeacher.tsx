@@ -51,20 +51,21 @@ const AddTeacher = () => {
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setSelectValues({});
   };
 
   // book add button
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      user : selectValues?.user,
-      employee_id : inputFieldValue?.employee_id,
-      grade : selectValues?.grade,
-      department : selectValues?.department,
-      designation : inputFieldValue?.designation,
-      borrowing_period_days : inputFieldValue?.borrowing_period_days,
-    }
-      try {
+      user: selectValues?.user,
+      employee_id: inputFieldValue?.employee_id,
+      grade: selectValues?.grade,
+      department: selectValues?.department,
+      designation: inputFieldValue?.designation,
+      borrowing_period_days: inputFieldValue?.borrowing_period_days,
+    };
+    try {
       const response = await fetch(`${process.env.HOST}teachers/`, {
         method: "POST",
         body: JSON.stringify(InputFileData),
@@ -76,16 +77,15 @@ const AddTeacher = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        toast.success("data successfully insert");
+        toast.success("teacher data successfully insert");
+        setInputFieldValue({});
+        setSelectValues({});
+        setShowPopUpModal(false);
       } else {
-        toast.error("some error on field");
+        toast.error("some error", data?.user[0]);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
-      setSelectValues({});
-      setShowPopUpModal(false);
     }
   };
   return (
@@ -105,18 +105,18 @@ const AddTeacher = () => {
       >
         <form id="lead-form" onSubmit={handleAddGrade}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-          <SelectField
-                className="w-full"
-                options={userOption}
-                label="User"
-                value={selectValues?.user}
-                defaultValue={""}
-                onChange={(e) => {
-                  handleSelectChange("user", {
-                    value: e.target.value,
-                  });
-                }}
-              />
+            <SelectField
+              className="w-full"
+              options={userOption}
+              label="User"
+              value={selectValues?.user}
+              defaultValue={""}
+              onChange={(e) => {
+                handleSelectChange("user", {
+                  value: e.target.value,
+                });
+              }}
+            />
 
             <InputField
               type="text"
@@ -129,29 +129,29 @@ const AddTeacher = () => {
               }}
             />
             <SelectField
-                className="w-full"
-                options={gradeOption}
-                label="grade"
-                value={selectValues?.grade}
-                defaultValue={""}
-                onChange={(e) => {
-                  handleSelectChange("grade", {
-                    value: e.target.value,
-                  });
-                }}
-              />
+              className="w-full"
+              options={gradeOption}
+              label="grade"
+              value={selectValues?.grade}
+              defaultValue={""}
+              onChange={(e) => {
+                handleSelectChange("grade", {
+                  value: e.target.value,
+                });
+              }}
+            />
 
             <SelectField
-                className="w-full"
-                options={departmentOption}
-                label="Department"
-                value={selectValues?.department}
-                onChange={(e) => {
-                  handleSelectChange("department", {
-                    value: e.target.value,
-                  });
-                }}
-              />
+              className="w-full"
+              options={departmentOption}
+              label="Department"
+              value={selectValues?.department}
+              onChange={(e) => {
+                handleSelectChange("department", {
+                  value: e.target.value,
+                });
+              }}
+            />
 
             <InputField
               type="text"
@@ -181,7 +181,8 @@ const AddTeacher = () => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
-              }}  
+                setSelectValues({});
+              }}
             >
               Cancel
             </Btn>

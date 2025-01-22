@@ -167,28 +167,28 @@ console.log("recommended books", recommendedBookURL)
           </Heading>
           <section className="my-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-12 gap-x-12">
-            {recommendedBookURL?.map((value: any, index: number) => {
+            {recommendedBookURL?.recommended_books?.map((value: any, index: number) => {
               return (
                 <div key={index}>
                   <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[25rem]">
                     {/* <Link href={`/book-list/${value?.id}/`}> */}
                       <div className="relative w-60 h-72 mb-2">
                         {value?.cover && (
-                          <Image fill src={value?.cover} alt="cover image" />
+                          <Image fill src={`http://127.0.0.1:8000/${value?.cover}`} alt="cover image" />
                         )}
                       </div>
                       <div className=" pl-4 pb-2">
                         <h3 className="font-semibold" id="card_title">
                           {value?.title}
                         </h3>
-                        <div className="flex gap-x-0.5">
+                        {/* <div className="flex gap-x-0.5">
                           <span className="font-semibold">by:</span>
                           <p>{value?.publisher}</p>
-                        </div>
-                        <div className="flex gap-x-0.5 font-semibold text-lg">
+                        </div> */}
+                        {/* <div className="flex gap-x-0.5 font-semibold text-lg">
                           <p className="">Rs:</p>
                           <span>{value?.price}</span>
-                        </div>
+                        </div> */}
                       </div>
                     {/* </Link> */}
                   </div>

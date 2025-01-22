@@ -161,7 +161,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   };
 
   return (
-    <div className="mb-4.5 flex">
+    <div className="mb-4.5 flex my-1">
       <label className="mb-2.5 block w-[200px] text-black dark:text-white">
         {" "}
         {label}

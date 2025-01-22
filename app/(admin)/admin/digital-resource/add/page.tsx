@@ -155,8 +155,8 @@ const AddDigitalResource = () => {
                   }}
                 />
                 <InputField
-                  label="Author"
-                  name="author"
+                  label="Resource Type"
+                  name="resource_type"
                   placeholder="enter author"
                   type="text"
                   defaultValue={inputFieldValue?.author}

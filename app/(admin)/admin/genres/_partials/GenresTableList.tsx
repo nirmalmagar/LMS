@@ -57,7 +57,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(`${process.env.HOST}books/${id}/`, {
+            const response = await fetch(`${process.env.HOST}genres/${id}/`, {
               method: "DELETE",
               headers: {
                 Authorization: `Bearer ${accessToken()}`,

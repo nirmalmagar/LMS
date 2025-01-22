@@ -17,24 +17,32 @@ interface ShowHeading {
   // showHeading?: boolean;
   // showMore?: boolean;
   // data: Record<string,any>[];
-  mutate: ()=>void;
+  mutate: () => void;
 }
 interface genresListProps {
   id: number;
   name: string;
 }
 
-const AddStaff: React.FC<ShowHeading> = ({  mutate }) => {
+const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
-  const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>([]); // Array to store selected genre IDs
+  const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>(
+    []
+  ); // Array to store selected genre IDs
 
   const LibraryURL = `${process.env.HOST}library-sections/`;
   const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
   const libraryList = libraryData?.results;
+
+  // const libraryURL = `${process.env.HOST}library-sections/`;
+  // const { data: libraryData } = useSWR(libraryURL, defaultFetcher);
+  // const libraryOption = collectionToOptions(
+  //   libraryData?.results ? libraryData?.results : []
+  // );
 
   // Callback for when an item is selected
   const handleSelect = (selectedList: genresListProps[]) => {
@@ -85,6 +93,7 @@ const AddStaff: React.FC<ShowHeading> = ({  mutate }) => {
       department: selectValues?.department,
       role: inputFieldValue?.role,
       authorized_sections: selectLibrarySection,
+      // authorized_sections: selectValues?.authorized_sections,
       tasks: inputFieldValue?.tasks,
       borrowing_period_days: inputFieldValue?.borrowing_period_days,
     };
@@ -153,20 +162,18 @@ const AddStaff: React.FC<ShowHeading> = ({  mutate }) => {
                 handleFieldChange("employee_id", e.target.value);
               }}
             />
-            <div className="w-full">
-              <SelectField
-                className="w-full"
-                options={departmentOption}
-                label="Department"
-                value={selectValues?.department}
-                defaultValue={""}
-                onChange={(e) => {
-                  handleSelectChange("department", {
-                    value: e.target.value,
-                  });
-                }}
-              />
-            </div>
+            <SelectField
+              className="w-full"
+              options={departmentOption}
+              label="Department"
+              value={selectValues?.department}
+              defaultValue={""}
+              onChange={(e) => {
+                handleSelectChange("department", {
+                  value: e.target.value,
+                });
+              }}
+            />
 
             <InputField
               type="text"
@@ -191,6 +198,18 @@ const AddStaff: React.FC<ShowHeading> = ({  mutate }) => {
               />
             </div>
 
+            {/* <SelectField
+              className="w-full"
+              options={libraryOption}
+              label="authorized section"
+              value={selectValues?.authorized_sections}
+              defaultValue={""}
+              onChange={(e) => {
+                handleSelectChange("authorized_sections", {
+                  value: e.target.value,
+                });
+              }}
+            /> */}
             <InputField
               type="text"
               label="Tasks"

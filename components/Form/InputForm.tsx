@@ -206,11 +206,13 @@ export interface InputFieldProps {
   min? : string
   max? : string
   ref?:any
+  accept?:any
 }
 
 const InputField: React.FC<InputFieldProps> = ({
   className = "",
   id,
+  accept,
   wrapperClassName = "",
   children,
   label,
@@ -285,6 +287,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onChange={onChange}
           ref={ref}
           readOnly={readonly}
+          accept="image/*"
         />
         {passwordField && (
             <span

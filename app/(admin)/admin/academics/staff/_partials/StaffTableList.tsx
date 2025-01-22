@@ -39,9 +39,16 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
   const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>([]); // Array to store selected genre IDs
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   
+  // const LibraryURL = `${process.env.HOST}library-sections/`;
+  // const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
+  // const libraryList = libraryData?.results;
+
+  // authorization section list in array
   const LibraryURL = `${process.env.HOST}library-sections/`;
-  const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
-  const libraryList = libraryData?.results;
+  const { data: LibraryData } = useSWR(LibraryURL, defaultFetcher);
+  const libraryOption = collectionToOptions(
+    LibraryData?.results ? LibraryData?.results : []
+  );
 
   // Callback for when an item is selected
   const handleSelect = (selectedList: genresListProps[]) => {
@@ -132,6 +139,13 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
         // ? selectValues?.user
         // : staffIdList?.user
     );
+  
+    // formData.set(
+    //   "authorized_sections",
+    //   selectValues?.authorized_sections
+    //     ? selectValues?.authorized_sections
+    //     : staffIdList?.authorized_sections
+    // );
     formData.set(
       "authorized_sections",
       selectValues?.authorized_sections
@@ -168,7 +182,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Staff"
+        modalTitle="Edit Staff"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditStaff}>
@@ -214,7 +228,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
               placeholder="Enter role"
               defaultValue={staffIdList?.role}
             />
-            <div className="flex gap-[70px]">
+            {/* <div className="flex gap-[70px]">
               <label htmlFor="" className="text-[15px]">Authorized</label>
               <Multiselect
                 selectedValues={staffIdList?.authorized_sections as string}
@@ -225,7 +239,21 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
                 onSelect={handleSelect} // Callback for when an item is selected
                 onRemove={handleRemove} // Callback for when an item is removed
               />
-            </div>
+            </div> */}
+
+              <SelectField
+                className="w-full"
+                options={libraryOption}
+                label="Authorized"
+                value={selectValues?.authorized}
+                defaultValue={staffIdList?.authorized_sections?.id as string}
+                onChange={(e) => {
+                  handleSelectChange("authorized_sections", {
+                    value: e.target.value,
+                  });
+                }}
+              />
+
             <InputField
               type="text"
               label="Tasks"
