@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
 import { toast } from "react-toastify";
 
-const VerifyOtp: React.FC<{
-  setIsEmailValid: (value: boolean) => void;
+const OtpVerify: React.FC<{
+  setIsEmailValid?: (value: boolean) => void;
   url: string;
   isStudent?: boolean;
 }> = ({ setIsEmailValid, url, isStudent = true }) => {
@@ -41,26 +41,19 @@ const VerifyOtp: React.FC<{
         body: toSendData,
       });
       const data = await response.json();
-      if (data?.success) {
-        toast.success(data?.message);
-        // isStudent
-        //   ? router.replace(
-        //       StudentDashboardRoutes.VERIFY_TOKEN_ROUTES.concat(
-        //         `/${data?.data?.token}`
-        //       )
-        //     )
-        //   : router.replace(
-        //       InstructorDashboardRoutes.VERIFY_TOKEN_ROUTES.concat(
-        //         `/${data?.data?.token}`
-        //       )
-        //     );
+      if (response.ok) {
+        toast.success("succcessss");
+        
       } else {
-        toast.error(data?.message);
-        setIsEmailValid(false);
+        toast.error("errrorrr");
+        // setIsEmailValid(false);
       }
     } catch (error: any) {
       toast.error(error?.message);
-      setIsEmailValid(false);
+      // setIsEmailValid(false);
+    }
+    finally{
+      toast.success("hello")
     }
   };
 
@@ -88,14 +81,14 @@ const VerifyOtp: React.FC<{
             </div>
             <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
               <p>Didn&apos;t receive code?</p>{" "}
-              <button
+              {/* <button
                 className="flex flex-row items-center font-semibold text-primary-600 hover:text-primary-500"
-                onClick={() => {
-                  setIsEmailValid(false);
-                }}
+                // onClick={() => {
+                //   setIsEmailValid(false);
+                // }}
               >
                 Resend
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -104,4 +97,4 @@ const VerifyOtp: React.FC<{
   );
 };
 
-export default VerifyOtp;
+export default OtpVerify;

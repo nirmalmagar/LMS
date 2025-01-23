@@ -33,9 +33,9 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   const [departmentsLists, setDepartmentsLists] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [departmentId, setDepartmentId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [error, setError] = useState<Record<string,any>>({});
 
   const DepartmentURL = `${process.env.HOST}departments/${departmentId}`;
   const { data: departmentIdList , mutate:editMutate } = useSWR(DepartmentURL, defaultFetcher);
@@ -86,6 +86,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
+    setError({});
   };
   // edit handle submit
   const handleEditDepartment = async (e: FormEvent<HTMLFormElement>) => {
@@ -103,14 +104,15 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
           },
         }
       );
-      // const data = await response.json();
+      const data = await response.json();
       if (response.ok) {
-        toast.success("grade update successfully ");
-        setShowPopUpModal(false);
+        toast.success("Department update successfully ");
         mutate();
         editMutate();
+        setError({});
+        setShowPopUpModal(false);
       } else {
-        toast.error("some thing went wrong");
+        setError(data);
       }
     } catch (e: any) {
       console.error(e);
@@ -157,7 +159,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Department"
+        modalTitle="Edit Department"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditDepartment}>
@@ -168,6 +170,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               name="name"
               placeholder="enter grade"
               defaultValue={departmentIdList?.name}
+              fieldErrors={error?.name ?? []}
             />
             <InputField
               type="text"
@@ -175,6 +178,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               name="head_of_department"
               placeholder="enter grade"
               defaultValue={departmentIdList?.head_of_department}
+              fieldErrors={error?.head_of_department ?? []}
             />
             <InputField
               type="text"
@@ -182,6 +186,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               name="description"
               placeholder="enter grade"
               defaultValue={departmentIdList?.description}
+              fieldErrors={error?.description ?? []}
             />
             <InputField
               type="text"
@@ -189,6 +194,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               name="phone_number"
               placeholder="enter grade"
               defaultValue={departmentIdList?.phone_number}
+              fieldErrors={error?.phone_number ?? []}
             />
             <InputField
               type="textarea"
@@ -196,6 +202,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               name="location"
               placeholder="enter grade"
               defaultValue={departmentIdList?.location}
+              fieldErrors={error?.location ?? []}
             />
             <InputField
               type="number"
@@ -203,6 +210,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               name="borrowing_period_days"
               placeholder="enter grade"
               defaultValue={departmentIdList?.borrowing_period_days}
+              fieldErrors={error?.borrowing_period_days ?? []}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -210,6 +218,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
+                setError({});
                 // setInputFieldValue({});
               }}
             >
@@ -226,7 +235,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       </Modal>
 
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddDepartment />}
+          {heading && <AddDepartment mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

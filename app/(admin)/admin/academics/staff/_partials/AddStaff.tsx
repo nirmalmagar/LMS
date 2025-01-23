@@ -39,13 +39,6 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
   const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
   const libraryList = libraryData?.results;
 
-  // const libraryURL = `${process.env.HOST}library-sections/`;
-  // const { data: libraryData } = useSWR(libraryURL, defaultFetcher);
-  // const libraryOption = collectionToOptions(
-  //   libraryData?.results ? libraryData?.results : []
-  // );
-
-  // Callback for when an item is selected
   const handleSelect = (selectedList: genresListProps[]) => {
     const ids = selectedList.map((genre) => genre.id); // Extract IDs from selected items
     setSelectLibrarySection(ids); // Update state
@@ -83,6 +76,8 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setSelectValues({});
+    setError({})
   };
 
   // book add button
@@ -113,6 +108,7 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
         toast.success("Add staff successfully");
         setInputFieldValue({});
         setSelectValues({});
+        setError({})
         setShowPopUpModal(false);
         mutate();
       } else {
@@ -204,18 +200,6 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               />
             </div>
 
-            {/* <SelectField
-              className="w-full"
-              options={libraryOption}
-              label="authorized section"
-              value={selectValues?.authorized_sections}
-              defaultValue={""}
-              onChange={(e) => {
-                handleSelectChange("authorized_sections", {
-                  value: e.target.value,
-                });
-              }}
-            /> */}
             <InputField
               type="text"
               label="Tasks"
@@ -233,7 +217,6 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               label="Borrowing Days"
               name="borrowing_period_days"
               placeholder="enter "
-              // defaultValue={inputFieldValue?.borrowing_period_days}
               onChange={(e: any) => {
                 handleFieldChange("borrowing_period_days", e.target.value);
               }}
@@ -246,6 +229,8 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setSelectValues({});
+                setError({})
               }}
             >
               Cancel

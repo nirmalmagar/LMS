@@ -2,15 +2,14 @@ import Btn from "../Btn";
 import OTPForm from "@/components/Form/OtpForm";
 import { useState, FormEvent } from "react";
 import { toast } from "react-toastify";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";  
 
 const VerifyOtp: React.FC<{
 }> = () => {
   const [OtpValue, setOtpValue] = useState<string>("");
   const [isOtpValid, setIsOtpValid] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
   const searchParams = useSearchParams();
-  const query = searchParams.get('query');
+  const query = searchParams.get('email');
 
   const handleOTPFormSubmit = async (
     e: FormEvent<HTMLFormElement>
@@ -34,7 +33,7 @@ const VerifyOtp: React.FC<{
         toast.error("errorr");
       }
     } catch (error: any) {
-      toast.error(error?.message);
+      toast.error(error);
     }
   };
 
@@ -50,9 +49,9 @@ const VerifyOtp: React.FC<{
       <form className="mt-2">
         <div className="flex flex-col">
           <OTPForm numberOfDigits={6} onOtpChange={handleOtpChange} />
-          <span className="text-red-500 text-[12px] text-right mt-4">
-            {!isOtpValid && error}
-          </span>
+          {/* <span className="text-red-500 text-[12px] text-right mt-4">
+            {!isOtpValid }
+          </span> */}
 
           <div className="flex flex-col items-center mt-4">
             <div className="bg-blue-600 rounded-lg mb-4">

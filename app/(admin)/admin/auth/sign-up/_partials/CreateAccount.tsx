@@ -75,7 +75,7 @@ const CreateAccount = () => {
       const data = await response.json();
       if (response?.ok && data) {
         toast.success(data?.message);
-        router.push(`${routes.ADMIN_VERIFY_OTP}?query=${inputFormValues?.email}`);
+        router.push(`${routes.ADMIN_VERIFY_OTP}?email=${inputFormValues?.email}`);
       } else {
         toast.error("something went wrong");
       }

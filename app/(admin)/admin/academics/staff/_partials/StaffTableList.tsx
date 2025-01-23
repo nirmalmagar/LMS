@@ -1,12 +1,11 @@
 "use client";
-import React, { FormEvent, useEffect, useState } from "react";
-import useSWR, { mutate } from "swr";
+import React, { FormEvent, useState } from "react";
+import useSWR from "swr";
 import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
 import AddStaff from "./AddStaff";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
@@ -38,17 +37,18 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>([]); // Array to store selected genre IDs
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  const [error, setError] = useState<Record<string,any>>({});
   
-  // const LibraryURL = `${process.env.HOST}library-sections/`;
-  // const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
-  // const libraryList = libraryData?.results;
+  const LibraryURL = `${process.env.HOST}library-sections/`;
+  const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
+  const libraryList = libraryData?.results;
 
   // authorization section list in array
-  const LibraryURL = `${process.env.HOST}library-sections/`;
-  const { data: LibraryData } = useSWR(LibraryURL, defaultFetcher);
-  const libraryOption = collectionToOptions(
-    LibraryData?.results ? LibraryData?.results : []
-  );
+  // const LibraryURL = `${process.env.HOST}library-sections/`;
+  // const { data: LibraryData } = useSWR(LibraryURL, defaultFetcher);
+  // const libraryOption = collectionToOptions(
+  //   LibraryData?.results ? LibraryData?.results : []
+  // );
 
   // Callback for when an item is selected
   const handleSelect = (selectedList: genresListProps[]) => {
@@ -127,31 +127,32 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
     setStaffId(id);
   };
   const handleCloseTap = () => {
+    setError({})
     setShowPopUpModal(false);
   };
   // edit handle submit
   const handleEditStaff = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    formData.set(
-      "user",
-      selectValues?.user
-        // ? selectValues?.user
-        // : staffIdList?.user
-    );
+    // formData.set(
+    //   "user",
+    //   selectValues?.user
+    //     ? selectValues?.user
+    //     : staffIdList?.user
+    // );
   
+    formData.append(
+      "authorized_sections",
+      selectValues?.authorized_sections
+        ? selectValues?.authorized_sections
+        : staffIdList?.authorized_sections
+    );
     // formData.set(
     //   "authorized_sections",
     //   selectValues?.authorized_sections
     //     ? selectValues?.authorized_sections
     //     : staffIdList?.authorized_sections
     // );
-    formData.set(
-      "authorized_sections",
-      selectValues?.authorized_sections
-        ? selectValues?.authorized_sections
-        : staffIdList?.authorized_sections
-    );
     try {
       const response = await fetch(
         `${process.env.HOST}staffs/${staffId}/`,
@@ -164,18 +165,20 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
           },
         }
       );
-      // const data = await response.json();
+      const data = await response.json();
+      console.log("authorized",data)
       if (response.ok) {
         toast.success("Staff update successfully ");
       setShowPopUpModal(false);
       } else {
-        toast.error("some thing went wrong");
+        setError(data)
+        toast.error("some thing went wrong",data?.authorized_sections);
       }
     } catch (e: any) {
       console.error(e);
     }
   };
-
+console.log("staffIdList",staffIdList)
   return (
     <>
       {/* edit Model popup  */}
@@ -193,7 +196,8 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
                 options={userOption}
                 label="Users"
                 value={selectValues?.user}
-                defaultValue={staffIdList?.user?.id as string}
+                defaultValue={staffIdList?.user?.id}
+                fieldErrors={error?.user ??[]}
                 onChange={(e) => {
                   handleSelectChange("user", {
                     value: e.target.value,
@@ -207,6 +211,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
               label="Employee name"
               name="employee_id"
               placeholder="Choose Employee name"
+              fieldErrors={error?.employee_id ?? []}
               defaultValue={staffIdList?.employee_id}
             />
             <SelectField
@@ -226,9 +231,10 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
               label="Role"
               name="role"
               placeholder="Enter role"
+              fieldErrors={error?.role ?? []}
               defaultValue={staffIdList?.role}
             />
-            {/* <div className="flex gap-[70px]">
+            <div className="flex gap-[70px]">
               <label htmlFor="" className="text-[15px]">Authorized</label>
               <Multiselect
                 selectedValues={staffIdList?.authorized_sections as string}
@@ -239,20 +245,21 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
                 onSelect={handleSelect} // Callback for when an item is selected
                 onRemove={handleRemove} // Callback for when an item is removed
               />
-            </div> */}
+            </div>
 
-              <SelectField
+              {/* <SelectField
                 className="w-full"
                 options={libraryOption}
                 label="Authorized"
                 value={selectValues?.authorized}
-                defaultValue={staffIdList?.authorized_sections?.id as string}
+                defaultValue={staffIdList?.authorized_sections?.id }
+                fieldErrors={error?.authorized_sections}
                 onChange={(e) => {
                   handleSelectChange("authorized_sections", {
                     value: e.target.value,
                   });
                 }}
-              />
+              /> */}
 
             <InputField
               type="text"
@@ -274,7 +281,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
-                // setInputFieldValue({});
+                setError({})
               }}
             >
               Cancel

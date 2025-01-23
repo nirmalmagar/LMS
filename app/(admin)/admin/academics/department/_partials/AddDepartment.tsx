@@ -7,22 +7,25 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
-
-const AddDepartment = () => {
+interface ShowHeading {
+  mutate: () => void;
+}
+const AddDepartment:React.FC<ShowHeading> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState<Record<string, any>>({});
 
   const handleFieldChange = (key: string, value: string): void => {
     // if (key && value) {
-      setInputFieldValue((prev) => ({ ...prev, [key]: value }));
+    setInputFieldValue((prev) => ({ ...prev, [key]: value }));
     // }
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setError({});
   };
   // book add button
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
@@ -49,14 +52,14 @@ const AddDepartment = () => {
       if (response.ok) {
         toast.success("data successfully insert");
         setShowPopUpModal(false);
+        setInputFieldValue({});
+        setError({});
+        mutate();
       } else {
-        toast.error(data?.phone_number[0]);
-        setError(data?.phone_number[0] );
+        setError(data);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
     }
   };
   return (
@@ -82,6 +85,7 @@ const AddDepartment = () => {
               name="name"
               placeholder="enter department name"
               // defaultValue={inputFieldValue?.name}
+              fieldErrors={error?.name ?? []}
               onChange={(e: any) => {
                 handleFieldChange("name", e.target.value);
               }}
@@ -93,31 +97,31 @@ const AddDepartment = () => {
               label="Department Head"
               name="head_of_department"
               placeholder="enter department head name"
+              fieldErrors={error?.head_of_department ?? []}
               // defaultValue={inputFieldValue?.head_of_department}
               onChange={(e: any) => {
                 handleFieldChange("head_of_department", e.target.value);
               }}
             />
-            
+
             <InputField
               type="textarea"
               label="Description"
               name="description"
               placeholder="enter description"
+              fieldErrors={error?.description ?? []}
               // defaultValue={inputFieldValue?.description}
               onChange={(e: any) => {
                 handleFieldChange("description", e.target.value);
               }}
             />
-            
+
             <InputField
               type="number"
               label="Phone no."
               name="phone_number"
               placeholder="enter phone number"
-              // fieldErrors={error?.phone_number ?? [] }
-              // fieldErrors={error?.phone_number[0] ?? ["hello error"] }
-              // defaultValue={inputFieldValue?.phone_number}
+              fieldErrors={error?.phone_number ?? []}
               onChange={(e: any) => {
                 handleFieldChange("phone_number", e.target.value);
               }}
@@ -127,6 +131,7 @@ const AddDepartment = () => {
               label="Location"
               name="location"
               placeholder="enter location"
+              fieldErrors={error?.location ?? []}
               // defaultValue={inputFieldValue?.location}
               onChange={(e: any) => {
                 handleFieldChange("location", e.target.value);
@@ -136,7 +141,8 @@ const AddDepartment = () => {
               type="number"
               label="Borrowing Days"
               name="borrowing_period_days"
-              placeholder="enter "
+              placeholder="enter borrowing days "
+              fieldErrors={error?.borrowing_period_days ?? []}
               // defaultValue={inputFieldValue?.borrowing_period_days}
               onChange={(e: any) => {
                 handleFieldChange("borrowing_period_days", e.target.value);
@@ -150,6 +156,7 @@ const AddDepartment = () => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setError({})
               }}
             >
               Cancel
