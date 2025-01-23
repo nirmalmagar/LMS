@@ -68,11 +68,11 @@ const AdminSidebar = () => {
         },
       ],
     },
-    {
-      name: "Digital Resources",
-      href: routes.DIGITAL_RESOURCE_LISTS,
-      icon: PresentationChartLineIcon,
-    },
+    /* {
+        name: "Digital Resources",
+        href: routes.DIGITAL_RESOURCE_LISTS,
+        icon: PresentationChartLineIcon,
+      }, */
     {
       name: "Academics",
       href: routes.ACADEMICS,

@@ -292,7 +292,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
         </form>
       </Modal>
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddStaff />}
+          {heading && <AddStaff mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

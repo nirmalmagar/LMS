@@ -28,11 +28,12 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
-    Record<string, string>
+    Record<string, any>
   >({});
   const [selectLibrarySection, setSelectLibrarySection] = useState<number[]>(
     []
   ); // Array to store selected genre IDs
+  const [error, setError] = useState<Record<string, any>>({});
 
   const LibraryURL = `${process.env.HOST}library-sections/`;
   const { data: libraryData } = useSWR(LibraryURL, defaultFetcher);
@@ -110,11 +111,12 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
       const data = await response.json();
       if (response.ok) {
         toast.success("Add staff successfully");
-        mutate();
         setInputFieldValue({});
+        setSelectValues({});
         setShowPopUpModal(false);
+        mutate();
       } else {
-        toast.error("some error on field");
+        setError(data)
       }
     } catch (error) {
       console.error(error);
@@ -137,12 +139,12 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
       >
         <form id="lead-form" onSubmit={handleAddStaff}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <div className="w-full">
               <SelectField
-                className="w-full ml-40"
+                // className="w-full ml-40"
                 options={userOption}
                 label="Users"
                 value={selectValues?.user}
+                fieldErrors={error?.user ?? []}
                 defaultValue={""}
                 onChange={(e) => {
                   handleSelectChange("user", {
@@ -150,7 +152,6 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
                   });
                 }}
               />
-            </div>
 
             <InputField
               type="text"
@@ -158,6 +159,7 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               name="employee_id"
               placeholder="enter department head name"
               // defaultValue={inputFieldValue?.employee_id}
+              fieldErrors={error?.employee_id ?? []}
               onChange={(e: any) => {
                 handleFieldChange("employee_id", e.target.value);
               }}
@@ -168,6 +170,7 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               label="Department"
               value={selectValues?.department}
               defaultValue={""}
+              fieldErrors={error?.department}
               onChange={(e) => {
                 handleSelectChange("department", {
                   value: e.target.value,
@@ -184,10 +187,13 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               onChange={(e: any) => {
                 handleFieldChange("role", e.target.value);
               }}
+              fieldErrors={error?.role}
             />
 
             <div className="flex gap-[70px]">
-              <label htmlFor="" className="text-[15px]">Authorized</label>
+              <label htmlFor="" className="text-[15px]">
+                Authorized
+              </label>
               <Multiselect
                 placeholder="selcet library sections"
                 className="text-sm leading-4 w-full flex-1"
@@ -216,6 +222,7 @@ const AddStaff: React.FC<ShowHeading> = ({ mutate }) => {
               name="tasks"
               placeholder="enter tasks"
               // defaultValue={inputFieldValue?.borrowing_period_days}
+              fieldErrors={error?.tasks}
               onChange={(e: any) => {
                 handleFieldChange("tasks", e.target.value);
               }}

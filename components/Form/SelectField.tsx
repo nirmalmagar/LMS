@@ -190,7 +190,11 @@ const SelectField: React.FC<SelectFieldProps> = ({
             </option>
           ))}
         </select>
-
+        <span className="block text-red-500 text-xs my-1">
+          {fieldErrors.map((item: string, index: any) => (
+            <span key={index}>{item}</span>
+          ))}
+        </span>
         <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
           <svg
             className="fill-current"
