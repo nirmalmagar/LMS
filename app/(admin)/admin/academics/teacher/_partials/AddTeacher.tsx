@@ -12,9 +12,13 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 import SelectField from "@/components/Form/SelectField";
 
-const AddTeacher = () => {
+interface teacherProps{
+  mutate:()=>void;
+}
+const AddTeacher:React.FC<teacherProps> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  const [error, setError] = useState<Record<string,any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
@@ -52,6 +56,7 @@ const AddTeacher = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
     setSelectValues({});
+    setError({});
   };
 
   // book add button
@@ -78,11 +83,10 @@ const AddTeacher = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("teacher data successfully insert");
-        setInputFieldValue({});
-        setSelectValues({});
-        setShowPopUpModal(false);
+        handleCloseTap();
+        mutate();
       } else {
-        toast.error("some error", data?.user[0]);
+        setError(data);
       }
     } catch (error) {
       console.error(error);
@@ -111,6 +115,7 @@ const AddTeacher = () => {
               label="User"
               value={selectValues?.user}
               defaultValue={""}
+              fieldErrors={error?.user ?? []}
               onChange={(e) => {
                 handleSelectChange("user", {
                   value: e.target.value,
@@ -124,6 +129,7 @@ const AddTeacher = () => {
               name="employee_id"
               placeholder="enter department head name"
               // defaultValue={inputFieldValue?.employee_id}
+              fieldErrors={error?.employee_id ?? []}
               onChange={(e: any) => {
                 handleFieldChange("employee_id", e.target.value);
               }}
@@ -134,6 +140,7 @@ const AddTeacher = () => {
               label="grade"
               value={selectValues?.grade}
               defaultValue={""}
+              fieldErrors={error?.grade ?? []}
               onChange={(e) => {
                 handleSelectChange("grade", {
                   value: e.target.value,
@@ -146,6 +153,7 @@ const AddTeacher = () => {
               options={departmentOption}
               label="Department"
               value={selectValues?.department}
+              fieldErrors={error?.department ?? []}
               onChange={(e) => {
                 handleSelectChange("department", {
                   value: e.target.value,
@@ -159,6 +167,7 @@ const AddTeacher = () => {
               name="designation"
               placeholder="enter "
               // defaultValue={inputFieldValue?.designation}
+              fieldErrors={error?.designation ?? []}
               onChange={(e: any) => {
                 handleFieldChange("designation", e.target.value);
               }}
@@ -169,6 +178,7 @@ const AddTeacher = () => {
               name="borrowing_period_days"
               placeholder="enter "
               // defaultValue={inputFieldValue?.borrowing_period_days}
+              fieldErrors={error?.borrowing_period_days ?? []}
               onChange={(e: any) => {
                 handleFieldChange("borrowing_period_days", e.target.value);
               }}
@@ -178,11 +188,7 @@ const AddTeacher = () => {
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
-              onClick={() => {
-                setShowPopUpModal(false);
-                setInputFieldValue({});
-                setSelectValues({});
-              }}
+              onClick={handleCloseTap}
             >
               Cancel
             </Btn>

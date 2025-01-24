@@ -12,12 +12,15 @@ import { toast } from "react-toastify";
 import Multiselect from "multiselect-react-dropdown";
 import { AuthContext } from "@/context/AuthContext";
 
+interface boookListProps{
+  mutate:()=>void;
+}
 interface genresListProps{
   id:number;
   name:string;
 }
 
-const AddBookLists = () => {
+const AddBookLists:React.FC<boookListProps> = ({mutate}) => {
   const { genres } = useContext(AuthContext);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null>("");
@@ -39,7 +42,6 @@ const AddBookLists = () => {
   // image change handler
   const ImageChangeHandler = (e: any) => {
     const imageURL = e.target.files[0];
-    setError(imageURL);
     setImageUrl(URL.createObjectURL(imageURL));
   };
 
@@ -50,11 +52,17 @@ const AddBookLists = () => {
     }
   };
 
+  function handleCloseModal(){
+    setInputFieldValue({})
+    setShowPopUpModal(false);
+    setError({})
+    setSelectedGenreIds([]);
+  }
   // book add button
   const handleAddBooks = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = {
-      cover: error,
+      // cover: error,
       title: inputFieldValue?.title,
       description: inputFieldValue?.description,
       author: inputFieldValue?.author,
@@ -78,10 +86,11 @@ const AddBookLists = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success(data?.message);
-        setInputFieldValue({})
-        setShowPopUpModal(false);
+        handleCloseModal();
+        mutate();
       } else {
-        toast.error("some error on field");
+        setError(data);
+        toast.success(data?.genres)
       }
     } catch (error) {
       console.error(error);
@@ -99,7 +108,7 @@ const AddBookLists = () => {
       />
       <Modal
         show={showPopUpModal}
-        handleClose={() => setShowPopUpModal(false)}
+        handleClose={() => handleCloseModal()}
         modalTitle="Add Books"
         size="lg"
       >
@@ -131,6 +140,7 @@ const AddBookLists = () => {
                     name="cover"
                     type="file"
                     accept="image/*"
+                    fieldErrors={error?.cover ?? []}
                     onChange={(e) => ImageChangeHandler(e)}
                   />
                   {imageUrl && (
@@ -149,8 +159,8 @@ const AddBookLists = () => {
                   name="title"
                   placeholder="enter title"
                   type="text"
-                  // fieldErrors={}
                   defaultValue={inputFieldValue?.title}
+                  fieldErrors={error?.title ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("title", e.target.value);
                   }}
@@ -161,16 +171,18 @@ const AddBookLists = () => {
                   placeholder="enter author"
                   type="text"
                   defaultValue={inputFieldValue?.author}
+                  fieldErrors={error?.author ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("author", e.target.value);
                   }}
                 />
                 <InputField
                   label="Publisher"
-                  name="text"
+                  name="publisher"
                   placeholder="enter publisher"
                   type="text"
                   defaultValue={inputFieldValue?.publisher}
+                  fieldErrors={error?.publisher ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("publisher", e.target.value);
                   }}
@@ -181,6 +193,7 @@ const AddBookLists = () => {
                   name="pages"
                   placeholder="Enter pages"
                   defaultValue={inputFieldValue?.pages}
+                  fieldErrors={error?.pages ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("pages", e.target.value);
                   }}
@@ -191,6 +204,7 @@ const AddBookLists = () => {
                   name="price"
                   placeholder="Enter price"
                   defaultValue={inputFieldValue?.price}
+                  fieldErrors={error?.price ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("price", e.target.value);
                   }}
@@ -201,6 +215,7 @@ const AddBookLists = () => {
                   name="quantity"
                   placeholder="Enter quantity"
                   defaultValue={inputFieldValue?.quantity}
+                  fieldErrors={error?.quantity ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("quantity", e.target.value);
                   }}
@@ -211,6 +226,7 @@ const AddBookLists = () => {
                   name="isbn"
                   placeholder="Enter isbn"
                   defaultValue={inputFieldValue?.isbn}
+                  fieldErrors={error?.isbn ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("isbn", e.target.value);
                   }}
@@ -231,6 +247,7 @@ const AddBookLists = () => {
                   name="description"
                   placeholder="enter description"
                   defaultValue={inputFieldValue?.description}
+                  fieldErrors={error?.description ?? []}
                   onChange={(e: any) => {
                     handleFieldChange("description", e.target.value);
                   }}
@@ -242,10 +259,7 @@ const AddBookLists = () => {
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
-              onClick={() => {
-                setShowPopUpModal(false);
-                // setClearSelectValue(true);
-              }}
+              onClick={() => handleCloseModal()}
             >
               Cancel
             </Btn>

@@ -32,6 +32,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [libraryId, setLibraryId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [error, setError] = useState<Record<string,any>>({});
 
   const LibraryURL = `${process.env.HOST}library-sections/${libraryId}`;
   const { data: libraryIdList } = useSWR(LibraryURL, defaultFetcher);
@@ -102,12 +103,12 @@ const LibraryTableList: React.FC<ShowHeading> = ({
           },
         }
       );
-      // const data = await response.json();
+      const data = await response.json();
       if (response.ok) {
         toast.success("Library section update successfully ");
         mutate();
       } else {
-        toast.error("some thing went wrong");
+        setError(data);
       }
     } catch (e: any) {
       console.error(e);
@@ -192,6 +193,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
               name="name"
               placeholder="Edit Name"
               defaultValue={libraryIdList?.name}
+              fieldErrors={error?.name ?? []}
             />
             <InputField
               type="text"
@@ -199,6 +201,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
               name="description"
               placeholder="Edit Description"
               defaultValue={libraryIdList?.description}
+              fieldErrors={error?.description ?? []}
             />
             <InputField
               type="textarea"
@@ -206,6 +209,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
               name="location"
               placeholder="Edit Location"
               defaultValue={libraryIdList?.location}
+              fieldErrors={error?.location ?? []}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -241,7 +245,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
         </p>
       ) : (
         <div className="mt-8 max-w-[900px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddLibrary />}
+          {heading && <AddLibrary mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

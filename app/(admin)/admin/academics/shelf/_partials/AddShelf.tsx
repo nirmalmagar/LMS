@@ -12,12 +12,16 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 import SelectField from "@/components/Form/SelectField";
 
-const AddShelves = () => {
+interface shelvesProps{
+  mutate:()=>void;
+}
+const AddShelves:React.FC<shelvesProps> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string,any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
+  const [error,setError] = useState<Record<string,any>>({});
 
   // library section lists
   const {data:libraryData} = useSWR(`${process.env.HOST}library-sections/`, defaultFetcher);
@@ -38,14 +42,15 @@ const AddShelves = () => {
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setError({});
   };
   // shelf add button
   const handleAddShelves = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      name: inputFieldValue?.name,
+      number: inputFieldValue?.number,
       description: inputFieldValue?.description,
-      section: inputFieldValue?.section,
+      section: selectValues?.section,
     };
     try {
       const response = await fetch(`${process.env.HOST}shelves/`, {
@@ -60,14 +65,13 @@ const AddShelves = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("data successfully insert");
+        handleCloseTap();
+        mutate();
       } else {
-        toast.error("some error on field");
+        setError(data);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
-      setShowPopUpModal(false);
     }
   };
   return (
@@ -92,7 +96,8 @@ const AddShelves = () => {
               label="shelves name"
               name="number"
               placeholder="shelves Name"
-              // defaultValue={inputFieldValue?.name}
+              defaultValue={inputFieldValue?.name}
+              fieldErrors={error?.number ?? []}
               onChange={(e: any) => {
                 handleFieldChange("number", e.target.value);
               }}
@@ -102,6 +107,7 @@ const AddShelves = () => {
               label="section"
               name="section"
               options={libraryOptions}
+              fieldErrors={error?.section ?? []}
               onChange={(e)=>{
                 handleSelectChange("section",{
                   value:e.target.value
@@ -115,6 +121,7 @@ const AddShelves = () => {
                 name="description"
                 placeholder="Edit Description"
                 // defaultValue={inputFieldValue?.description}
+                fieldErrors={error?.description ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("description", e.target.value);
                 }}
@@ -127,6 +134,7 @@ const AddShelves = () => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setError({});
               }}
             >
               Cancel

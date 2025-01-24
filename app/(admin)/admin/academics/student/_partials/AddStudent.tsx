@@ -12,6 +12,9 @@ import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 
+interface studentProps{
+  mutate:()=>void;
+}
 const semesterOptions = [
   {
     value: "first",
@@ -47,13 +50,14 @@ const semesterOptions = [
   },
 ];
 
-const AddStudent = () => {
+const AddStudent:React.FC<studentProps> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValue, setSelectValue] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
-
+  const [error, setError] = useState<Record<string,any>>({});
+  console.log("gradee", selectValue);
   const { data: userData } = useSWR(`${process.env.HOST}user/`, defaultFetcher);
   const userList = collectionToOptions(
     userData?.results ? userData?.results : []
@@ -83,6 +87,7 @@ const AddStudent = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
     setSelectValue({});
+    setError({});
   };
 
   // book add button
@@ -95,8 +100,8 @@ const AddStudent = () => {
       symbol_number: inputFieldValue?.symbol_number,
       grade: inputFieldValue?.grade,
       department: selectValue?.department,
+      // semester: inputFieldValue?.semester,
       semester: selectValue?.semester,
-      // semester: selectValue?.semester,
       borrowing_period_days: inputFieldValue?.borrowing_period_days,
     };
     try {
@@ -114,9 +119,10 @@ const AddStudent = () => {
         toast.success("studnet data successfully insert");
         setInputFieldValue({});
         setSelectValue({});
+        mutate();
         setShowPopUpModal(false);
       } else {
-        toast.error("some error on field");
+        setError(data);
       }
     } catch (error) {
       console.error(error);
@@ -144,6 +150,7 @@ const AddStudent = () => {
               options={userList}
               defaultValue={selectValue?.user}
               value={selectValue?.user}
+              fieldErrors={error?.user  ?? []}
               onChange={(e) => {
                 handleSelectChange("user", {
                   value: e.target.value,
@@ -157,6 +164,7 @@ const AddStudent = () => {
               name="roll_number"
               placeholder="enter roll number"
               // defaultValue={inputFieldValue?.roll_number}
+              fieldErrors={error?.roll_number  ?? []}
               onChange={(e: any) => {
                 handleFieldChange("roll_number", e.target.value);
               }}
@@ -167,6 +175,7 @@ const AddStudent = () => {
               name="registration_number"
               placeholder="Enter registration_number"
               defaultValue={inputFieldValue?.registration_number}
+              fieldErrors={error?.registration_number  ?? []}
               onChange={(e: any) => {
                 handleFieldChange("registration_number", e.target.value);
               }}
@@ -177,6 +186,7 @@ const AddStudent = () => {
               name="symbol_number"
               placeholder="Enter Symbol no."
               // defaultValue={inputFieldValue?.symbol_number}
+              fieldErrors={error?.symbol_number  ?? []}
               onChange={(e: any) => {
                 handleFieldChange("symbol_number", e.target.value);
               }}
@@ -187,6 +197,7 @@ const AddStudent = () => {
               name="grade"
               placeholder="enter grade"
               defaultValue={inputFieldValue?.grade}
+              fieldErrors={error?.grade  ?? []}
               onChange={(e: any) => {
                 handleFieldChange("grade", e.target.value);
               }}
@@ -196,38 +207,43 @@ const AddStudent = () => {
               options={departmentOption}
               name="department"
               value={selectValue?.department}
-              // defaultValue={inputFieldValue?.department}
+              defaultValue={selectValue?.department}
+              fieldErrors={error?.department  ?? []}
               onChange={(e: any) => {
                 handleSelectChange("department", e.target.value);
               }}
             />
-            {/* <SelectField
+            <SelectField
               label="Semester"
               options={semesterOptions}
               value={selectValue?.semester}
+              defaultValue={selectValue?.semester}
+              fieldErrors={error?.semester  ?? []}
               onChange={(e) => {
                 handleSelectChange("semester", {
                   value: e.target.value,
                 });
               }}
             />
-             */}
-            <InputField
+            
+            {/* <InputField
               type="text"
               label="Semester"
               name="semester"
               placeholder="enter semester"
               // defaultValue={inputFieldValue?.semester}
+              fieldErrors={error?.semester  ?? []}
               onChange={(e: any) => {
                 handleFieldChange("semester", e.target.value);
               }}
-            />
+            /> */}
             <InputField
               type="number"
               label="Borrowing Days"
               name="borrowing_period_days"
               placeholder="enter borrowing period days"
               // defaultValue={inputFieldValue?.borrowing_period_days}
+              fieldErrors={error?.borrowing_period_days  ?? []}
               onChange={(e: any) => {
                 handleFieldChange("borrowing_period_days", e.target.value);
               }}
@@ -241,6 +257,7 @@ const AddStudent = () => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
                 setSelectValue({});
+                setError({});
               }}
             >
               Cancel

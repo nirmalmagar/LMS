@@ -134,12 +134,12 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
   const handleEditStaff = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    // formData.set(
-    //   "user",
-    //   selectValues?.user
-    //     ? selectValues?.user
-    //     : staffIdList?.user
-    // );
+    formData.set(
+      "user",
+      selectValues?.user
+        ? selectValues?.user
+        : staffIdList?.user
+    );
   
     formData.append(
       "authorized_sections",
@@ -166,10 +166,9 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
         }
       );
       const data = await response.json();
-      console.log("authorized",data)
       if (response.ok) {
         toast.success("Staff update successfully ");
-      setShowPopUpModal(false);
+        setShowPopUpModal(false);
       } else {
         setError(data)
         toast.error("some thing went wrong",data?.authorized_sections);
@@ -178,7 +177,6 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
       console.error(e);
     }
   };
-console.log("staffIdList",staffIdList)
   return (
     <>
       {/* edit Model popup  */}

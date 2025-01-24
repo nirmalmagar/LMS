@@ -13,6 +13,7 @@ const CreateAccount = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Record<string,any>>({});
   const [inputFormValues, setInputFormValues] = useState<
     Record<string, string>
   >({});
@@ -77,7 +78,7 @@ const CreateAccount = () => {
         toast.success(data?.message);
         router.push(`${routes.ADMIN_VERIFY_OTP}?email=${inputFormValues?.email}`);
       } else {
-        toast.error("something went wrong");
+        setError(data);
       }
     } catch (e) {
       console.error("error", e);
@@ -121,7 +122,7 @@ const CreateAccount = () => {
                 <div>
                   <h1 className="font-semibold text-gray-500 mb-4">Users Data</h1>
                   <InputField
-                  labelWidth="w-full"
+                    labelWidth="w-full"
                     name="first_name"
                     label="First Name"
                     id="name"
@@ -131,6 +132,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={inputFormValues?.first_name}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.first_name ?? []}
                     onChange={(e: any) => {
                       handleFieldChange("first_name", e.target.value);
                     }}
@@ -148,6 +150,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={inputFormValues?.middle_name}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.middle_name ?? []}
                     onChange={(e: any) => {
                       handleFieldChange("middle_name", e.target.value);
                     }}
@@ -164,6 +167,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={inputFormValues?.last_name}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.last_name ?? []}
                     onChange={(e: any) => {
                       handleFieldChange("last_name", e.target.value);
                     }}
@@ -182,6 +186,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={inputFormValues?.email}
                     // fieldErrors={error?.email ?? []}
+                    fieldErrors={error?.email ?? []}
                     onChange={(e: any) => {
                       handleFieldChange("email", e.target.value);
                     }}
@@ -204,6 +209,7 @@ const CreateAccount = () => {
                     passwordField={true}
                     value={inputFormValues?.password}
                     // fieldErrors={error?.password ?? []}
+                    fieldErrors={error?.password ?? []}
                     onChange={(e: any) => {
                       handleFieldChange("password", e.target.value);
                     }}
@@ -225,6 +231,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={userFormValues?.address}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.address ?? []}
                     onChange={(e: any) => {
                       handleUserFieldChange("address", e.target.value);
                     }}
@@ -242,6 +249,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={userFormValues?.phone_number}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.phone_number ?? []}
                     onChange={(e: any) => {
                       handleUserFieldChange("phone_number", e.target.value);
                     }}
@@ -258,6 +266,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={userFormValues?.date_of_birth}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.date_of_birth ?? []}
                     onChange={(e: any) => {
                       handleUserFieldChange("date_of_birth", e.target.value);
                     }}
@@ -276,6 +285,7 @@ const CreateAccount = () => {
                     // defaultValue={parseInt(searchParams?.get("is_present")!)}
                     // value={userFormValues?.gender}
                     value={selectValues?.gender}
+                    fieldErrors={error?.gender ?? []}
                     onChange={(choice: any) =>
                       handleStateChange("is_present", choice)
                     }
@@ -292,6 +302,7 @@ const CreateAccount = () => {
                     wrapperClassName="flex"
                     value={userFormValues?.bio}
                     // fieldErrors={error?.name ?? []}
+                    fieldErrors={error?.bio ?? []}
                     onChange={(e: any) => {
                       handleUserFieldChange("bio", e.target.value);
                     }}

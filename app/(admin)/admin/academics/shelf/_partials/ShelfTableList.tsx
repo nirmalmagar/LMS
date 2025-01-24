@@ -14,6 +14,7 @@ import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
+import { setErrorMap } from "zod";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -28,13 +29,14 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [shelvesList, setShelvesList] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [shelvesId, setShelvesId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string,any>>({});
+  const [error, setError]= useState<Record<string,any>>({});
 
-  const { data:shelvesData, mutate } = useSWR(`${process.env.HOST}shelves/`, defaultFetcher);
+  const { data:shelvesData, isLoading, mutate } = useSWR(`${process.env.HOST}shelves/?page=${currentPage}`, defaultFetcher);
 
+  // edit id list
   const ShelvesURL = `${process.env.HOST}shelves/${shelvesId}`;  
   const { data: shelvesIdList, mutate:editMutate } = useSWR(ShelvesURL, defaultFetcher);
 
@@ -111,13 +113,14 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
           Accept: "application/json",
         },
       });
-      // const data = await response.json();
+      const data = await response.json();
       if (response.ok) {
         toast.success("Shelves update successfully ");
         setShowPopUpModal(false);
         editMutate();
+        mutate();
       } else {
-        toast.error("some thing went wrong");
+        setError(data);
       }
     } catch (e: any) {
       console.error(e);
@@ -125,29 +128,29 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   };
 
   // fetch shelves lists
-  const ShelvesList = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.HOST}shelves/?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setShelvesList(data?.results);
-      setIsLoading(false);
-      mutate();
-    } catch (e) {
-      console.log("error", e);
-      setIsLoading(false);
-    }
-  };
+  // const ShelvesList = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.HOST}shelves/?page=${currentPage}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken()}`,
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     setTotalPages(data?.total_pages);
+  //     setCurrentPage(data?.current_page);
+  //     setShelvesList(data?.results);
+  //     setIsLoading(false);
+  //     mutate();
+  //   } catch (e) {
+  //     console.log("error", e);
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // pagination number lists in array
   let totalPageArray = shelvesList
@@ -179,9 +182,6 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       setCurrentPage(page);
     }
   };
-  useEffect(() => {
-    ShelvesList();
-  }, [currentPage]);
 
   return (
     <>
@@ -189,7 +189,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Shelves"
+        modalTitle="Edit Shelves"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditShelves}>
@@ -198,8 +198,8 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               type="text"
               label="Number"
               name="number"
-              placeholder="Enter number"
               defaultValue={shelvesIdList?.number}
+              fieldErrors={error?.number ?? []}
             />
             <SelectField
               label="section"
@@ -207,6 +207,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               options={libraryOptions}
               value={selectValues?.section}
               defaultValue={shelvesIdList?.section?.id}
+              fieldErrors={error?.section ?? []}
               onChange={(e) => {
                 handleSelectChange("section", {
                   value: e.target.value,
@@ -217,8 +218,8 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               type="text"
               label="Description"
               name="description"
-              placeholder="Enter Description"
               defaultValue={shelvesIdList?.description}
+              fieldErrors={error?.description ?? []}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -226,6 +227,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
+                setError({});
               }}
             >
               Cancel
@@ -249,7 +251,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         </p>
       ) : (
         <div className="mt-8 max-w-[1000px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddShelves />}
+          {heading && <AddShelves mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>
@@ -316,7 +318,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+            {/* <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -330,7 +332,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               >
                 <MdChevronRight className="w-5 h-5" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       )}

@@ -27,6 +27,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [editValue, setEditValue] = useState<Record<string, any>>({});
+  const [error, setError] = useState<Record<string,any>>({});
   const [id, setId] = useState<number>();
 
   const GenresListURL = `${process.env.HOST}genres/?page=${currentPage}`;
@@ -84,12 +85,19 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     setShowPopUpModal(true);
   };
 
+  // handle close tap
+  function handleCloseTap() {
+    setShowPopUpModal(false);
+    setEditValue({});
+    setError({});
+  }
+
   // edit handler
   const handleEditBook = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(`${process.env.HOST}genres/${id}`, {
+      const response = await fetch(`${process.env.HOST}genres/${id}/`, {
         method: "PUT",
         body: formData,
         headers: {
@@ -99,23 +107,19 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       });
       const data = response.json();
       if (response.ok) {
-        setShowPopUpModal(false);
         toast.success("update genres successfully");
+        handleCloseTap();
         mutate?.();
         editMutate();
       }
       else{
-        toast.error("something went wrong");
+        setError(data);
       }
     } catch (e) {
       console.error("error ", e);
     }
   };
 
-  function handleCloseTap() {
-    setShowPopUpModal(false);
-    setEditValue({});
-  }
 
   let totalPageArray = genresData?.results
     ? Array.from({ length: genresData?.total_pages }, (_, index) => index + 1)
@@ -166,6 +170,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               name="name"
               placeholder="enter grade"
               defaultValue={editBookList?.name}
+              fieldErrors={error?.name ?? []}
               // onChange={(e: any) => {
               //   handleFieldChange("name", e.target.value);
               // }}
@@ -175,10 +180,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
-              onClick={() => {
-                setShowPopUpModal(false);
-                // setInputFieldValue({});
-              }}
+              onClick={()=>handleCloseTap()}
             >
               Cancel
             </Btn>
@@ -197,7 +199,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         </p>
       ) : (
         <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddGenre />}
+          {heading && <AddGenre mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

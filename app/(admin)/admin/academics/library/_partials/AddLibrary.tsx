@@ -8,12 +8,15 @@ import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
 
-const AddLibrary = () => {
+interface libraryProps{
+  mutate:()=>void;
+}
+const AddLibrary:React.FC<libraryProps> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
-
+  const [error, setError] = useState<Record<string,any>>({});
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
@@ -22,6 +25,7 @@ const AddLibrary = () => {
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setError({})
   };
   // book add button
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
@@ -44,14 +48,13 @@ const AddLibrary = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("data successfully insert");
+        handleCloseTap();
+        mutate();
       } else {
-        toast.error("some error on field");
+        setError(data);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
-      setShowPopUpModal(false);
     }
   };
   return (
@@ -75,8 +78,9 @@ const AddLibrary = () => {
               type="text"
               label="Library name"
               name="name"
-              placeholder="Edit Library Name"
-              // defaultValue={inputFieldValue?.name}
+              placeholder="Add Library Name"
+              defaultValue={inputFieldValue?.name}
+              fieldErrors={error?.name ?? []}
               onChange={(e: any) => {
                 handleFieldChange("name", e.target.value);
               }}
@@ -86,8 +90,9 @@ const AddLibrary = () => {
               type="textarea"
               label="Description"
               name="description"
-              placeholder="Edit Description"
+              placeholder="Add Description"
               // defaultValue={inputFieldValue?.description}
+              fieldErrors={error?.description ?? []}
               onChange={(e: any) => {
                 handleFieldChange("description", e.target.value);
               }}
@@ -96,8 +101,9 @@ const AddLibrary = () => {
               type="text"
               label="Location"
               name="location"
-              placeholder="Edit Location"
+              placeholder="Add Location"
               // defaultValue={inputFieldValue?.location}
+              fieldErrors={error?.location ?? []}
               onChange={(e: any) => {
                 handleFieldChange("location", e.target.value);
               }}
@@ -110,6 +116,7 @@ const AddLibrary = () => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setError({});
               }}
             >
               Cancel

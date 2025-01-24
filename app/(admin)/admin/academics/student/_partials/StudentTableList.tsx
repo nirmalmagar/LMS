@@ -66,8 +66,11 @@ const StudentTableList: React.FC<ShowHeading> = ({
 
   const [studentId, setStudentId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [selectValue, setSelectValue] = useState<Record<string,any>>({});
-  const [inputFieldValue, setInputFieldValue] = useState<Record<string,any>>({});
+  const [selectValue, setSelectValue] = useState<Record<string, any>>({});
+  const [inputFieldValue, setInputFieldValue] = useState<Record<string, any>>(
+    {}
+  );
+  const [error, setError] = useState<Record<string, any>>({});
 
   const { data: userData } = useSWR(`${process.env.HOST}user/`, defaultFetcher);
   const userList = collectionToOptions(
@@ -142,8 +145,12 @@ const StudentTableList: React.FC<ShowHeading> = ({
     setShowPopUpModal(true);
     setStudentId(id);
   };
+
   const handleCloseTap = () => {
     setShowPopUpModal(false);
+    setSelectValue({});
+    setInputFieldValue({})
+    setError({})
   };
   // edit handle submit
   const handleEditStudent = async (e: FormEvent<HTMLFormElement>) => {
@@ -161,14 +168,15 @@ const StudentTableList: React.FC<ShowHeading> = ({
           },
         }
       );
-      // const data = await response.json();
+      const data = await response.json();
       if (response.ok) {
         toast.success("Student update successfully ");
         setShowPopUpModal(false);
         mutate();
         editMutate();
+        handleCloseTap();
       } else {
-        toast.error("something went wrong");
+        setError(data);
       }
     } catch (e: any) {
       console.error(e);
@@ -185,12 +193,13 @@ const StudentTableList: React.FC<ShowHeading> = ({
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditStudent}>
-        <div className=" px-4 py-4 rounded-lg border border-gray-200">
+          <div className=" px-4 py-4 rounded-lg border border-gray-200">
             <SelectField
               label="user"
               options={userList}
               defaultValue={studentIdList?.user?.id}
               value={selectValue?.user}
+              fieldErrors={error?.user ?? []}
               onChange={(e) => {
                 handleSelectChange("user", {
                   value: e.target.value,
@@ -204,6 +213,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
               name="roll_number"
               placeholder="enter roll number"
               defaultValue={studentIdList?.roll_number}
+              fieldErrors={error?.roll_number ?? []}
               onChange={(e: any) => {
                 handleFieldChange("roll_number", e.target.value);
               }}
@@ -215,6 +225,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
               placeholder="Enter registration_number"
               defaultValue={studentIdList?.registration_number}
               value={inputFieldValue?.registration_number}
+              fieldErrors={error?.registration_number ?? []}
               onChange={(e: any) => {
                 handleFieldChange("registration_number", e.target.value);
               }}
@@ -226,6 +237,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
               placeholder="Enter Symbol no."
               defaultValue={studentIdList?.symbol_number}
               value={inputFieldValue?.symbol_number}
+              fieldErrors={error?.symbol_number ?? []}
               onChange={(e: any) => {
                 handleFieldChange("symbol_number", e.target.value);
               }}
@@ -237,6 +249,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
               placeholder="enter grade"
               defaultValue={studentIdList?.grade}
               value={inputFieldValue?.grade}
+              fieldErrors={error?.grade ?? []}
               onChange={(e: any) => {
                 handleFieldChange("grade", e.target.value);
               }}
@@ -247,6 +260,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
               name="department"
               value={selectValue?.department}
               defaultValue={studentIdList?.department?.id}
+              fieldErrors={error?.department ?? []}
               onChange={(e: any) => {
                 handleSelectChange("department", e.target.value);
               }}
@@ -256,19 +270,21 @@ const StudentTableList: React.FC<ShowHeading> = ({
               options={semesterOptions}
               value={selectValue?.semester}
               defaultValue={studentIdList?.semester}
+              fieldErrors={error?.semester ?? []}
               onChange={(e) => {
                 handleSelectChange("semester", {
                   value: e.target.value,
                 });
               }}
             /> */}
-            
+
             <InputField
               type="text"
               label="Semester"
               name="semester"
               placeholder="enter semester"
               defaultValue={studentIdList?.semester}
+              fieldErrors={error?.semester ?? []}
               onChange={(e: any) => {
                 handleFieldChange("semester", e.target.value);
               }}
@@ -279,6 +295,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
               name="borrowing_period_days"
               placeholder="enter borrowing period days"
               defaultValue={studentIdList?.borrowing_period_days}
+              fieldErrors={error?.borrowing_period_days ?? []}
               onChange={(e: any) => {
                 handleFieldChange("borrowing_period_days", e.target.value);
               }}
@@ -305,7 +322,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
         </form>
       </Modal>
       <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-        {heading && <AddStudent />}
+        {heading && <AddStudent mutate={mutate} />}
         <div className="max-w-full overflow-x-auto">
           <table className="w-full text-sm table-auto">
             <thead>

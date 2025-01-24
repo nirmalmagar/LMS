@@ -26,9 +26,10 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [editValue, setEditValue] = useState<Record<string, any>>({});
+  const [error, setError] = useState<Record<string,any>>({});
   const [id, setId] = useState<number>();
 
-  const { data: editBookList } = useSWR(
+  const { data: editBookList , mutate:editMutate} = useSWR(
     `${process.env.HOST}books/${id}`,
     defaultFetcher
   );
@@ -97,6 +98,13 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       const data = response.json();
       if (response.ok) {
         toast.success("update book successfully");
+        editMutate();
+        mutate();
+        setShowPopUpModal(false);
+      }
+      else{
+        setError(data);
+        toast.error("something went wrong")
       }
     } catch (e) {
       console.error("error ", e);
@@ -151,7 +159,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Department"
+        modalTitle="Edit Book"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleEditBook}>
@@ -200,6 +208,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 type="text"
                 // default={}
                 defaultValue={editBookList?.title}
+                fieldErrors={error?.title ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("title", e.target.value);
                 }}
@@ -211,17 +220,19 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 type="text"
                 // default={}
                 defaultValue={editBookList?.author}
+                fieldErrors={error?.author ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("author", e.target.value);
                 }}
               />
               <InputField
                 label="Publisher"
-                name="text"
+                name="publisher"
                 placeholder="enter publisher"
                 type="text"
                 // default={}
                 defaultValue={editBookList?.publisher}
+                fieldErrors={error?.publisher ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("publisher", e.target.value);
                 }}
@@ -233,6 +244,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 placeholder="Enter pages"
                 // default={}
                 defaultValue={editBookList?.pages}
+                fieldErrors={error?.pages ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("pages", e.target.value);
                 }}
@@ -244,6 +256,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 placeholder="Enter price"
                 // default={}
                 defaultValue={editBookList?.price}
+                fieldErrors={error?.price ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("price", e.target.value);
                 }}
@@ -255,6 +268,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 placeholder="Enter quantity"
                 // default={}
                 defaultValue={editBookList?.quantity}
+                fieldErrors={error?.quantity ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("quantity", e.target.value);
                 }}
@@ -266,6 +280,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 placeholder="Enter isbn"
                 // default={}
                 defaultValue={editBookList?.isbn}
+                fieldErrors={error?.isbn ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("isbn", e.target.value);
                 }}
@@ -286,9 +301,9 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 type="textarea"
                 label="Description"
                 name="description"
-                placeholder="enter description"
                 // default={}
                 defaultValue={editBookList?.description}
+                fieldErrors={error?.description ?? []}
                 onChange={(e: any) => {
                   handleFieldChange("description", e.target.value);
                 }}
@@ -320,7 +335,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         </p>
       ) : (
         <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddBookLists />}
+          {heading && <AddBookLists mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

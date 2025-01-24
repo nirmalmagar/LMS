@@ -157,7 +157,7 @@ const GradeTableList: React.FC<ShowHeading> = ({
       </Modal>
 
       <div className="mt-8 max-w-[500px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-        {heading && <AddGrade />}
+        {heading && <AddGrade mutate={mutate}/>}
         <div className="max-w-[500px] overflow-x-auto">
           <table className="w-full text-sm table-auto">
             <thead>

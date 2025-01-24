@@ -105,6 +105,8 @@ const TeacherTableList: React.FC<ShowHeading> = ({
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
+    setSelectValue({});
+    setError({})
   };
   // edit handle submit
   const handleEditTeacher = async (e: FormEvent<HTMLFormElement>) => {
@@ -123,18 +125,14 @@ const TeacherTableList: React.FC<ShowHeading> = ({
         },
       });
       const data = await response.json();
-      
-      if (data?.results || data?.result){
-        // setError(data?.error)
-      }
-      else if (response.ok) {
+      if (response.ok) {
         toast.success("Teacher update successfully ");
+        setError({})
         setShowPopUpModal(false);
         mutate();
         editMutate();
       } else {
-        toast.error("something went wrong");
-        setError(data?.error)
+        setError(data)
       }
     } catch (e: any) {
       console.error(e);
@@ -158,7 +156,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
               value={selectValue?.user}
               defaultValue={teacherIdList?.user?.id}
               label="Users"
-              fieldErrors={error?.users}
+              fieldErrors={error?.user ?? []}
               onChange={(e) => {
                 handleSelectChange("user", {
                   value: e.target.value,
@@ -168,9 +166,9 @@ const TeacherTableList: React.FC<ShowHeading> = ({
             <InputField
               type="text"
               label="Employee name"
-              fieldErrors={error?.employee_id}
               name="employee_id"
               placeholder="Choose Employee name"
+              fieldErrors={error?.employee_id ?? []}
               defaultValue={teacherIdList?.employee_id}
             />
             <div className="mb-2">
@@ -179,6 +177,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
               label="Grade"
               options={gradeOption}
               value={selectValue?.grade}
+              fieldErrors={error?.grade ?? []}
               defaultValue={teacherIdList?.grade?.id}
               onChange={(e)=>{
                 handleSelectChange("grade",{
@@ -192,6 +191,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
               options={departmentOption}
               value={selectValue?.department}
               defaultValue={teacherIdList?.department?.id}
+              fieldErrors={error?.department ?? []}
               onChange={(e)=>{
                 handleSelectChange("department",{
                   value: e.target.value
@@ -201,7 +201,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
             <InputField
               type="textarea"
               label="Designation"
-              fieldErrors={error?.designation}
+              fieldErrors={error?.designation ?? []}
               name="designation"
               placeholder="Enter Designation"
               defaultValue={teacherIdList?.designation}
@@ -211,16 +211,14 @@ const TeacherTableList: React.FC<ShowHeading> = ({
               label="borrowing days"
               name="borrowing_period_days"
               placeholder="enter grade"
+              fieldErrors={error?.borrowing_period_days ?? []}
               defaultValue={teacherIdList?.borrowing_period_days}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
-              onClick={() => {
-                setShowPopUpModal(false);
-                // setInputFieldValue({});
-              }}
+              onClick={() => handleCloseTap()}
             >
               Cancel
             </Btn>
@@ -235,7 +233,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
         </form>
       </Modal>
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddTeacher />}
+          {heading && <AddTeacher mutate={mutate}/>}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

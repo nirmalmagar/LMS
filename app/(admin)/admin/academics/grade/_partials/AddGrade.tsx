@@ -8,11 +8,15 @@ import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
 
-const AddGrade = () => {
+interface gradeProps{
+  mutate:()=>void;
+}
+const AddGrade:React.FC<gradeProps> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
+  const [error ,setError] = useState<Record<string,any>>({});
 
   const handleFieldChange = (key: string, value: string): void => {
     if (key && value) {
@@ -22,6 +26,7 @@ const AddGrade = () => {
   const handleCloseTap=()=>{
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setError({});
   }
   // book add button
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
@@ -42,15 +47,13 @@ const AddGrade = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("data successfully insert");
-        setShowPopUpModal(false);
+        handleCloseTap();
+        mutate();
       } else {
-        toast.error(data?.name[0]);
+        setError(data)
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setInputFieldValue({});
-      
     }
   };
   return (
@@ -76,6 +79,7 @@ const AddGrade = () => {
               name="name"
               placeholder="enter grade"
               defaultValue={inputFieldValue?.name}
+              fieldErrors={error?.name}
               onChange={(e: any) => {
                 handleFieldChange("name", e.target.value);
               }}
@@ -88,6 +92,7 @@ const AddGrade = () => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setError({});
               }}
             >
               Cancel
