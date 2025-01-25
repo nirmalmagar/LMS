@@ -1,6 +1,5 @@
 import Container from "@/components/Container";
-import { routes } from "@/utils/routes";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
+import routes from "@/utils/studentRoutes";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -18,12 +17,12 @@ const Navbar = () => {
               <Link href={"/"}>Home</Link>
             </li>
             <li className="hover:text-blue-800">
-              <Link href={routes.ADMIN_AUTH_LOGIN}>Login</Link>
+              <Link href={routes.STUDENT_AUTH_LOGIN}>Login</Link>
             </li>
             <li className="hover:text-blue-800">Membership</li>
             <li className="hover:text-blue-800">NPR</li>
             <li className="hover:text-blue-800">
-              <Link href={routes.ADMIN_AUTH_SIGN_UP}>Create Account</Link>
+              {/* <Link href={routes.STUDENT_AUTH_SIGN_UP}>Create Account</Link> */}
             </li>
             {/* <li className="hover:text-blue-800">
               <ShoppingBagIcon className="w-6 h-6" />
