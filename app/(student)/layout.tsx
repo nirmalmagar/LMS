@@ -4,7 +4,6 @@ import routes from "@/utils/studentRoutes";
 import Cookies from "js-cookie";
 import { AppColorThemeProvider } from "@/context/ColorTheme";
 import { useRouter } from "next/navigation";
-import { AuthProvider } from "@/context/AuthContext";
 
 const AdminRootLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();

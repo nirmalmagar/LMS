@@ -7,6 +7,8 @@ const studentRoutes: studentRoutesInterface = {
   BORROW_HISTORY: "/student/borrow-history",
   NOTIFICATION: "/student/notification",
   SETTING: "/student/setting",
+  UPDATE_PROFILE: "/student/setting/update-profile",
+  CHANGE_PASSWORD: "/student/setting/change-password"
 };
 
 export default studentRoutes;
