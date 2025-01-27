@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { accessToken } from "@/helpers/TokenHelper";
 import useSWR from "swr";
 import DateToString from "@/components/DateConverter/DateToString";
+import { defaultFetcher } from "@/helpers/FetchHelper";
 
 const BorrowHistory = () => {
   const [borrowHistory, setBorrowHistory] = useState<any[]>([]);
@@ -13,32 +14,10 @@ const BorrowHistory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const user_id = Cookies.get("USER_ID");
-  const { data, mutate } = useSWR(
-    `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`
+  const { data } = useSWR(
+    `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`,defaultFetcher
   );
-  const BookLists = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setBorrowHistory(data?.results);
-      if (data && borrowHistory) {
-        setIsLoading(false);
-      }
-    } catch (e) {
-      console.log("error", e);
-    }
-  };
+  
   let totalPageArray = borrowHistory
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
     : [];

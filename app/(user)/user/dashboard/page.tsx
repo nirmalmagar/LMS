@@ -11,7 +11,7 @@ import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 const page = () => {
   const { data } = useSWR(
-    `${process.env.HOST}dashboard/user/`,
+    `${process.env.HOST}dashboard/student/`,
     defaultFetcher
   );
   return (

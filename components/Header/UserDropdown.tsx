@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Cookies from "js-cookie";
-import { routes } from "@/utils/routes";
+import routes from "@/utils/userRoutes";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { useRouter } from "next/navigation";
@@ -15,12 +15,15 @@ const UserDropdown = () => {
 
   const user_id = Cookies.get("USER_ID");
   const userURL = `${process.env.HOST}user/${user_id}`;
-  const { data: userList, isLoading } = useSWR(userURL, defaultFetcher);
+  const { data: userList, isLoading, mutate } = useSWR(userURL, defaultFetcher);
 
   const logout = () => {
     Cookies.remove("LOGIN_TOKEN");
     router.replace(routes.USER_AUTH_LOGIN);
   };
+  useEffect(() => {
+    mutate();
+  }, [logout]);
   useEffect(() => {
     let changeHandler = (e: any) => {
       if (!closeDropdownRef.current.contains(e.target)) {
@@ -40,8 +43,14 @@ const UserDropdown = () => {
           onClick={() => setDropdownMenu(!dropdownMenu)}
         >
           <div>
-            <h1>{userList?.email}</h1>
-            <span>( user )</span>
+            {isLoading ? (
+              <div className="text-sm">loading....</div>
+            ) : (
+              <>
+                <h1>{userList?.email}</h1>
+                <span>( user )</span>
+              </>
+            )}
           </div>
           <div>{dropdownMenu ? <IoIosArrowUp /> : <IoIosArrowDown />}</div>
         </div>
@@ -51,12 +60,10 @@ const UserDropdown = () => {
               {/* <li className="text-md">
               <Link href={""}>admin</Link>
             </li> */}
-              <li className="text-md">
+              <li className="text-md cursor-pointer">
                 <div className="flex items-center gap-8 float-right">
                   <RiLogoutBoxRLine />
-                  <Link href={routes.USER_AUTH_LOGIN} onClick={logout}>
-                    LogOut
-                  </Link>
+                  <div onClick={logout}>LogOut</div>
                 </div>
               </li>
             </ul>
