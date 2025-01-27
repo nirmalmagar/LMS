@@ -12,17 +12,20 @@ const BorrowHistory = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const user_id = Cookies.get("STUDENT_ID");
-  const {data, mutate} = useSWR(`${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`)
+  const user_id = Cookies.get("USER_ID");
+  const { data, mutate } = useSWR(
+    `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`
+  );
   const BookLists = async () => {
     try {
       const response = await fetch(
-        `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`,{
-          method:"GET",
-          headers:{
+        `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`,
+        {
+          method: "GET",
+          headers: {
             Authorization: `Bearer ${accessToken}`,
-            Accept: "application/json"
-          } 
+            Accept: "application/json",
+          },
         }
       );
       const data = await response.json();
@@ -84,7 +87,7 @@ const BorrowHistory = () => {
                     Title
                   </th>
                   <th className="min-w-[120px] py-4 px-2 font-medium text-black">
-                    Borrow Date 
+                    Borrow Date
                   </th>
                   <th className="max-w-[120px] py-4 px-2 font-medium text-black">
                     Due Date
@@ -101,8 +104,8 @@ const BorrowHistory = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.results
-                  ?.map((borrowList: Record<string, any>, index: number) => {
+                {data?.results?.map(
+                  (borrowList: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -117,12 +120,14 @@ const BorrowHistory = () => {
                         </td>
                         <td className="max-w-[160px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black " id="card_title">
-                          <DateToString inputDate={borrowList?.borrowed_date}/>
+                            <DateToString
+                              inputDate={borrowList?.borrowed_date}
+                            />
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                          <DateToString inputDate={borrowList?.due_date} />
+                            <DateToString inputDate={borrowList?.due_date} />
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -142,7 +147,8 @@ const BorrowHistory = () => {
                         </td>
                       </tr>
                     );
-                  })}
+                  }
+                )}
               </tbody>
             </table>
             {/* <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">

@@ -5,19 +5,18 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Spinner from "@/components/Spinner/Spinner";
 import Btn from "@/components/Btn";
 import { usePathname, useRouter } from "next/navigation";
-import routes from "@/utils/studentRoutes";
+import routes from "@/utils/userRoutes";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
-import Link from "next/link";
 import { accessToken } from "@/helpers/TokenHelper";
-import DefaultLayout from "@/components/Layouts/StudentNavbar/DefaultLayout";
+import DefaultLayout from "@/components/Layouts/UserNavbar/DefaultLayout";
 
 const lora = Lora({ subsets: ["latin"], weight: ["400"] });
 
 const page: React.FC = () => {
   const router = useRouter();
-  const user_id = Cookie.get("STUDENT_ID");
-  
+  const user_id = Cookie.get("USER_ID");
+
   const pathname = usePathname();
   const [hidePassword, setHidePassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -48,7 +47,7 @@ const page: React.FC = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        toast.success(" student login successfully");
+        toast.success(" user login successfully");
       } else {
         toast.error("something went wrong!!");
       }
@@ -64,7 +63,7 @@ const page: React.FC = () => {
     <DefaultLayout>
       <div
         className={`${lora.className} ${
-          pathname === "/student/auth/login"
+          pathname === "/user/auth/login"
             ? "flex justify-center items-center bg-gray-200 h-screen"
             : "ml-8"
         }`}

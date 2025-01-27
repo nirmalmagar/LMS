@@ -1,5 +1,5 @@
 import Container from "@/components/Container";
-import routes from "@/utils/studentRoutes";
+import routes from "@/utils/userRoutes";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -10,19 +10,19 @@ const Navbar = () => {
       <Container>
         <nav className=" items-center flex justify-between">
           <div className="relative w-14 h-14">
-            <Image fill src={"/assets/logo.png"} alt="LMS logo" sizes="fit"/>
+            <Image fill src={"/assets/logo.png"} alt="LMS logo" sizes="fit" />
           </div>
           <ul className="flex gap-x-20 font-semibold text-[17px] cursor-pointer">
             <li className="hover:text-blue-800">
               <Link href={"/"}>Home</Link>
             </li>
             <li className="hover:text-blue-800">
-              <Link href={routes.STUDENT_AUTH_LOGIN}>Login</Link>
+              <Link href={routes.USER_AUTH_LOGIN}>Login</Link>
             </li>
             <li className="hover:text-blue-800">Membership</li>
             <li className="hover:text-blue-800">NPR</li>
             <li className="hover:text-blue-800">
-              {/* <Link href={routes.STUDENT_AUTH_SIGN_UP}>Create Account</Link> */}
+              {/* <Link href={routes.USER_AUTH_SIGN_UP}>Create Account</Link> */}
             </li>
             {/* <li className="hover:text-blue-800">
               <ShoppingBagIcon className="w-6 h-6" />

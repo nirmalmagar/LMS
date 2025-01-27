@@ -1,7 +1,5 @@
 import React, { ReactNode, createContext, useEffect, useState } from "react";
-import {
-  UserInterface,
-} from "@/interfaces/user.interface";
+import { UserInterface } from "@/interfaces/user.interface";
 import Cookies from "js-cookie";
 
 interface userAuthContextProps {
@@ -18,15 +16,15 @@ const UserAuthContext = createContext<userAuthContextProps>({
   token: null,
   user: null,
   fetchUsers: async () => {},
-  isLoading: true
+  isLoading: true,
 });
 
 const UserAuthProvider: React.FC<userAuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string>("");
-  const [ storeId, setStoreId] = useState<any>("");
+  const [storeId, setStoreId] = useState<any>("");
   const [user, setUser] = useState<UserInterface | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
+
   // user lists
   const fetchUsers = async (responseToken: string) => {
     setIsLoading(true);
@@ -53,10 +51,10 @@ const UserAuthProvider: React.FC<userAuthProviderProps> = ({ children }) => {
   };
   useEffect(() => {
     const CookieToken = Cookies.get("LOGIN_TOKEN");
-    const user_id = Cookies.get("STUDENT_ID");
+    const user_id = Cookies.get("USER_ID");
     if (CookieToken) {
       fetchUsers(CookieToken);
-      setStoreId(user_id)
+      setStoreId(user_id);
     }
   }, []);
 

@@ -5,7 +5,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Spinner from "@/components/Spinner/Spinner";
 import Btn from "@/components/Btn";
 import { usePathname, useRouter } from "next/navigation";
-import routes from "@/utils/studentRoutes";
+import routes from "@/utils/userRoutes";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -47,9 +47,9 @@ const LoginPage: React.FC = () => {
       if (response.ok) {
         const data = result;
         Cookie.set("LOGIN_TOKEN", data?.token?.access);
-        Cookie.set("STUDENT_ID", data?.user?.id);
-        router.replace(routes.STUDENT_DASHBOARD_ROUTE);
-        toast.success(" student login successfully");
+        Cookie.set("USER_ID", data?.user?.id);
+        router.replace(routes.USER_DASHBOARD_ROUTE);
+        toast.success(" user login successfully");
       } else {
         toast.error("something went wrong!!");
         Cookie.remove("LOGIN_TOKEN");
@@ -65,21 +65,21 @@ const LoginPage: React.FC = () => {
   const token = Cookie.get("LOGIN_TOKEN");
   useEffect(() => {
     if (typeof window !== "undefined" && token) {
-      router.push(routes.STUDENT_DASHBOARD_ROUTE);
+      router.push(routes.USER_DASHBOARD_ROUTE);
     }
-  }, [router,token]);
+  }, [router, token]);
 
   return (
     <div
       className={`${lora.className} ${
-        pathname === "/student/auth/login"
+        pathname === "/user/auth/login"
           ? "flex justify-center items-center bg-gray-200 h-screen"
           : "ml-8"
       }`}
     >
       <div className={` px-8 py-8 bg-white w-[30rem] shadow-md rounded-xl`}>
         <div className="text-lg mb-2 font-semibold text-center">
-          <span>Login your student Account</span>
+          <span>Login user Account</span>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col">
@@ -127,7 +127,7 @@ const LoginPage: React.FC = () => {
           </div>
           <div className="text-sm tex-md mt-4">
             Not a member ?{" "}
-            {/* <Link href={routes.STUDENT_AUTH_SIGN_UP} className="text-blue-500">
+            {/* <Link href={routes.USER_AUTH_SIGN_UP} className="text-blue-500">
               Create an Account
             </Link> */}
           </div>

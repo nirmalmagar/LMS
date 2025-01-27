@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import routes from "@/utils/studentRoutes";
+import routes from "@/utils/userRoutes";
 import { usePathname } from "next/navigation";
 import {
   ChevronDownIcon,
@@ -18,12 +18,12 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 
-const AdminSidebar = () => {
+const UserSidebar = () => {
   // const [navbarText, setNavbarText] = useState<boolean>(false);
   const pathname = usePathname();
 
   const navigation = [
-    { name: "Dashboard", href: routes.STUDENT_DASHBOARD_ROUTE, icon: HomeIcon },
+    { name: "Dashboard", href: routes.USER_DASHBOARD_ROUTE, icon: HomeIcon },
     {
       name: "Borrow History",
       href: routes.BORROW_HISTORY,
@@ -120,4 +120,4 @@ const AdminSidebar = () => {
     </aside>
   );
 };
-export default AdminSidebar;
+export default UserSidebar;

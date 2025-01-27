@@ -13,13 +13,13 @@ const UserDropdown = () => {
   const closeDropdownRef: any = useRef();
   const router = useRouter();
 
-  const user_id = Cookies.get("STUDENT_ID");
+  const user_id = Cookies.get("USER_ID");
   const userURL = `${process.env.HOST}user/${user_id}`;
   const { data: userList, isLoading } = useSWR(userURL, defaultFetcher);
 
   const logout = () => {
     Cookies.remove("LOGIN_TOKEN");
-    router.replace(routes.ADMIN_AUTH_LOGIN);
+    router.replace(routes.USER_AUTH_LOGIN);
   };
   useEffect(() => {
     let changeHandler = (e: any) => {
@@ -54,7 +54,7 @@ const UserDropdown = () => {
               <li className="text-md">
                 <div className="flex items-center gap-8 float-right">
                   <RiLogoutBoxRLine />
-                  <Link href={routes.ADMIN_AUTH_LOGIN} onClick={logout}>
+                  <Link href={routes.USER_AUTH_LOGIN} onClick={logout}>
                     LogOut
                   </Link>
                 </div>
