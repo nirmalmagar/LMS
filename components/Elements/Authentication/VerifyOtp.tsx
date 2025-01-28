@@ -11,6 +11,7 @@ const VerifyOtp: React.FC<{
   const searchParams = useSearchParams();
   const query = searchParams.get('email');
 
+  console.log("otp value", OtpValue, query)
   const handleOTPFormSubmit = async (
     e: FormEvent<HTMLFormElement>
   ): Promise<void> => {

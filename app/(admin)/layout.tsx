@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, Suspense, useEffect, useState } from "react";
+import { ReactNode, Suspense, useEffect, useRef, useState } from "react";
 import { routes } from "@/utils/routes";
 import Cookies from "js-cookie";
 import { AppColorThemeProvider } from "@/context/ColorTheme";
@@ -16,20 +16,21 @@ const AdminRootLayout = ({ children }: { children: ReactNode }) => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
+  const isMounted = useRef(false)
   useEffect(() => {
-    if (!Cookies.get("LOGIN_TOKEN")) {
-      router.push(routes.ADMIN_AUTH_LOGIN);
-    }
-  }, [router, token]);
+      if(!isMounted.current){
+          isMounted.current = true
+          router.push(token ? routes.ADMIN_DASHBOARD_ROUTE : routes.ADMIN_AUTH_LOGIN );
+      }
+  }, [router , token]);
 
   return (
     <Suspense>
       <AuthProvider>
         {/* <ColorTheme>{children}</ColorTheme> */}
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <AppColorThemeProvider> <div className="dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? <Loader /> : children}
-        </div>
-        <AppColorThemeProvider>{children}</AppColorThemeProvider>
+        </div></AppColorThemeProvider>
       </AuthProvider>
     </Suspense>
   );
