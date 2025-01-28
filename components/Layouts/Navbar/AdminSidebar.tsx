@@ -23,6 +23,8 @@ import {
   UserGroupIcon,
   BuildingLibraryIcon,
   BuildingOffice2Icon,
+  ShieldCheckIcon,
+  BellIcon
 } from "@heroicons/react/24/outline";
 import {
   Disclosure,
@@ -67,6 +69,11 @@ const AdminSidebar = () => {
           icon: RectangleGroupIcon,
         },
       ],
+    },
+    {
+      name: "Notification",
+      href: routes.NOTIFICATION,
+      icon: BellIcon,
     },
     /* {
         name: "Digital Resources",
@@ -121,9 +128,16 @@ const AdminSidebar = () => {
       icon: CreditCardIcon,
     },
     {
-      name: "Settting",
+      name: "Setting",
       href: routes.SETTING,
       icon: Cog6ToothIcon,
+      children: [
+        {
+          name: "Change Password",
+          href: routes.CHANGE_PASSWORD,
+          icon: ShieldCheckIcon,
+        },
+      ],
     },
   ];
 

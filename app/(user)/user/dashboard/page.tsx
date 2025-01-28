@@ -1,7 +1,6 @@
 "use client"
 import React from "react";
 import DefaultLayout from "@/components/Layouts/UserNavbar/DefaultLayout";
-import WelcomeBanner from "./_partials/WelcomeBanner";
 import DashboardCard from "@/components/Elements/Dashboard/DashboardCard";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { FaPeopleGroup } from "react-icons/fa6";
@@ -9,6 +8,7 @@ import { CgCalendarDue } from "react-icons/cg";
 import { MdPendingActions } from "react-icons/md";
 import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import WelcomeBanner from "./_partials/WelcomeBanner";
 const page = () => {
   const { data } = useSWR(
     `${process.env.HOST}dashboard/student/`,

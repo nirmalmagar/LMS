@@ -16,6 +16,7 @@ export const routes: RoutesInterface = {
   ADMIN_RESERVE_QUEUE_ROUTE: "/admin/reserve-queue",
   ADMIN_RESERVES_ROUTE: "/admin/reserves",
   ADMIN_USERS_ROUTE: "/admin/users",
+  NOTIFICATION: "/admin/notification",
   BOOK_LIST:"/book-list",
   DIGITAL_RESOURCE_LISTS:'/admin/digital-resource',
   ACADEMICS:'/admin/academics',
@@ -28,4 +29,5 @@ export const routes: RoutesInterface = {
   ACADEMIC_SHELF:'/admin/academics/shelf',
   FINE:'/admin/fine',
   SETTING:'/admin/setting',
+  CHANGE_PASSWORD: "/admin/setting/change-password"
 };
