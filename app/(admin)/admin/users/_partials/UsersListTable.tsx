@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { defaultFetcher } from "@/helpers/FetchHelper";
-import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon  } from "@heroicons/react/24/outline";
 import useSWR, { mutate } from "swr";
 import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
@@ -64,9 +64,9 @@ const UsersListTable = () => {
               <th className="min-w-[120px] px-4 py-4 font-medium text-black">
                 Email
               </th>
-              {/* <th className="min-w-[120px] px-4 py-4 font-medium text-black">
+              <th className="min-w-[120px] px-4 py-4 font-medium text-black">
                 Action
-              </th> */}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -83,16 +83,16 @@ const UsersListTable = () => {
                     <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="text-black">{genresList.email}</p>
                     </td>
-                    {/* <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                       <p className="">
                         <button
                           className="hover:text-red"
                           onClick={() => showSwal(genresList?.id)}
                         >
-                          <TrashIcon className="h-[18px] w-[18px]" />
+                          <PencilSquareIcon className="h-[18px] w-[18px]" />
                         </button>
                       </p>
-                    </td> */}
+                    </td>
                   </tr>
                 );
               }

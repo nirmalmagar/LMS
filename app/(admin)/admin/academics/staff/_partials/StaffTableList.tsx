@@ -82,7 +82,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
 
   const StaffURL = `${process.env.HOST}staffs/${staffId}`;
   const { data: staffIdList } = useSWR(StaffURL, defaultFetcher);
-  // console.log("datalist",staffIdList);
+  console.log("stafflist",staffIdList);
   
   // delete popup model
   const showSwal = (id: string) => {

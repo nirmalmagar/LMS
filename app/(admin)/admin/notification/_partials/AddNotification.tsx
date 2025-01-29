@@ -7,15 +7,28 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import SelectField from "@/components/Form/SelectField";
+import useSWR from "swr";
+import { defaultFetcher } from "@/helpers/FetchHelper";
+import { collectionToOptions } from "@/helpers/CollectionOption";
 interface ShowHeading {
   mutate: () => void;
 }
 const AddNotification:React.FC<ShowHeading> = ({mutate}) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   const [inputFieldValue, setInputFieldValue] = useState<
     Record<string, string>
   >({});
   const [error, setError] = useState<Record<string, any>>({});
+  const { data:userList } = useSWR(`${process.env.HOST}user/`, defaultFetcher);
+  const userOption = collectionToOptions(userList?.results ? userList?.results : []);
+
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((values) => ({ ...values, [key]: value }));
+  }
 
   const handleFieldChange = (key: string, value: string): void => {
     // if (key && value) {
@@ -24,6 +37,7 @@ const AddNotification:React.FC<ShowHeading> = ({mutate}) => {
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
+    setSelectValues({});
     setInputFieldValue({});
     setError({});
   };
@@ -31,9 +45,9 @@ const AddNotification:React.FC<ShowHeading> = ({mutate}) => {
   const handleAddGrade = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      user: inputFieldValue?.user,
+      user: selectValues?.user,
+      timestamp: inputFieldValue?.timestamp,
       message: inputFieldValue?.message,
-      timestamp: inputFieldValue?.timestamp
     };
     try {
       const response = await fetch(`${process.env.HOST}notifications/`, {
@@ -48,9 +62,7 @@ const AddNotification:React.FC<ShowHeading> = ({mutate}) => {
       const data = await response.json();
       if (response.ok) {
         toast.success("data successfully insert");
-        setShowPopUpModal(false);
-        setInputFieldValue({});
-        setError({});
+        handleCloseTap();
         mutate();
       } else {
         setError(data);
@@ -71,26 +83,26 @@ const AddNotification:React.FC<ShowHeading> = ({mutate}) => {
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Add Department"
+        modalTitle="Add Notification"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleAddGrade}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
-              label="Department name"
-              name="name"
-              placeholder="enter department name"
-              // defaultValue={inputFieldValue?.name}
-              fieldErrors={error?.name ?? []}
-              onChange={(e: any) => {
-                handleFieldChange("name", e.target.value);
-              }}
-            />
+          <SelectField
+            options={userOption}
+            label={"users"}
+            value={selectValues?.user}
+            fieldErrors={error?.user ?? []}
+            onChange={(e)=>{
+              handleSelectChange("user",{
+                value: e.target.value
+              })
+            }}
+          />
 
             <InputField
-              type="textarea"
-              label="Description"
+              type="date"
+              label="Timestamp"
               name="timestamp"
               placeholder="enter timestamp"
               fieldErrors={error?.timestamp ?? []}
@@ -100,25 +112,21 @@ const AddNotification:React.FC<ShowHeading> = ({mutate}) => {
               }}
             />
             <InputField
-              type="text"
-              label="Location"
-              name="location"
-              placeholder="enter location"
-              fieldErrors={error?.location ?? []}
-              // defaultValue={inputFieldValue?.location}
+              type="textarea"
+              label="Message"
+              name="message"
+              placeholder="enter message"
+              fieldErrors={error?.message ?? []}
+              // defaultValue={inputFieldValue?.message}
               onChange={(e: any) => {
-                handleFieldChange("location", e.target.value);
+                handleFieldChange("message", e.target.value);
               }}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
             <Btn
               outline="error"
-              onClick={() => {
-                setShowPopUpModal(false);
-                setInputFieldValue({});
-                setError({})
-              }}
+              onClick={handleCloseTap}
             >
               Cancel
             </Btn>

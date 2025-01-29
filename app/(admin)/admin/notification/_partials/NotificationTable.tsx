@@ -12,6 +12,10 @@ import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import DateToString from "@/components/DateConverter/DateToString";
+import SelectField from "@/components/Form/SelectField";
+import { collectionToOptions } from "@/helpers/CollectionOption";
+
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -30,18 +34,32 @@ const NotificationTable: React.FC<ShowHeading> = ({
   let showLists = showMore;
 
   // const [showMore, setShowMore] = useState<boolean>(false);
-  const [departmentsLists, setDepartmentsLists] = useState<any[]>([]);
+  const [notificationsLists, setNotificationsLists] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [departmentId, setDepartmentId] = useState<number>();
+  const [notificationId, setNotificationId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [error, setError] = useState<Record<string, any>>({});
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
 
-  const NotificationURL = `${process.env.HOST}notifications/`;
+  const NotificationURL = `${process.env.HOST}notifications/${notificationId}/`;
   const { data: notificationList, mutate: editMutate } = useSWR(
     NotificationURL,
     defaultFetcher
   );
+
+  const userURL = `${process.env.HOST}user/`;
+  const { data: userData } = useSWR(userURL, defaultFetcher);
+  const userOption = collectionToOptions(
+    userData?.results ? userData?.results : []
+  );
+
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((values) => ({ ...values, [key]: value }));
+  }
+
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -69,7 +87,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
               }
             );
             if (response.ok) {
-              toast.success("Department removed successfully.");
+              toast.success("Notification removed successfully.");
               mutate();
             } else {
               const result = await response.json();
@@ -85,19 +103,20 @@ const NotificationTable: React.FC<ShowHeading> = ({
   // edit icons box
   const editIconBox = (id: number) => {
     setShowPopUpModal(true);
-    setDepartmentId(id);
+    setNotificationId(id);
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setError({});
   };
+
   // edit handle submit
-  const handleEditDepartment = async (e: FormEvent<HTMLFormElement>) => {
+  const handleEditNotification = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
       const response = await fetch(
-        `${process.env.HOST}notifications/${departmentId}/`,
+        `${process.env.HOST}notifications/${notificationId}/`,
         {
           method: "PUT",
           body: formData,
@@ -109,7 +128,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
       );
       const data = await response.json();
       if (response.ok) {
-        toast.success("Department update successfully ");
+        toast.success("Notification update successfully ");
         mutate();
         editMutate();
         setError({});
@@ -122,14 +141,16 @@ const NotificationTable: React.FC<ShowHeading> = ({
     }
   };
 
+  console.log("time",notificationList);
+
   // pagination number lists in array
-  let totalPageArray = departmentsLists
+  let totalPageArray = notificationsLists
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
     : [];
 
   // pagination
   let paginationLinks =
-    departmentsLists &&
+    notificationsLists &&
     totalPageArray.map((items: any, index: number) => {
       if (items < 10) {
         return (
@@ -156,40 +177,47 @@ const NotificationTable: React.FC<ShowHeading> = ({
     mutate();
   }, [currentPage, mutate]);
 
+  
   return (
     <>
       {/* edit Model popup  */}
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Edit Department"
+        modalTitle="Edit Notification"
         size="lg"
       >
-        <form id="lead-form" onSubmit={handleEditDepartment}>
+        <form id="lead-form" onSubmit={handleEditNotification}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
+          <SelectField
+                className="w-full ml-40"
+                options={userOption}
+                label="Users"
+                value={selectValues?.user}
+                defaultValue={notificationList?.user}
+                fieldErrors={error?.user ?? []}
+                onChange={(e) => {
+                  handleSelectChange("user", {
+                    value: e.target.value,
+                  });
+                }}
+              />
             <InputField
-              type="text"
-              label="Department"
-              name="name"
-              placeholder="enter grade"
-              defaultValue={notificationList?.name}
-              fieldErrors={error?.name ?? []}
+              type="date"
+              label="Timestamp"
+              name="timestamp"
+              placeholder="enter timestamp"
+              value={selectValues?.timestamp}
+              fieldErrors={error?.timestamp ?? []}
+              defaultValue={notificationList?.timestamp}
             />
             <InputField
-              type="text"
-              label="Department head"
-              name="head_of_department"
+              type="textarea"
+              label="message"
+              name="message"
               placeholder="enter grade"
-              defaultValue={notificationList?.head_of_department}
-              fieldErrors={error?.head_of_department ?? []}
-            />
-            <InputField
-              type="text"
-              label="Description"
-              name="description"
-              placeholder="enter grade"
-              defaultValue={notificationList?.description}
-              fieldErrors={error?.description ?? []}
+              defaultValue={notificationList?.message}
+              fieldErrors={error?.message ?? []}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -239,7 +267,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
             </thead>
             <tbody>
               {data?.results?.map(
-                (departmentsItems: Record<string, any>, index: number) => {
+                (notificationsItems: Record<string, any>, index: number) => {
                   return (
                     <tr key={index}>
                       <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -247,22 +275,22 @@ const NotificationTable: React.FC<ShowHeading> = ({
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {departmentsItems?.user}
+                          {notificationsItems?.user}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {departmentsItems?.message}
+                          {notificationsItems?.message}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {departmentsItems?.timestamp}
+                        <DateToString inputDate={notificationsItems?.timestamp} />
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {departmentsItems?.is_read ? "read" : "not read"}
+                          {notificationsItems?.is_read ? "read" : "not read"}
                         </p>
                       </td>
 
@@ -270,13 +298,13 @@ const NotificationTable: React.FC<ShowHeading> = ({
                         <p className="text-black">
                           <button
                             className="hover:text-red"
-                            onClick={() => showSwal(departmentsItems?.id)}
+                            onClick={() => showSwal(notificationsItems?.id)}
                           >
                             <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
                           </button>
                           <button
                             className="ml-3"
-                            onClick={() => editIconBox(departmentsItems?.id)}
+                            onClick={() => editIconBox(notificationsItems?.id)}
                           >
                             <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                           </button>
