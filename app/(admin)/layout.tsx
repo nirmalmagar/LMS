@@ -18,7 +18,7 @@ const AdminRootLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!Cookies.get("LOGIN_TOKEN")) {
-      router.push(routes.ADMIN_AUTH_LOGIN);
+      router.replace(routes.ADMIN_AUTH_LOGIN);
     }
   }, [router, token]);
 

@@ -1,17 +1,19 @@
-import Btn from "../Btn";
-import OTPForm from "@/components/Form/OtpForm";
-import { useState, FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useRef, FormEvent } from "react";
 import { toast } from "react-toastify";
-import { useSearchParams } from "next/navigation";  
+import Btn from "../Btn";
 
-const VerifyOtp: React.FC<{
-}> = () => {
-  const [OtpValue, setOtpValue] = useState<string>("");
-  const [isOtpValid, setIsOtpValid] = useState<boolean>(true);
+const VerifyOtp = () => {
   const searchParams = useSearchParams();
-  const query = searchParams.get('email');
+  const query = searchParams.get("email");
 
-  console.log("otp value", OtpValue, query)
+  const length = 6; // OTP length
+  const [otp, setOtp] = useState<string[]>(new Array(length).fill(""));
+  const inputRefs = useRef<(HTMLInputElement | null)[]>(
+    new Array(length).fill(null)
+  );
+
+  const OtpValue = otp.join("");
   const handleOTPFormSubmit = async (
     e: FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -20,13 +22,16 @@ const VerifyOtp: React.FC<{
     const toSendData = new FormData();
     toSendData.append("otp", OtpValue);
     try {
-      const response = await fetch(`${process.env.HOST}verify-email/?email=${query}`, {
-        method: "POST",
-        body: toSendData,
-        headers: {
-          Accept: "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.HOST}verify-email/?email=${query}`,
+        {
+          method: "POST",
+          body: toSendData,
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         toast.success("successsss");
@@ -38,37 +43,80 @@ const VerifyOtp: React.FC<{
     }
   };
 
-  const handleOtpChange = (value: string): void => {
-    setOtpValue(value);
-    setIsOtpValid(true);
+  const handleChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+
+    if (!/^[0-9]?$/.test(value)) return; // Allow only numbers
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Move to next input if value is entered
+    if (value && index < length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
   };
+
+  const handleKeyDown = (
+    index: number,
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = event.clipboardData.getData("text").slice(0, length);
+    if (/^\d+$/.test(pastedData)) {
+      const otpArray = pastedData.split("").slice(0, length);
+      setOtp(otpArray);
+      otpArray.forEach((_, i) => inputRefs.current[i]?.focus());
+    }
+    event.preventDefault();
+  };
+
   return (
-    <>
+    <form action="" onSubmit={handleOTPFormSubmit}>
       <h2 className="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-600 md:text-2xl  text-center">
         Verify OTP
       </h2>
-      <form className="mt-2">
-        <div className="flex flex-col">
-          <OTPForm numberOfDigits={6} onOtpChange={handleOtpChange} />
-          {/* <span className="text-red-500 text-[12px] text-right mt-4">
-            {!isOtpValid }
-          </span> */}
-
-          <div className="flex flex-col items-center mt-4">
-            <div className="bg-blue-600 rounded-lg mb-4">
-              <Btn onClick={()=>handleOTPFormSubmit} size="md" type="submit">Verify</Btn>
-            </div>
-            <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
-              <p>Didn&apos;t receive code?</p>{" "}
-              <button
-                className="flex flex-row items-center font-semibold text-primary-600 hover:text-primary-500">
-                Resend
-              </button>
-            </div>
+      <div className="container mx-auto px-4">
+      <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={(el) => (inputRefs.current[index] = el)}
+              type="text"
+              value={digit}
+              maxLength={1}
+              onChange={(e) => handleChange(index, e)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              onPaste={handlePaste}
+              className="border-2 w-10 h-10 md:w-12 md:h-12 text-center text-black p-2 rounded-md bg-slate-200 focus:bg-slate-300
+                focus:border-4 focus:outline-none appearance-none"
+            />
+          ))}
+        </div>
+        <div className="flex flex-col items-center mt-4">
+          <div className="bg-blue-600 rounded-lg mb-4">
+            <Btn size="md" type="submit">
+              Verify
+            </Btn>
+          </div>
+          <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
+            <p>Didn&apos;t receive code?</p>{" "}
+            <button className="flex flex-row items-center font-semibold text-primary-600 hover:text-primary-500">
+              Resend
+            </button>
           </div>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
 

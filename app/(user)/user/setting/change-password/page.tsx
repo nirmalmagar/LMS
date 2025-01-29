@@ -57,8 +57,9 @@ const page = () => {
         });
         const data = await response.json();
         if (response.ok) {
-          toast.success("change password successfully");
           setInputFieldValue({})
+          setError({});
+          toast.success("change password successfully");
         } else {
           setError(data);
         }

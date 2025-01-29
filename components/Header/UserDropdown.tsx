@@ -21,9 +21,7 @@ const UserDropdown = () => {
     Cookies.remove("LOGIN_TOKEN");
     router.replace(routes.USER_AUTH_LOGIN);
   };
-  useEffect(() => {
-    mutate();
-  }, [logout]);
+  
   useEffect(() => {
     let changeHandler = (e: any) => {
       if (!closeDropdownRef.current.contains(e.target)) {
@@ -55,7 +53,7 @@ const UserDropdown = () => {
           <div>{dropdownMenu ? <IoIosArrowUp /> : <IoIosArrowDown />}</div>
         </div>
         {dropdownMenu && (
-          <div className="absolute top-14 right-9 rounded-b-lg bg-white w-60 p-4 pr-14">
+          <div onClick={logout} className="absolute top-14 right-9 rounded-b-lg cursor-pointer bg-white w-60 p-4 pr-14">
             <ul>
               {/* <li className="text-md">
               <Link href={""}>admin</Link>
@@ -63,7 +61,7 @@ const UserDropdown = () => {
               <li className="text-md cursor-pointer">
                 <div className="flex items-center gap-8 float-right">
                   <RiLogoutBoxRLine />
-                  <div onClick={logout}>LogOut</div>
+                  <span>LogOut</span>
                 </div>
               </li>
             </ul>

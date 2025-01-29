@@ -33,7 +33,7 @@ import {
 } from "@headlessui/react";
 
 const AdminSidebar = () => {
-  const [navbarText, setNavbarText] = useState<boolean>(false);
+  const [navbarText, setNavbarText] = useState<boolean>(true);
   const pathname = usePathname();
 
   const navigation = [
@@ -155,13 +155,13 @@ const AdminSidebar = () => {
         /> */}
       </Link>
       <div className="list-none flex flex-col  text-lg gap-4 gap-y-4 mt-12">
-        <button className="ml-4" onClick={() => setNavbarText(!navbarText)}>
+        {/* <button className="ml-4" onClick={() => setNavbarText(!navbarText)}>
           {navbarText ? (
             <RxCross2 className="h-5 w-5 shrink-0" />
           ) : (
             <IoMenuSharp className="h-5 w-5 shrink-0" />
           )}
-        </button>
+        </button> */}
         {/* <span className="text-xs text-blue-200 font-semibold px-4">BOOKS</span> */}
         <ul>
           <li className="mt-4 flex flex-col gap-2">
