@@ -127,9 +127,9 @@ const LoginPage: React.FC = () => {
           </div>
           <div className="text-sm tex-md mt-4">
             Not a member ?{" "}
-            {/* <Link href={routes.USER_AUTH_SIGN_UP} className="text-blue-500">
+            <Link href={routes.USER_AUTH_SIGN_UP} className="text-blue-500">
               Create an Account
-            </Link> */}
+            </Link>
           </div>
         </form>
       </div>
