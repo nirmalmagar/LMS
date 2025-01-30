@@ -14,6 +14,7 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 import Pagination from "@/components/Pagination/Pagination";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
+import { UserId } from "@/components/IdToName/IdToName";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -367,7 +368,7 @@ const StudentTableList: React.FC<ShowHeading> = ({
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.user}
+                        <UserId Id={studentItem.user} />
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">

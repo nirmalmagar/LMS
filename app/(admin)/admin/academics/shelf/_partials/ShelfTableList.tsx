@@ -14,7 +14,7 @@ import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
-import { setErrorMap } from "zod";
+import { LibraryId } from "@/components/IdToName/IdToName";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -31,14 +31,21 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [shelvesId, setShelvesId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [selectValues, setSelectValues] = useState<Record<string,any>>({});
-  const [error, setError]= useState<Record<string,any>>({});
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  const [error, setError] = useState<Record<string, any>>({});
 
-  const { data:shelvesData, isLoading, mutate } = useSWR(`${process.env.HOST}shelves/?page=${currentPage}`, defaultFetcher);
+  const {
+    data: shelvesData,
+    isLoading,
+    mutate,
+  } = useSWR(`${process.env.HOST}shelves/?page=${currentPage}`, defaultFetcher);
 
   // edit id list
-  const ShelvesURL = `${process.env.HOST}shelves/${shelvesId}`;  
-  const { data: shelvesIdList, mutate:editMutate } = useSWR(ShelvesURL, defaultFetcher);
+  const ShelvesURL = `${process.env.HOST}shelves/${shelvesId}`;
+  const { data: shelvesIdList, mutate: editMutate } = useSWR(
+    ShelvesURL,
+    defaultFetcher
+  );
 
   // library section lists
   const { data: libraryData } = useSWR(
@@ -234,10 +241,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
             </Btn>
 
             <div className="flex gap-x-4">
-              <Btn
-                type="submit"
-                className="bg-blue-600 text-white"
-              >
+              <Btn type="submit" className="bg-blue-600 text-white">
                 Edit
               </Btn>
             </div>
@@ -293,7 +297,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {shelvesItem.section}
+                            <LibraryId Id={shelvesItem.section} />
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">

@@ -15,7 +15,7 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 import DateToString from "@/components/DateConverter/DateToString";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
-
+import { UserId } from "@/components/IdToName/IdToName";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -141,8 +141,6 @@ const NotificationTable: React.FC<ShowHeading> = ({
     }
   };
 
-  console.log("time",notificationList);
-
   // pagination number lists in array
   let totalPageArray = notificationsLists
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -193,8 +191,9 @@ const NotificationTable: React.FC<ShowHeading> = ({
                 className="w-full ml-40"
                 options={userOption}
                 label="Users"
+                name="user"
                 value={selectValues?.user}
-                defaultValue={notificationList?.user}
+                defaultValue={notificationList?.user?.id}
                 fieldErrors={error?.user ?? []}
                 onChange={(e) => {
                   handleSelectChange("user", {
@@ -275,7 +274,8 @@ const NotificationTable: React.FC<ShowHeading> = ({
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {notificationsItems?.user}
+                        {/* {notificationsItems?.user} */}
+                        <UserId Id={notificationsItems?.user} /> 
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">

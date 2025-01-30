@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
+import DateToString from "@/components/DateConverter/DateToString";
 import Image from "next/image";
 import AddBookLists from "../../books/_partials/AddBookLists";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
@@ -241,11 +242,11 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                         </td>
 
                         <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                          <p className="text-black">{genresList?.created_on}</p>
+                          <p className="text-black"> <DateToString inputDate={genresList?.created_on} /> </p>
                         </td>
                         <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                           <p className="text-black">
-                            {genresList?.modified_on}
+                          <DateToString inputDate={genresList?.modified_on} />
                           </p>
                         </td>
                         <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
@@ -256,7 +257,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                           </p>
                         </td>
                         <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                          <p className="text-black text-center">
+                          <p className="text-black">
                             <button
                               className="hover:text-red"
                               onClick={() => showSwal(genresList?.id)}

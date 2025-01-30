@@ -14,6 +14,7 @@ import { defaultFetcher } from "@/helpers/FetchHelper";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 import Multiselect from "multiselect-react-dropdown";
+import { DepartmentId, LibraryId, UserId } from "@/components/IdToName/IdToName";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -82,7 +83,6 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
 
   const StaffURL = `${process.env.HOST}staffs/${staffId}`;
   const { data: staffIdList } = useSWR(StaffURL, defaultFetcher);
-  console.log("stafflist",staffIdList);
   
   // delete popup model
   const showSwal = (id: string) => {
@@ -341,7 +341,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {staffItem.user}
+                            <UserId Id={staffItem.user}/>
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -351,7 +351,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {staffItem.department}
+                            <DepartmentId Id={staffItem.department} />
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -361,7 +361,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
                         </td>
                         <td className="min-w-[70px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {staffItem.authorized_sections}
+                            {staffItem.authorized_sections ? <LibraryId Id={staffItem.authorized_sections[0]} /> : "---" }
                           </p>
                         </td> 
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">

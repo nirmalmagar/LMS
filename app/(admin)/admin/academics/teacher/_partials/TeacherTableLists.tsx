@@ -13,6 +13,8 @@ import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
+import { DepartmentId, GradeId, UserId } from "@/components/IdToName/IdToName";
+
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -274,7 +276,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {teachersItems.user}
+                            <UserId Id={teachersItems.user} />
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -284,12 +286,12 @@ const TeacherTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {teachersItems.grade}
+                            <GradeId Id={teachersItems.grade} />
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {teachersItems.department}
+                            <DepartmentId Id={teachersItems.department} />
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">

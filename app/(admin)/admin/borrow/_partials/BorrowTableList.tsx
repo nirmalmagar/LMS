@@ -5,39 +5,64 @@ import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
-import AddDepartment from "./AddDepartment";
+import AddBorrow from "./AddBorrow";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import SelectField from "@/components/Form/SelectField";
+import { collectionToOptions } from "@/helpers/CollectionOption";
+import DateToString from "@/components/DateConverter/DateToString";
+import { LibraryId } from "@/components/IdToName/IdToName";
+
 interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
-  data: Record<string,any>[];
-  mutate: ()=>void;
 }
 
-const DepartmentTableList: React.FC<ShowHeading> = ({
-  showHeading,
-  showMore,
-  data,
-  mutate
-}) => {
+const BorrowTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   let heading = showHeading;
   let showLists = showMore;
 
   // const [showMore, setShowMore] = useState<boolean>(false);
-  const [departmentsLists, setDepartmentsLists] = useState<any[]>([]);
+  const [borrowList, setBorrowList] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [departmentId, setDepartmentId] = useState<number>();
+  const [borrowId, setBorrowId] = useState<number>();
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [error, setError] = useState<Record<string,any>>({});
+  const [selectValues, setSelectValues] = useState<Record<string, any>>({});
+  const [error, setError] = useState<Record<string, any>>({});
 
-  const DepartmentURL = `${process.env.HOST}departments/${departmentId}`;
-  const { data: departmentIdList , mutate:editMutate } = useSWR(DepartmentURL, defaultFetcher);
+  const {
+    data: borrowData,
+    isLoading,
+    mutate,
+  } = useSWR(`${process.env.HOST}borrow/?page=${currentPage}`, defaultFetcher);
+
+  // edit id list
+  const BorrowURL = `${process.env.HOST}borrow/${borrowId}`;
+  const { data: borrowIdList, mutate: editMutate } = useSWR(
+    BorrowURL,
+    defaultFetcher
+  );
+
+  // library section lists
+  const { data: libraryData } = useSWR(
+    `${process.env.HOST}library-sections/`,
+    defaultFetcher
+  );
+  const libraryOptions = collectionToOptions(
+    libraryData?.results ? libraryData?.results : []
+  );
+
+  // change handler
+  function handleSelectChange(name: string, choice: Record<string, any>) {
+    const key = name;
+    const value = choice?.value;
+    setSelectValues((prev) => ({ ...prev, [key]: value }));
+  }
   // delete popup model
   const showSwal = (id: string) => {
     withReactContent(Swal)
@@ -53,19 +78,16 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       .then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await fetch(
-              `${process.env.HOST}departments/${id}/`,
-              {
-                method: "DELETE",
-                headers: {
-                  Authorization: `Bearer ${accessToken()}`,
-                  "Content-Type": "application/json",
-                  Accept: "application/json", // Fixed typo here
-                },
-              }
-            );
+            const response = await fetch(`${process.env.HOST}borrow/${id}/`, {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${accessToken()}`,
+                "Content-Type": "application/json",
+                Accept: "application/json", // Fixed typo here
+              },
+            });
             if (response.ok) {
-              toast.success("Department removed successfully.");
+              toast.success("Borrow removed successfully.");
               mutate();
             } else {
               const result = await response.json();
@@ -81,35 +103,30 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
   // edit icons box
   const editIconBox = (id: number) => {
     setShowPopUpModal(true);
-    setDepartmentId(id);
+    setBorrowId(id);
   };
   const handleCloseTap = () => {
     setShowPopUpModal(false);
-    setError({});
   };
   // edit handle submit
-  const handleEditDepartment = async (e: FormEvent<HTMLFormElement>) => {
+  const handleEditBorrow = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     try {
-      const response = await fetch(
-        `${process.env.HOST}departments/${departmentId}/`,
-        {
-          method: "PUT",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${process.env.HOST}borrow/${borrowId}/`, {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken()}`,
+          Accept: "application/json",
+        },
+      });
       const data = await response.json();
       if (response.ok) {
-        toast.success("Department update successfully ");
-        mutate();
-        editMutate();
-        setError({});
+        toast.success("Borrow update successfully ");
         setShowPopUpModal(false);
+        editMutate();
+        mutate();
       } else {
         setError(data);
       }
@@ -118,14 +135,39 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
     }
   };
 
+  // fetch borrow lists
+  // const BorrowList = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.HOST}borrow/?page=${currentPage}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken()}`,
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     setTotalPages(data?.total_pages);
+  //     setCurrentPage(data?.current_page);
+  //     setBorrowList(data?.results);
+  //     setIsLoading(false);
+  //     mutate();
+  //   } catch (e) {
+  //     console.log("error", e);
+  //     setIsLoading(false);
+  //   }
+  // };
+
   // pagination number lists in array
-  let totalPageArray = departmentsLists
+  let totalPageArray = borrowList
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
     : [];
 
   // pagination
   let paginationLinks =
-    departmentsLists &&
+    borrowList &&
     totalPageArray.map((items: any, index: number) => {
       if (items < 10) {
         return (
@@ -148,9 +190,6 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       setCurrentPage(page);
     }
   };
-  useEffect(() => {
-    mutate();
-  }, [currentPage,mutate]);
 
   return (
     <>
@@ -158,58 +197,37 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
-        modalTitle="Edit Department"
+        modalTitle="Edit Borrow"
         size="lg"
       >
-        <form id="lead-form" onSubmit={handleEditDepartment}>
+        <form id="lead-form" onSubmit={handleEditBorrow}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
             <InputField
               type="text"
-              label="Department"
-              name="name"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.name}
-              fieldErrors={error?.name ?? []}
+              label="Number"
+              name="number"
+              defaultValue={borrowIdList?.number}
+              fieldErrors={error?.number ?? []}
             />
-            <InputField
-              type="text"
-              label="Department head"
-              name="head_of_department"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.head_of_department}
-              fieldErrors={error?.head_of_department ?? []}
+            <SelectField
+              label="section"
+              name="section"
+              options={libraryOptions}
+              value={selectValues?.section}
+              defaultValue={borrowIdList?.section?.id}
+              fieldErrors={error?.section ?? []}
+              onChange={(e) => {
+                handleSelectChange("section", {
+                  value: e.target.value,
+                });
+              }}
             />
             <InputField
               type="text"
               label="Description"
               name="description"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.description}
+              defaultValue={borrowIdList?.description}
               fieldErrors={error?.description ?? []}
-            />
-            <InputField
-              type="text"
-              label="Phone no."
-              name="phone_number"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.phone_number}
-              fieldErrors={error?.phone_number ?? []}
-            />
-            <InputField
-              type="textarea"
-              label="Location"
-              name="location"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.location}
-              fieldErrors={error?.location ?? []}
-            />
-            <InputField
-              type="number"
-              label="borrowing days"
-              name="borrowing_period_days"
-              placeholder="enter grade"
-              defaultValue={departmentIdList?.borrowing_period_days}
-              fieldErrors={error?.borrowing_period_days ?? []}
             />
           </div>
           <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
@@ -218,7 +236,6 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               onClick={() => {
                 setShowPopUpModal(false);
                 setError({});
-                // setInputFieldValue({});
               }}
             >
               Cancel
@@ -233,30 +250,35 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
         </form>
       </Modal>
 
+      {isLoading ? (
+        <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
+          <span>Loading...</span>
+        </p>
+      ) : (
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddDepartment mutate={mutate} />}
+          {heading && <AddBorrow mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>
                 <tr className="border-b-2 text-left">
                   <th className="py-4 px-2 font-medium text-black">S.N</th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Name
+                    Books
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Department Head
+                    Borrower
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Description
+                    Borrowed Date
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Phone no.
+                    Due Date
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Loacation
+                    Returned Date
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Borrow days
+                    Borrow Status
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
@@ -264,8 +286,8 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.results?.map(
-                  (departmentsItems: Record<string, any>, index: number) => {
+                {borrowData?.results?.map(
+                  (borrowItem: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -275,45 +297,53 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems?.name}
+                            {borrowItem?.book?.title}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems?.head_of_department}
+                            {borrowItem?.borrower?.name}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems?.description}
+                            <DateToString
+                              inputDate={borrowItem?.borrowed_date}
+                            />
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems?.phone_number}
+                            <DateToString inputDate={borrowItem?.due_date} />
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems?.location}
+                            {borrowItem?.returned_date ? (
+                              <DateToString
+                                inputDate={borrowItem?.returned_date}
+                              />
+                            ) : (
+                              "---"
+                            )}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {departmentsItems?.borrowing_period_days}
+                            {borrowItem?.borrow_status}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black">
                             <button
                               className="hover:text-red"
-                              onClick={() => showSwal(departmentsItems?.id)}
+                              onClick={() => showSwal(borrowItem?.id)}
                             >
                               <TrashIcon className="h-[18px] w-[18px] hover:text-red-500" />
                             </button>
                             <button
                               className="ml-3"
-                              onClick={() => editIconBox(departmentsItems?.id)}
+                              onClick={() => editIconBox(borrowItem?.id)}
                             >
                               <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                             </button>
@@ -325,7 +355,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+            {/* <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -339,11 +369,12 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               >
                 <MdChevronRight className="w-5 h-5" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
+      )}
     </>
   );
 };
 
-export default DepartmentTableList;
+export default BorrowTableList;

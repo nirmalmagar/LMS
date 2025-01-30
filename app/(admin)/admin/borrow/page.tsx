@@ -1,9 +1,13 @@
-import React from 'react'
-import DefaultLayout from '@/components/Layouts/Navbar/DefaultLayout'
+import React from "react";
+import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
+import BorrowTableList from "./_partials/BorrowTableList";
+
 const BorrowPage = () => {
   return (
-    <DefaultLayout>BorrowPage</DefaultLayout>
-  )
-}
+    <DefaultLayout>
+      <BorrowTableList showHeading={true} />
+    </DefaultLayout>
+  );
+};
 
-export default BorrowPage
+export default BorrowPage;
