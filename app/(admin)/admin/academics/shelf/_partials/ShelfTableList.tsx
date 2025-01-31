@@ -105,6 +105,8 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     setShelvesId(id);
   };
   const handleCloseTap = () => {
+    setSelectValues({})
+    setError({})
     setShowPopUpModal(false);
   };
   // edit handle submit
@@ -126,6 +128,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         setShowPopUpModal(false);
         editMutate();
         mutate();
+        setError({});
       } else {
         setError(data);
       }
@@ -192,7 +195,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
 
   return (
     <>
-      {/* edit Model popup  */}
+      {/* edit Modal popup  */}
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
@@ -209,7 +212,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               fieldErrors={error?.number ?? []}
             />
             <SelectField
-              label="section"
+              label="Section"
               name="section"
               options={libraryOptions}
               value={selectValues?.section}
@@ -234,6 +237,7 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
+                setSelectValues({});
                 setError({});
               }}
             >
@@ -287,17 +291,17 @@ const ShelvesTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {shelvesItem.number}
+                            {shelvesItem.number ? shelvesItem.number : "---"}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            {shelvesItem.description}
+                            {shelvesItem.description ? shelvesItem.description : "---"}
                           </p>
                         </td>
                         <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
-                            <LibraryId Id={shelvesItem.section} />
+                            {shelvesItem.section ? <LibraryId Id={shelvesItem.section} /> : "---"}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">

@@ -129,8 +129,8 @@ const TeacherTableList: React.FC<ShowHeading> = ({
       const data = await response.json();
       if (response.ok) {
         toast.success("Teacher update successfully ");
-        setError({})
         setShowPopUpModal(false);
+        setError({})
         mutate();
         editMutate();
       } else {
@@ -234,6 +234,7 @@ const TeacherTableList: React.FC<ShowHeading> = ({
           </div>
         </form>
       </Modal>
+      
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddTeacher mutate={mutate}/>}
           <div className="max-w-full overflow-x-auto">

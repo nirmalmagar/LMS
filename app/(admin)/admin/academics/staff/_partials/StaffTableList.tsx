@@ -128,6 +128,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
   };
   const handleCloseTap = () => {
     setError({})
+    setSelectValues({});
     setShowPopUpModal(false);
   };
   // edit handle submit
@@ -279,6 +280,7 @@ const StaffTableList: React.FC<ShowHeading> = ({ showHeading, showMore, data , m
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
+                setSelectValues({})
                 setError({})
               }}
             >

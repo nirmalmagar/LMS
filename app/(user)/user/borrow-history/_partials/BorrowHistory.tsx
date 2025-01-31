@@ -75,7 +75,7 @@ const BorrowHistory = () => {
                     Status
                   </th>
                   <th className="min-w-[120px] py-4 px-2 font-medium text-black">
-                    Over due
+                    Overdue
                   </th>
                   <th className="max-w-[120px] py-4 px-2 font-medium text-black">
                     Action
@@ -115,8 +115,8 @@ const BorrowHistory = () => {
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black" id="card_title">
-                            {borrowList?.overdue}
+                          <p className="text-black">
+                            {borrowList?.overdue === false ? "false" : "true"}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">

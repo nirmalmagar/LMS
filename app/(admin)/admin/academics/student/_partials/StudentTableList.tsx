@@ -308,7 +308,9 @@ const StudentTableList: React.FC<ShowHeading> = ({
               outline="error"
               onClick={() => {
                 setShowPopUpModal(false);
-                // setInputFieldValue({});
+                setInputFieldValue({});
+                setSelectValue({})
+                setError({})
               }}
             >
               Cancel
@@ -378,32 +380,32 @@ const StudentTableList: React.FC<ShowHeading> = ({
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.registration_number}
+                          {studentItem.registration_number ? studentItem.registration_number : "---"}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.symbol_number}
+                          {studentItem.symbol_number ? studentItem.symbol_number : "---"}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.grade}
+                          {studentItem.grade ? studentItem.grade : "---"}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.department}
+                          {studentItem.department ? studentItem.department : "---"}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.semester}
+                          {studentItem.semester ? studentItem.semester : "---"}
                         </p>
                       </td>
                       <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
-                          {studentItem.borrowing_period_days}
+                          {studentItem.borrowing_period_days ? studentItem.borrowing_period_days : "---"}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">

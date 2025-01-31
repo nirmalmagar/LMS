@@ -93,7 +93,7 @@ const AddShelves:React.FC<shelvesProps> = ({mutate}) => {
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
             <InputField
               type="text"
-              label="shelves name"
+              label="Number"
               name="number"
               placeholder="shelves Name"
               defaultValue={inputFieldValue?.name}
@@ -104,7 +104,7 @@ const AddShelves:React.FC<shelvesProps> = ({mutate}) => {
             />
 
             <SelectField
-              label="section"
+              label="Section"
               name="section"
               options={libraryOptions}
               fieldErrors={error?.section ?? []}

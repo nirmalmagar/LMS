@@ -6,7 +6,7 @@ const page = () => {
   return (
     <>
       <DefaultLayout>
-        <UsersListTable />
+        <UsersListTable showHeading={true} />
       </DefaultLayout>
     </>
   );
