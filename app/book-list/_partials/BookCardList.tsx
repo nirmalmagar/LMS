@@ -16,9 +16,9 @@ const BookCardList = () => {
   return (
     <>
       <Container>
-        <Heading title={"Books"}>
+        {/* <Heading title={"Books"}>
           {"Explore Fresh Arrivals and Find Your Next Great Read."}
-        </Heading>
+        </Heading> */}
         <section className="my-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-12 gap-x-12">
             {BookListsURL?.results?.map((value: any, index: number) => {
