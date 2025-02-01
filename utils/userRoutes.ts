@@ -5,6 +5,8 @@ const userRoutes: userRoutesInterface = {
   USER_AUTH_LOGIN: "/user/auth/login",
   USER_DASHBOARD_ROUTE: "/user/dashboard",
   USER_AUTH_SIGN_UP: "/user/auth/sign-up",
+  FORGOT_PASSWORD: "/user/auth/forgot-password",
+  RESET_PASSWORD: "/user/auth/reset-password",
   BORROW_HISTORY: "/user/borrow-history",
   NOTIFICATION: "/user/notification",
   SETTING: "/user/setting",

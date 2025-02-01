@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
         Cookie.set("LOGIN_TOKEN", data?.token?.access);
         Cookie.set("USER_ID", data?.user?.id);
         router.replace(routes.USER_DASHBOARD_ROUTE);
-        toast.success(" user login successfully");
+        toast.success(" User login successfully");
       } else {
         toast.error("something went wrong!!");
         Cookie.remove("LOGIN_TOKEN");
@@ -125,10 +125,18 @@ const LoginPage: React.FC = () => {
               {isLoading ? <Spinner /> : "Login"}
             </Btn>
           </div>
-          <div className="text-sm tex-md mt-4">
-            Not a member ?{" "}
-            <Link href={routes.USER_AUTH_SIGN_UP} className="text-blue-500">
-              Create an Account
+          <div className="flex justify-between">
+            <div className="text-sm tex-md mt-4">
+              Not a member ?{" "}
+              <Link href={routes.USER_AUTH_SIGN_UP} className="text-blue-500">
+                Create an Account
+              </Link>
+            </div>
+            <Link
+              href={routes.FORGOT_PASSWORD}
+              className="text-blue-500 text-sm tex-md mt-4"
+            >
+              Forgot your password ?
             </Link>
           </div>
         </form>
