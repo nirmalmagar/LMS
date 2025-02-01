@@ -374,7 +374,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 </tr>
               </thead>
               <tbody>
-                {bookData?.results?.map(
+                {bookData?.results?.slice(0,5)?.map(
                   (booksList: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
