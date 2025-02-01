@@ -20,7 +20,7 @@ import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 import DateToString from "@/components/DateConverter/DateToString";
 import { LibraryId } from "@/components/IdToName/IdToName";
-
+import ChangePassword from "./ChangePassword";
 interface ShowHeading {
   showHeading?: boolean;
   showMore?: boolean;
@@ -44,9 +44,8 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     isLoading,
     mutate,
   } = useSWR(`${process.env.HOST}user/?page=${currentPage}`, defaultFetcher);
-
   // edit id list
-  const UserURL = `${process.env.HOST}user/${userId}`;
+  const UserURL = `${process.env.HOST}user/${userId}/`;
   const { data: userIdList, mutate: editMutate } = useSWR(
     UserURL,
     defaultFetcher
@@ -57,6 +56,7 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     `${process.env.HOST}library-sections/`,
     defaultFetcher
   );
+
   const libraryOptions = collectionToOptions(
     libraryData?.results ? libraryData?.results : []
   );
@@ -107,10 +107,6 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   // edit icons box
   const editIconBox = (id: number) => {
     setShowPopUpModal(true);
-    setUserId(id);
-  };
-  const changePasswordBox = (id: number) => {
-    setShowPasswordModal(true);
     setUserId(id);
   };
   const handleCloseTap = () => {
@@ -172,6 +168,12 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       setCurrentPage(page);
     }
   };
+  useEffect(() => {
+    if (userData) {
+      setCurrentPage(userData.current_page || 1);
+      setTotalPages(userData.total_pages || 1);
+    }
+  }, [userData]);
   return (
     <>
       {/* edit Model popup  */}
@@ -297,12 +299,7 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                             >
                               <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                             </button>
-                            <button
-                              className="ml-3"
-                              onClick={() => changePasswordBox(userList?.id)}
-                            >
-                              <LockClosedIcon className="h-[18px] w-[18px] hover:text-blue-700" />
-                            </button>
+                            <ChangePassword userId={userList?.id} />
                           </div>
                           {/* <p className="text-xs bg-blue-500 ml-2 px-1 py-1 rounded-md text-white">change password</p> */}
                         </td>
@@ -312,21 +309,23 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <MdChevronLeft className="w-5 h-5" />
-              </button>
-              {paginationLinks}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <MdChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+            {userData?.results?.length >= 10 && (
+              <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <MdChevronLeft className="w-5 h-5" />
+                </button>
+                {paginationLinks}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  <MdChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

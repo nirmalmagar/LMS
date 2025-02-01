@@ -206,7 +206,7 @@ const GradeTableList: React.FC<ShowHeading> = ({
               )}
             </tbody>
           </table>
-          {/* <Pagination total_Pages={data?.total_pages} current_Page={data?.current_page} results={data?.results} mutate={mutate} /> */}
+          <Pagination total_Pages={data?.total_pages} current_Page={data?.current_page} results={data?.results} mutate={mutate} />
         </div>
       </div>
     </>

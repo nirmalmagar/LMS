@@ -190,7 +190,12 @@ const BorrowTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
       setCurrentPage(page);
     }
   };
-
+  useEffect(() => {
+    if (borrowData) {
+      setCurrentPage(borrowData?.current_page || 1);
+      setTotalPages(borrowData?.total_pages || 1);
+    }
+  }, [borrowData]);
   return (
     <>
       {/* edit Model popup  */}
@@ -280,9 +285,9 @@ const BorrowTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Borrow Status
                   </th>
-                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                  {/* <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
-                  </th>
+                  </th> */}
                 </tr>
               </thead>
               <tbody>
@@ -333,7 +338,7 @@ const BorrowTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                             {borrowItem?.borrow_status}
                           </p>
                         </td>
-                        <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        {/* <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black">
                             <button
                               className="hover:text-red"
@@ -348,28 +353,30 @@ const BorrowTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                               <PencilSquareIcon className="h-[18px] w-[18px] hover:text-blue-700" />
                             </button>
                           </p>
-                        </td>
+                        </td> */}
                       </tr>
                     );
                   }
                 )}
               </tbody>
             </table>
-            {/* <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <MdChevronLeft className="w-5 h-5" />
-              </button>
-              {paginationLinks}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <MdChevronRight className="w-5 h-5" />
-              </button>
-            </div> */}
+            {borrowData?.results?.length >= 10 && (
+              <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <MdChevronLeft className="w-5 h-5" />
+                </button>
+                {paginationLinks}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  <MdChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

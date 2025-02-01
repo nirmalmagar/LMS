@@ -26,11 +26,11 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [editValue, setEditValue] = useState<Record<string, any>>({});
-  const [error, setError] = useState<Record<string,any>>({});
+  const [error, setError] = useState<Record<string, any>>({});
   const [id, setId] = useState<number>();
 
-  const { data: editBookList , mutate:editMutate} = useSWR(
-    `${process.env.HOST}books/${id}`,
+  const { data: editBookList, mutate: editMutate } = useSWR(
+    `${process.env.HOST}books/${id}/`,
     defaultFetcher
   );
 
@@ -39,7 +39,10 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     data: bookData,
     isLoading,
     mutate,
-  } = useSWR(`${process.env.HOST}books/?page=${currentPage}`, defaultFetcher);
+  } = useSWR(
+    `${process.env.HOST}books/?query=&page=${currentPage} `,
+    defaultFetcher
+  );
 
   // delete modal
   const showSwal = (id: string) => {
@@ -101,10 +104,9 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         editMutate();
         mutate();
         setShowPopUpModal(false);
-      }
-      else{
+      } else {
         setError(data);
-        toast.error("something went wrong")
+        toast.error("something went wrong");
       }
     } catch (e) {
       console.error("error ", e);
@@ -372,9 +374,8 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 </tr>
               </thead>
               <tbody>
-                {bookData?.results
-                  ?.slice(0, 5)
-                  ?.map((booksList: Record<string, any>, index: number) => {
+                {bookData?.results?.map(
+                  (booksList: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
@@ -458,24 +459,27 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                         )}
                       </tr>
                     );
-                  })}
+                  }
+                )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <MdChevronLeft className="w-5 h-5" />
-              </button>
-              {paginationLinks}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === bookData?.total_pages}
-              >
-                <MdChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+            {bookData?.results.length >= 10 && (
+              <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <MdChevronLeft className="w-5 h-5" />
+                </button>
+                {paginationLinks}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === bookData?.total_pages}
+                >
+                  <MdChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

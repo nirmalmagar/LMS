@@ -325,7 +325,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+            {/* <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -339,7 +339,7 @@ const DepartmentTableList: React.FC<ShowHeading> = ({
               >
                 <MdChevronRight className="w-5 h-5" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
     </>

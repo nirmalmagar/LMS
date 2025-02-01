@@ -172,10 +172,11 @@ const NotificationTable: React.FC<ShowHeading> = ({
     }
   };
   useEffect(() => {
-    mutate();
-  }, [currentPage, mutate]);
-
-  
+    if (data) {
+        setCurrentPage(data?.current_page || 1);
+        setTotalPages(data?.total_pages || 1);
+    }
+}, [data]);
   return (
     <>
       {/* edit Model popup  */}
@@ -316,7 +317,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
               )}
             </tbody>
           </table>
-          <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+          {data?.results?.length >= 10 && <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -330,7 +331,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
             >
               <MdChevronRight className="w-5 h-5" />
             </button>
-          </div>
+          </div>}
         </div>
       </div>
     </>

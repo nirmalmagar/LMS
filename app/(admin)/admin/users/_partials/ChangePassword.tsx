@@ -4,6 +4,7 @@ import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { accessToken } from "@/helpers/TokenHelper";
 import { toast } from "react-toastify";
+import { LockClosedIcon } from "@heroicons/react/24/outline";
 
 interface getUserId {
   userId: number;
@@ -14,9 +15,7 @@ const ChangePassword: React.FC<getUserId> = ({ userId }) => {
     {}
   );
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
-  const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
-  const [error, setError] = useState<Record<string,any>>({})
-
+  const [error, setError] = useState<Record<string, any>>({});
   // handle close password modal
   const handleClosePasswordTap = () => {
     setShowPasswordModal(false);
@@ -30,8 +29,10 @@ const ChangePassword: React.FC<getUserId> = ({ userId }) => {
     setInputFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
+
   // change password handle
   const handleChangePassword = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const formData = {
       new_password: inputFormValues?.new_password,
     };
@@ -44,14 +45,14 @@ const ChangePassword: React.FC<getUserId> = ({ userId }) => {
           headers: {
             Authorization: `Bearer ${accessToken()}`,
             Accept: "application/json",
+            "Content-Type": 'application/json'
           },
         }
       );
       const data = await response.json();
       if (response.ok) {
         toast.success("Password Change Successfully ");
-        setShowPopUpModal(false);
-        mutate();
+        setShowPasswordModal(false);
       } else {
         setError(data);
       }
@@ -64,9 +65,9 @@ const ChangePassword: React.FC<getUserId> = ({ userId }) => {
     <>
       {/* change password popup model */}
       <Modal
-        show={showPopUpModal}
+        show={showPasswordModal}
         handleClose={handleClosePasswordTap}
-        modalTitle="Change User Password"
+        modalTitle="Change Password"
         size="lg"
       >
         <form id="lead-form" onSubmit={handleChangePassword}>
@@ -98,6 +99,9 @@ const ChangePassword: React.FC<getUserId> = ({ userId }) => {
           </div>
         </form>
       </Modal>
+      <button className="ml-3" onClick={() => setShowPasswordModal(true)}>
+        <LockClosedIcon className="h-[18px] w-[18px] hover:text-blue-700" />
+      </button>
     </>
   );
 };

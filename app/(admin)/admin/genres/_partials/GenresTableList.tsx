@@ -153,7 +153,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   useEffect(() => {
     mutate();
   }, [currentPage]);
-
+  console.log("hacker",genresData?.results?.length);
   return (
     <>
     {/* edit Model popup  */}
@@ -279,7 +279,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 )}
               </tbody>
             </table>
-            <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
+            {genresData?.results?.length >= 10 && <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -293,7 +293,7 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
               >
                 <MdChevronRight className="w-5 h-5" />
               </button>
-            </div>
+            </div>}
           </div>
         </div>
       )}
