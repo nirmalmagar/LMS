@@ -1,34 +1,42 @@
 import Container from "@/components/Container";
 import routes from "@/utils/userRoutes";
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Navbar = () => {
+    const [isStickyNavbar, setIsStickyNavbar] = useState(false);
+  
+    const ListenScroll = () => {
+      if (window.scrollY >= 150) {
+        setIsStickyNavbar(true);
+      } else {
+        setIsStickyNavbar(false);
+      }
+    };
+  
+    useEffect(() => {
+      window.addEventListener("scroll", ListenScroll);
+  
+      return () => window.removeEventListener("scroll", ListenScroll);
+    }, [isStickyNavbar]);
   return (
-    <div className="bg-gray-100 fixed top-0 z-40 w-full">
+    <div className={ isStickyNavbar ? `bg-stone-500 text-white sticky py-4 top-0 z-40 w-full` : "hidden"}>
       <Container>
-        <nav className=" items-center flex justify-between">
-          <div className="relative w-14 h-14">
+        <ul className="flex gap-x-16 text-[16px] justify-center cursor-pointer font-sans font-medium tracking-wider items-center text-center">
+          {/* <div className="relative w-14 h-14">
             <Image fill src={"/assets/logo.png"} alt="LMS logo" sizes="fit" />
-          </div>
-          <ul className="flex gap-x-20 font-semibold text-[17px] cursor-pointer">
-            <li className="hover:text-blue-800">
-              <Link href={"/"}>Home</Link>
-            </li>
-            <li className="hover:text-blue-800">
-              <Link href={routes.USER_AUTH_LOGIN}>Login</Link>
-            </li>
-            <li className="hover:text-blue-800">Membership</li>
-            <li className="hover:text-blue-800">NPR</li>
-            <li className="hover:text-blue-800">
-              {/* <Link href={routes.USER_AUTH_SIGN_UP}>Create Account</Link> */}
-            </li>
-            {/* <li className="hover:text-blue-800">
-              <ShoppingBagIcon className="w-6 h-6" />
-            </li> */}
-          </ul>
-        </nav>
+          </div> */}
+          <li className="hover:text-orange-600">
+            <Link href={"/"}>Home</Link>
+          </li>
+          <li className="hover:text-orange-600">About</li>
+          <li className="hover:text-orange-600">Catalog</li>
+          <li className="hover:text-orange-600">Services</li>
+          <li className="hover:text-orange-600">Contacts</li>
+          <li className="hover:text-orange-600">
+            <Link href={routes.USER_AUTH_LOGIN}>Login</Link>
+          </li>
+        </ul>
       </Container>
     </div>
   );

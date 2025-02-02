@@ -13,7 +13,9 @@ const Pagination = () => {
   const fetchBooks = async (page: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.HOST}books/${book_id}/recommended-books/?page=${page}`); // Replace `/api/books` with your API endpoint
+      const res = await fetch(
+        `${process.env.HOST}books/?query=${book_id}/recommended-books/?page=${page}`
+      ); // Replace `/api/books` with your API endpoint
       const data = await res.json();
       setBookListsURL(data.results);
       setTotalPages(data.total_pages);

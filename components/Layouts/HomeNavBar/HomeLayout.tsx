@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+"use client";
+import React, { ReactNode, useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -10,9 +11,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
     <>
       {/* ---------------navbar-------------- */}
       <Navbar />
-      <main className="mt-20">
-        {children}
-      </main>
+      <main>{children}</main>
       {/* ---------------footer--------------- */}
       <Footer />
     </>

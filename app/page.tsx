@@ -38,13 +38,13 @@ const page = () => {
 
   return (
     <>
-      {/* <HomeLayout> */}
+      <HomeLayout>
       {/* -------------------Hero page------------------------ */}
       <section className="relative">
         <Image
           width={800}
           height={0}
-          className="w-screen h-[400px]"
+          className="w-screen h-[500px]"
           src={"/assets/library_bg.jpg"}
           alt="library image"
         />
@@ -52,15 +52,15 @@ const page = () => {
           <p className={`text-2xl ${lora.className} tracking-widest`}>
             PUBLIC LIBRARY
           </p>
-          <ul className="flex gap-x-16 text-[17px] my-6 cursor-pointer font-sans">
-            <li>
+          <ul className="flex gap-x-16 text-[17px] tracking-wider font-medium my-6 cursor-pointer font-sans">
+            <li className="hover:text-orange-600">
               <Link href={"/"}>Home</Link>
             </li>
-            <li>About</li>
-            <li>Catalog</li>
-            <li>Services</li>
-            <li>Contacts</li>
-            <li>
+            <li className="hover:text-orange-600">About</li>
+            <li className="hover:text-orange-600">Catalog</li>
+            <li className="hover:text-orange-600">Services</li>
+            <li className="hover:text-orange-600">Contacts</li>
+            <li className="hover:text-orange-600">
               <Link href={routes.USER_AUTH_LOGIN}>Login</Link>
             </li>
           </ul>
@@ -138,7 +138,7 @@ const page = () => {
 
         {/* -------------------affordable books----------------------- */}
         <AffordableBookCard imageUrl={affordableBooksList} />
-        {/* </HomeLayout> */}
+        </HomeLayout>
     </>
   );
 };
