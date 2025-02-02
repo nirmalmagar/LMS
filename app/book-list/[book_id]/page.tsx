@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Image from "next/image";
-import { defaultFetcher } from "@/helpers/FetchHelper";
+import { defaultFetcher, getFetcher } from "@/helpers/FetchHelper";
 import Container from "@/components/Container";
 import HomeLayout from "@/components/Layouts/HomeNavBar/HomeLayout";
 import { MdOutlineLibraryBooks } from "react-icons/md";
@@ -27,12 +27,11 @@ const page = () => {
 
   const { data: recommendedBookURL} = useSWR(
     `${process.env.HOST}books/${book_id}/recommended-books/`,
-    defaultFetcher
+    getFetcher
   );
-console.log("recommended books", recommendedBookURL)
-  const { data: bookId } = useSWR(
+  const { data: bookId , isLoading} = useSWR(
     `${process.env.HOST}books/${book_id}`,
-    defaultFetcher
+    getFetcher
   );
 
   // const handlePageChange = (page: number) => {
@@ -108,55 +107,6 @@ console.log("recommended books", recommendedBookURL)
                 </div>
               </div>
             </div>
-            <div className="flex justify-center text-left">
-              <div>
-                <div className="py-6 px-4 border-[3px] rounded-lg w-fit border-gray-100">
-                  <p className="font-semibold text-lg">
-                    Get Estimated Arrival Time
-                  </p>
-                  <div className="flex items-center gap-x-4 mt-2">
-                    <FaMapMarkerAlt className="w-5 h-5" />
-                    <div>
-                      <span className="font-semibold text-lg">Kathmandu</span>
-                      <p className="text-sm -mt-1">Kathmandu, Nepal</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-x-4 mt-2">
-                    <TbTruckDelivery className="w-5 h-5" />
-                    <div>
-                      <span className="font-semibold text-lg">
-                        Delivery Within
-                      </span>
-                      <p className="text-sm -mt-1">1 to 2 Days</p>
-                    </div>
-                  </div>
-                  <div className="w-full h-[1px] bg-gray-200 my-4" />
-                  <p className="text-xl font-semibold">Rs. {bookId?.price}</p>
-                  <div className="bg-gray-100 flex justify-around my-2 py-2 rounded-md">
-                    <button
-                      className="border-2 border-gray-200 rounded-full p-1 bg-white"
-                      onClick={() =>
-                        setIncrement(increment > 1 ? increment - 1 : 1)
-                      }
-                    >
-                      <RiSubtractFill className="font-bold text-xl" />
-                    </button>
-                    <span className="font-semibold text-lg mt-0.5">
-                      QTY: {increment}
-                    </span>
-                    <button
-                      className="border-2 border-gray-200 rounded-full p-1 bg-white"
-                      onClick={() => setIncrement(increment + 1)}
-                    >
-                      <IoMdAdd className="font-bold text-xl" />
-                    </button>
-                  </div>
-                  <button className="font-semibold text-lg bg-blue-800 rounded-md py-1 mt-2 w-full text-white text-center">
-                    ADD TO CART
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </Container>
         <Container>
@@ -197,7 +147,7 @@ console.log("recommended books", recommendedBookURL)
             })}
           </div>
         </section>
-        {loading && (
+        {isLoading && (
           <div className="text-center text-xl h-96">Loading.....</div>
         )}
         </Container>

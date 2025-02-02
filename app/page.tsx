@@ -7,7 +7,6 @@ import AffordableBookCard from "@/components/HomePages/AffordableBookCard";
 import HomeLayout from "@/components/Layouts/HomeNavBar/HomeLayout";
 import BookCardList from "./book-list/_partials/BookCardList";
 import { Figtree, Lora } from "next/font/google";
-import Link from "next/link";
 import routes from "@/utils/userRoutes";
 import { getFetcher } from "@/helpers/FetchHelper";
 import useSWR from "swr";
