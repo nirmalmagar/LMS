@@ -5,52 +5,121 @@ import Cookies from "js-cookie";
 import { accessToken } from "@/helpers/TokenHelper";
 import useSWR from "swr";
 import DateToString from "@/components/DateConverter/DateToString";
-import { defaultFetcher } from "@/helpers/FetchHelper";
+import { defaultFetcher, getFetcher } from "@/helpers/FetchHelper";
+import { CreditCardIcon } from "@heroicons/react/24/outline";
+import { Button } from "@headlessui/react";
+import Modal from "@/components/Elements/Modal";
+import Btn from "@/components/Btn";
+import { toast } from "react-toastify";
+import Image from "next/image";
 
 const BorrowHistory = () => {
   const [borrowHistory, setBorrowHistory] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPopUpModal, setShowPopUpModal] = useState(false);
+  const [esewaPopUpModal, setEsewaPopUpModal] = useState(false);
+  const [borrowId, setBorrowId] = useState<number>();
 
   const user_id = Cookies.get("USER_ID");
   const { data } = useSWR(
-    `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`,defaultFetcher
+    `${process.env.HOST}borrow/user-borrow-list/?user=${user_id}`,
+    defaultFetcher
   );
-  
-  let totalPageArray = borrowHistory
-    ? Array.from({ length: totalPages }, (_, index) => index + 1)
-    : [];
 
-  let paginationLinks =
-    borrowHistory &&
-    totalPageArray.map((items: any, index: number) => {
-      if (items < 10) {
-        return (
-          <span
-            key={index}
-            onClick={() => setCurrentPage(items)}
-            className={`page-item ${
-              currentPage === items ? "active" : ""
-            } mx-0.5 text-xs cursor-pointer px-1.5`}
-          >
-            {items}
-          </span>
-        );
+  const handlePayment = (id: number) => {
+    // setShowPopUpModal(true);
+    setBorrowId(id);
+  };
+
+  // esewa payment handle
+  const handleEsewaPayment = async (id) => {
+    const borrowID = {
+      borrow_id: id
+    }
+    try {
+      const response = await fetch(
+        `${process.env.HOST}borrow/payment/esewa/initiate/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(borrowID),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to initiate payment");
       }
-    });
 
-  const handlePageChange = (page: number) => {
-    if (currentPage >= 1 && currentPage <= 10) {
-      setCurrentPage(page);
+      const formData = await response.json();
+
+      // Ensure this code runs only on the client side
+      if (typeof window !== "undefined") {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        for (const key in formData) {
+          if (Object.prototype.hasOwnProperty.call(formData, key)) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = formData[key];
+            form.appendChild(input);
+          }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    } catch (error) {
+      console.error("Payment initiation error:", error);
     }
   };
-  // useEffect(() => {
-  //   BookLists();
-  // }, [currentPage]);
-  // console.log("borrowHistory", borrowHistory)
+
+  const handleCloseTap = () => {
+    setShowPopUpModal(false);
+  };
+
   return (
     <>
+      {/* payment popup modal */}
+      <Modal
+        show={showPopUpModal}
+        handleClose={handleCloseTap}
+        modalTitle="e-wallet"
+        size="lg"
+      >
+        <form id="lead-form">
+          <div className="flex justify-evenly my-8">
+            <button 
+              // onClick={()=>handleEsewaPayment}
+            >
+              <Image
+                width={100}
+                height={100}
+                objectFit="conver"
+                alt="esewa logo"
+                src={"/assets/esewa-logo.png"}
+              />
+            </button>
+            <button>
+              <Image
+                width={100}
+                height={60}
+                objectFit="conver"
+                alt="esewa logo"
+                src={"/assets/khalti-logo.png"}
+              />
+            </button>
+          </div>
+        </form>
+      </Modal>
+
       {isLoading ? (
         <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
           <span>Loading...</span>
@@ -74,7 +143,7 @@ const BorrowHistory = () => {
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Status
                   </th>
-                  <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                  <th className="min-w-[80px] py-4 px-2 font-medium text-black">
                     Overdue
                   </th>
                   <th className="max-w-[120px] py-4 px-2 font-medium text-black">
@@ -115,13 +184,28 @@ const BorrowHistory = () => {
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black">
-                            {borrowList?.overdue === false ? "false" : "true"}
+                          <p className="text-black ml-4">
+                            {borrowList?.overdue === false ? "❌" : "✅"}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black" id="card_title">
-                            ----
+                          <p
+                            className={`text-black ${
+                              borrowList?.overdue === true ? "ml-3" : ""
+                            }`}
+                            id="card_title"
+                          >
+                            {borrowList?.overdue === true ? (
+                              "---"
+                            ) : (
+                              <button
+                                // onClick={() => handlePayment(borrowList?.borrower?.id)}
+                                onClick={()=>handleEsewaPayment(borrowList?.id)}
+                                className="bg-blue-500 px-4 py-1 text-white rounded-md"
+                              >
+                                Pay
+                              </button>
+                            )}
                           </p>
                         </td>
                       </tr>
