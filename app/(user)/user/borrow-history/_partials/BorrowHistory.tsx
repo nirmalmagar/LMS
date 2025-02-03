@@ -56,7 +56,6 @@ const BorrowHistory = () => {
 
       const formData = await response.json();
 
-      // Ensure this code runs only on the client side
       if (typeof window !== "undefined") {
         const form = document.createElement("form");
         form.method = "POST";
@@ -80,6 +79,54 @@ const BorrowHistory = () => {
     }
   };
 
+  // khalti payment handle
+  const handleKhaltiPayment = async (borrow_id:any) => {
+    const payload = {
+      borrow_id: borrow_id
+      // website_url: "http://localhost:3000", 
+      // amount: booking.total_amount,
+      // purchase_order_id: bookingId,
+      // purchase_order_name: booking.activity.name,
+    };
+  
+    try {
+      const response = await fetch(`${process.env.HOST}borrow/payment/khalti/initiate/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to initiate payment");
+      }
+  
+      const data = await response.json();
+  
+      if (typeof window !== "undefined") {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+        for (const key in data) {
+          if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = data[key];
+            form.appendChild(input);
+          }
+        }
+        document.body.appendChild(form);
+        form.submit();
+      }
+    } catch (error) {
+      toast.error("Payment initiation error");
+      console.error("Payment initiation error:", error);
+    }
+  };
 
   const handleCloseTap = () => {
     setShowPopUpModal(false);
@@ -101,17 +148,17 @@ const BorrowHistory = () => {
               <Image
                 width={100}
                 height={100}
-                objectFit="conver"
+                objectFit="cover"
                 alt="esewa logo"
                 src={"/assets/esewa-logo.png"}
               />
             </button>
-            <button>
+            <button onClick={()=>handleKhaltiPayment(borrowId)}>
               <Image
                 width={100}
-                height={60}
-                objectFit="conver"
-                alt="esewa logo"
+                height={100}
+                objectFit="cover"
+                alt="khalti logo"
                 src={"/assets/khalti-logo.png"}
               />
             </button>
