@@ -20,6 +20,7 @@ const BorrowHistory = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPopUpModal, setShowPopUpModal] = useState(false);
   const [esewaPopUpModal, setEsewaPopUpModal] = useState(false);
+  const [borrowBookTitle, setBorrowBookTitle] = useState<string>("");
   const [borrowId, setBorrowId] = useState<number>();
 
   const user_id = Cookies.get("USER_ID");
@@ -32,6 +33,9 @@ const BorrowHistory = () => {
     setShowPopUpModal(true);
     setBorrowId(id);
   };
+  const BookTitle=(title:string)=>{
+    setBorrowBookTitle(title);
+  }
 
   // esewa payment handle
   const handleEsewaPayment = async (borrow_id:any) => {
@@ -80,17 +84,16 @@ const BorrowHistory = () => {
   };
 
   // khalti payment handle
-  const handleKhaltiPayment = async (borrow_id:any) => {
+  const handleKhaltiPayment = async ( book_title:any) => {
     const payload = {
-      borrow_id: borrow_id
-      // website_url: "http://localhost:3000", 
+      website_url: "http://localhost:3000", 
       // amount: booking.total_amount,
-      // purchase_order_id: bookingId,
-      // purchase_order_name: booking.activity.name,
+      purchase_order_id: borrowId,
+      purchase_order_name: book_title,
     };
   
     try {
-      const response = await fetch(`${process.env.HOST}borrow/payment/khalti/initiate/`, {
+      const response = await fetch(`${process.env.HOST}borrow/${borrowId}/payment/khalti/initiate/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken()}`,
@@ -105,22 +108,8 @@ const BorrowHistory = () => {
   
       const data = await response.json();
   
-      if (typeof window !== "undefined") {
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
-
-        for (const key in data) {
-          if (Object.prototype.hasOwnProperty.call(data, key)) {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = key;
-            input.value = data[key];
-            form.appendChild(input);
-          }
-        }
-        document.body.appendChild(form);
-        form.submit();
+      if (data.pidx) {
+        window.location.href = data.payment_url;
       }
     } catch (error) {
       toast.error("Payment initiation error");
@@ -153,7 +142,7 @@ const BorrowHistory = () => {
                 src={"/assets/esewa-logo.png"}
               />
             </button>
-            <button onClick={()=>handleKhaltiPayment(borrowId)}>
+            <button onClick={()=>handleKhaltiPayment(borrowBookTitle)}>
               <Image
                 width={100}
                 height={100}
@@ -244,7 +233,8 @@ const BorrowHistory = () => {
                               "---"
                             ) : (
                               <button
-                                onClick={() => handlePayment(borrowList?.id)}
+                                onClick={() => {handlePayment(borrowList?.id), 
+                                  BookTitle(borrowList?.book?.title)}}
                                 // onClick={()=>handleEsewaPayment(borrowList?.id)}
                                 className="bg-blue-500 px-4 py-1 text-white rounded-md"
                               >

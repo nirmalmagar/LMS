@@ -251,7 +251,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
                 <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                   User
                 </th>
-                <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                <th className="max-w-[120px] py-4 px-2 font-medium text-black">
                   Message
                 </th>
                 <th className="min-w-[20px] py-4 px-2 font-medium text-black">
@@ -279,7 +279,7 @@ const NotificationTable: React.FC<ShowHeading> = ({
                         <UserId Id={notificationsItems?.user} /> 
                         </p>
                       </td>
-                      <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                      <td className="max-w-[120px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                         <p className="text-black" id="card_title">
                           {notificationsItems?.message}
                         </p>

@@ -61,19 +61,19 @@ const Notification = () => {
           <span>Loading...</span>
         </p>
       ) : (
-        <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          <div className="max-w-full overflow-x-auto">
+        <div className="mt-8 rounded-3xl max-w-[1000px] bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+          <div className="max-w-[1000px] overflow-x-hidden">
             <table className="w-full text-sm table-auto">
               <thead>
                 <tr className="border-b-2 text-left">
-                  <th className="py-4 px-2 font-medium text-black">S.N</th>
-                  <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">S.N</th>
+                  <th className="max-w-[200px] py-4 px-2 font-medium text-black">
                     Message
                   </th>
-                  <th className="min-w-[120px] py-4 px-2 font-medium text-black">
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Time Stamp
                   </th>
-                  <th className="max-w-[120px] py-4 px-2 font-medium text-black">
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
                   </th>
                 </tr>
@@ -83,17 +83,17 @@ const Notification = () => {
                   (borrowList: Record<string, any>, index: number) => {
                     return (
                       <tr key={index} className="text-left">
-                        <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className=" border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <h5 className="font-medium text-black">
                             {index + 1}
                           </h5>
                         </td>
-                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="max-w-[200px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
                             {borrowList?.message}
                           </p>
                         </td>
-                        <td className="max-w-[160px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black " id="card_title">
                             <DateToString
                               inputDate={borrowList?.timestamp}

@@ -87,7 +87,7 @@ const page = () => {
                   <div className="flex flex-col items-center border-2 border-gray-200 bg-gray-100 w-40 py-2 rounded-md">
                     <h5 className="text-lg text-gray-500">Page Count</h5>
                     <MdOutlineLibraryBooks className="w-8 h-10" />
-                    <p className="text-lg font-semibold">304 Pages</p>
+                    <p className="text-lg font-semibold">{bookId?.pages}</p>
                   </div>
                   <div className="flex flex-col items-center border-2 border-gray-200 bg-gray-100 w-40 py-2 rounded-md">
                     <h5 className="text-lg text-gray-500">Weight</h5>
