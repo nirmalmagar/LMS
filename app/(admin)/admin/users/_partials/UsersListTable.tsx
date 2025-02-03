@@ -38,6 +38,7 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
   const [selectValues, setSelectValues] = useState<Record<string, any>>({});
   const [error, setError] = useState<Record<string, any>>({});
+  const [showPasswordModal,setShowPasswordModal] = useState<boolean>(false);
 
   const {
     data: userData,

@@ -6,6 +6,11 @@ import { accessToken } from "@/helpers/TokenHelper";
 import useSWR from "swr";
 import DateToString from "@/components/DateConverter/DateToString";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+// import routes from "@/utils/userRoutes";
+import routes from "@/utils/userRoutes";
+import { useRouter } from "next/router";
 
 const Notification = () => {
   const [borrowHistory, setBorrowHistory] = useState<any[]>([]);
@@ -69,7 +74,7 @@ const Notification = () => {
                     Time Stamp
                   </th>
                   <th className="max-w-[120px] py-4 px-2 font-medium text-black">
-                    Is Read
+                    Action
                   </th>
                 </tr>
               </thead>
@@ -96,9 +101,12 @@ const Notification = () => {
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
-                          <p className="text-black" id="card_title">
+                          {/* <p className="text-black" id="card_title">
                             {borrowList?.is_read ? "read" : "not read"}
-                          </p>
+                          </p> */}
+                          <Link href={`notification/${borrowList?.id}`}>
+                          <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-3 cursor-pointer" />
+                          </Link>
                         </td>
                       </tr>
                     );
