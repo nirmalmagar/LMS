@@ -29,14 +29,14 @@ const BorrowHistory = () => {
   );
 
   const handlePayment = (id: number) => {
-    // setShowPopUpModal(true);
+    setShowPopUpModal(true);
     setBorrowId(id);
   };
 
   // esewa payment handle
-  const handleEsewaPayment = async (id) => {
+  const handleEsewaPayment = async (borrowId:any) => {
     const borrowID = {
-      borrow_id: id
+      borrow_id: borrowId
     }
     try {
       const response = await fetch(
@@ -50,7 +50,6 @@ const BorrowHistory = () => {
           body: JSON.stringify(borrowID),
         }
       );
-
       if (!response.ok) {
         throw new Error("Failed to initiate payment");
       }
@@ -97,7 +96,7 @@ const BorrowHistory = () => {
         <form id="lead-form">
           <div className="flex justify-evenly my-8">
             <button 
-              // onClick={()=>handleEsewaPayment}
+              onClick={()=>handleEsewaPayment}
             >
               <Image
                 width={100}
@@ -199,7 +198,7 @@ const BorrowHistory = () => {
                               "---"
                             ) : (
                               <button
-                                // onClick={() => handlePayment(borrowList?.borrower?.id)}
+                                // onClick={() => handlePayment(borrowList?.id)}
                                 onClick={()=>handleEsewaPayment(borrowList?.id)}
                                 className="bg-blue-500 px-4 py-1 text-white rounded-md"
                               >
