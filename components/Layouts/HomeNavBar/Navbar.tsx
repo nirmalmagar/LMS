@@ -2,8 +2,11 @@ import Container from "@/components/Container";
 import routes from "@/utils/userRoutes";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
+  const router = usePathname();
+  console.log("router", router);
     const [isStickyNavbar, setIsStickyNavbar] = useState(false);
   
     const ListenScroll = () => {
@@ -20,7 +23,9 @@ const Navbar = () => {
       return () => window.removeEventListener("scroll", ListenScroll);
     }, [isStickyNavbar]);
   return (
-    <div className={ isStickyNavbar ? `bg-stone-500 text-white sticky py-4 top-0 z-40 w-full` : "hidden"}>
+    <>
+    <div className={isStickyNavbar ? `bg-stone-500 text-white sticky py-4 top-0 z-40 w-full` : "hidden" }>
+      {/* <div className={`bg-stone-500 text-white sticky py-4 top-0 mb-20 z-40 w-full`}> */}
       <Container>
         <ul className="flex gap-x-16 text-[16px] justify-center cursor-pointer font-sans font-medium tracking-wider items-center text-center">
           {/* <div className="relative w-14 h-14">
@@ -39,6 +44,7 @@ const Navbar = () => {
         </ul>
       </Container>
     </div>
+    </>
   );
 };
 

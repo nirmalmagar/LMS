@@ -34,9 +34,9 @@ const BorrowHistory = () => {
   };
 
   // esewa payment handle
-  const handleEsewaPayment = async (borrowId:any) => {
+  const handleEsewaPayment = async (borrow_id:any) => {
     const borrowID = {
-      borrow_id: borrowId
+      borrow_id: borrow_id
     }
     try {
       const response = await fetch(
@@ -80,6 +80,7 @@ const BorrowHistory = () => {
     }
   };
 
+
   const handleCloseTap = () => {
     setShowPopUpModal(false);
   };
@@ -93,10 +94,9 @@ const BorrowHistory = () => {
         modalTitle="e-wallet"
         size="lg"
       >
-        <form id="lead-form">
           <div className="flex justify-evenly my-8">
             <button 
-              onClick={()=>handleEsewaPayment}
+              onClick={()=>handleEsewaPayment(borrowId)}
             >
               <Image
                 width={100}
@@ -116,7 +116,6 @@ const BorrowHistory = () => {
               />
             </button>
           </div>
-        </form>
       </Modal>
 
       {isLoading ? (
@@ -190,16 +189,16 @@ const BorrowHistory = () => {
                         <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p
                             className={`text-black ${
-                              borrowList?.overdue === true ? "ml-3" : ""
+                              borrowList?.overdue === false ? "ml-3" : ""
                             }`}
                             id="card_title"
                           >
-                            {borrowList?.overdue === true ? (
+                            {borrowList?.overdue === false ? (
                               "---"
                             ) : (
                               <button
-                                // onClick={() => handlePayment(borrowList?.id)}
-                                onClick={()=>handleEsewaPayment(borrowList?.id)}
+                                onClick={() => handlePayment(borrowList?.id)}
+                                // onClick={()=>handleEsewaPayment(borrowList?.id)}
                                 className="bg-blue-500 px-4 py-1 text-white rounded-md"
                               >
                                 Pay
