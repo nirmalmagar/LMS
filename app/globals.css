@@ -62,6 +62,14 @@
   overflow: hidden; /* Hide overflow */
   text-overflow: ellipsis; /* Add ellipsis (...) if text overflows */
 }
+
+#one_line {
+  display: -webkit-box; /* Use for multi-line text truncation */
+  -webkit-line-clamp: 1; /* Limit to 2 lines */
+  -webkit-box-orient: vertical; /* Set box orientation to vertical */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis (...) if text overflows */
+}
 .input-field{
   border: 2px solid gray;
   padding: 8px 12px;
