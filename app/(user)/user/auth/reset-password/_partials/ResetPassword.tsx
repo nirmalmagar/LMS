@@ -1,6 +1,5 @@
 "use client"
 import React, { FormEvent, useState } from "react";
-import DefaultLayout from "@/components/Layouts/UserNavbar/DefaultLayout";
 import InputField from "@/components/Form/InputForm";
 import Btn from "@/components/Btn";
 import { toast } from "react-toastify";
@@ -50,7 +49,7 @@ const ResetPassword = () => {
           method: "POST",
           body: JSON.stringify(InputFileData),
           headers: {
-            Authorization: `Bearer ${accessToken()}`,
+            // Authorization: `Bearer ${accessToken()}`,
             Accept: "application/json",
             "Content-Type": "application/json",
           },
@@ -59,8 +58,9 @@ const ResetPassword = () => {
         if (response.ok) {
           setInputFieldValue({})
           setError({});
-          toast.success("Change password successfully");
+          toast.success("Reset password successfully");
         } else {
+          toast.error("some error occure");
           setError(data);
         }
       } catch (error) {
@@ -72,15 +72,17 @@ const ResetPassword = () => {
     };
 
   return (
-    <DefaultLayout>
+    <>
+      <div className="flex justify-center items-center mt-20 ">
+      <div className={` px-8 py-8 bg-white w-[36rem] shadow-md rounded-xl`}>
       <h3 className="font-medium leading-normal text-xl text-black dark:text-white mt-6">
-          Change Your Password
+          Reset Password
         </h3>
       <form onSubmit={handleResetPassword} className="mt-8">
         <div className="w-full max-w-[235px] mb-6">
         <InputField
           type={showCurrentPassword.otp ? "text" : "password"}
-          label="Old Password"
+          label="OTP"
           name="otp"
           labelStyle="label-top"
           labelWidth={"full"}
@@ -142,7 +144,9 @@ const ResetPassword = () => {
           </Btn>
         </div> */}
       </form>
-    </DefaultLayout>
+    </div>
+    </div>
+    </>
   );
 };
 
