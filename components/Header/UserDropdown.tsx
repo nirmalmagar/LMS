@@ -19,6 +19,7 @@ const UserDropdown = () => {
 
   const logout = () => {
     Cookies.remove("LOGIN_TOKEN");
+    Cookies.remove("USER_ID");
     router.replace(routes.USER_AUTH_LOGIN);
   };
   

@@ -32,6 +32,7 @@ const RecommendedBook: React.FC<bookUrlProps> = ({ url }) => {
       setInputFieldValue((prev) => ({ ...prev, [key]: value }));
     }
   };
+  // borrow add handle
   const handleAddBorrow = async (e: any) => {
     e.preventDefault();
     const formData = {
@@ -62,6 +63,36 @@ const RecommendedBook: React.FC<bookUrlProps> = ({ url }) => {
       console.error(error);
     }
   };
+  // handle reserve 
+  const handleReserve = async (id:any) => {
+      // const formData = {
+      //   days: inputFieldValue?.days,
+      // };
+      try {
+        const response = await fetch(
+          `${process.env.HOST}books/${id}/reserve-book/`,
+          {
+            method: "POST",
+            // body: JSON.stringify(formData),
+            headers: {
+              Authorization: `Bearer ${accessToken()}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          toast.success("Reserved Successfully");
+          // handleCloseTap();
+          // mutate();
+        } else {
+          toast.error(data?.error?.message);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
   return (
     <>
       <Modal
@@ -138,7 +169,10 @@ const RecommendedBook: React.FC<bookUrlProps> = ({ url }) => {
                   >
                     Borrow
                   </button>
-                  <button className="bg-blue-500 px-3 py-1 rounded-md text-sm text-white">
+                  <button 
+                    className="bg-blue-500 px-3 py-1 rounded-md text-sm text-white"
+                    onClick={() => handleReserve(value?.id)}
+                  >
                     Reserve
                   </button>
                 </div>

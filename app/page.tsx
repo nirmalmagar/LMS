@@ -23,9 +23,8 @@ const lora = Lora({
 
 const page = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const LOGIN_TOKEN = Cookies.get("LOGIN_TOKEN");
   const { data: BookListsURL, isLoading: loading } = useSWR(
     `${process.env.HOST}books/?query=${searchValue}`,
     getFetcher
@@ -33,15 +32,50 @@ const page = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
+  const logout = () => {
+    Cookies.remove("LOGIN_TOKEN");
+    Cookies.remove("USER_ID");
+    window.location.reload()
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("LOGIN_TOKEN"); // Fetch token on the client
-    setIsLoggedIn(!!token); // Convert to boolean
-  }, []);
+    const token = Cookies.get("LOGIN_TOKEN"); // Fetch token on the client
+    const user_id = Cookies.get("USER_ID");
+    if (token && user_id) {
+      setIsLoggedIn(true);
+    }
+  }, [logout]);
   return (
     <>
       <HomeLayout>
         {/* -------------------Hero page------------------------ */}
+        <div className="ml-16 z-20 absolute top-0">
+          <Image
+            width={80}
+            height={80}
+            src={"/assets/logo.png"}
+            alt="logo"
+            sizes="fit"
+          />
+        </div>
+        <ul className="absolute z-20 top-3 right-12 float-right text-white flex gap-x-16 text-[15px] font-semibold tracking-wider cursor-pointer font-sans">
+          {isLoggedIn ? (
+            <button onClick={logout} className="hover:bg-blue-800 bg-blue-500 px-4 py-1 rounded-md">
+              Logout
+            </button>
+          ) : (
+            <>
+              {/* <div className="absolute top-[20%] left-8 flex gap-x-12 "> */}
+              <Link href={routes.USER_AUTH_LOGIN} className="hover:bg-blue-800 bg-blue-500 px-4 py-1 rounded-md">
+                Login
+              </Link>
+              <Link href={routes.USER_AUTH_SIGN_UP} className="hover:bg-blue-800 bg-blue-500 px-4 py-1 rounded-md">
+                Sigup
+              </Link>
+              {/* </div> */}
+            </>
+          )}
+        </ul>
         <section className="relative">
           <Image
             width={800}
@@ -54,7 +88,8 @@ const page = () => {
             <p className={`text-2xl ${lora.className} tracking-widest`}>
               GYAN KOSH
             </p>
-            <ul className="flex gap-x-16 text-[17px] tracking-wider font-medium my-6 cursor-pointer font-sans">
+
+            <ul className="flex ml-10 gap-x-16 text-[17px] tracking-wider font-medium my-6 cursor-pointer font-sans">
               <li className="hover:text-orange-600">
                 <Link href={"/"}>Home</Link>
               </li>
@@ -62,14 +97,6 @@ const page = () => {
               <li className="hover:text-orange-600">Catalog</li>
               <li className="hover:text-orange-600">Services</li>
               <li className="hover:text-orange-600">Contacts</li>
-              {isLoggedIn ? (
-                <>
-                  <li className="hover:text-orange-600">Login</li>
-                  <li className="hover:text-orange-600">Sigup</li>
-                </>
-              ) : (
-                <li className="hover:text-orange-600">Logout</li>
-              )}
             </ul>
             <div className="mt-20">
               <div className="mb-14">
@@ -97,9 +124,11 @@ const page = () => {
           <section className="my-12">
             {/* <Heading title="Books">
               Explore Fresh Arrivals and Find Your Next Great Read.
-            </Heading> */}
-            {/* {BookListsURL?.results?.length <= 0 ? ( */}
+            </Heading>
+            {BookListsURL?.results?.length <= 0 ? ( */}
+
             <BookCard url={BookListsURL} />
+
             {/* ) : ( 
               <div className="text-center text-3xl h-60 mt-20">
                 ---------------Search Book doesn't Exist-----------------
