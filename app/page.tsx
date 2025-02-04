@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/Container";
@@ -12,6 +12,7 @@ import { getFetcher } from "@/helpers/FetchHelper";
 import useSWR from "swr";
 import Heading from "@/components/HomePages/Heading";
 import BookCard from "@/components/BookCard";
+import Cookies from "js-cookie";
 
 const lora = Lora({
   weight: ["700"],
@@ -20,16 +21,11 @@ const lora = Lora({
   style: ["normal", "italic"],
 });
 
-const affordableBooksList = [
-  "/assets/books/image.png",
-  "/assets/books/image2.png",
-  "/assets/books/image3.png",
-  "/assets/books/image4.png",
-  "/assets/books/image5.png",
-];
 const page = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
+  const LOGIN_TOKEN = Cookies.get("LOGIN_TOKEN");
   const { data: BookListsURL, isLoading: loading } = useSWR(
     `${process.env.HOST}books/?query=${searchValue}`,
     getFetcher
@@ -37,6 +33,11 @@ const page = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("LOGIN_TOKEN"); // Fetch token on the client
+    setIsLoggedIn(!!token); // Convert to boolean
+  }, []);
   return (
     <>
       <HomeLayout>
@@ -51,7 +52,7 @@ const page = () => {
           />
           <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-center text-white">
             <p className={`text-2xl ${lora.className} tracking-widest`}>
-              PUBLIC LIBRARY
+              GYAN KOSH
             </p>
             <ul className="flex gap-x-16 text-[17px] tracking-wider font-medium my-6 cursor-pointer font-sans">
               <li className="hover:text-orange-600">
@@ -61,9 +62,14 @@ const page = () => {
               <li className="hover:text-orange-600">Catalog</li>
               <li className="hover:text-orange-600">Services</li>
               <li className="hover:text-orange-600">Contacts</li>
-              <li className="hover:text-orange-600">
-                <Link href={routes.USER_AUTH_LOGIN}>Login</Link>
-              </li>
+              {isLoggedIn ? (
+                <>
+                  <li className="hover:text-orange-600">Login</li>
+                  <li className="hover:text-orange-600">Sigup</li>
+                </>
+              ) : (
+                <li className="hover:text-orange-600">Logout</li>
+              )}
             </ul>
             <div className="mt-20">
               <div className="mb-14">
@@ -89,11 +95,11 @@ const page = () => {
         {/*--------------------latest books----------------------- */}
         <Container>
           <section className="my-12">
-            <Heading title="Books">
+            {/* <Heading title="Books">
               Explore Fresh Arrivals and Find Your Next Great Read.
-            </Heading>
+            </Heading> */}
             {/* {BookListsURL?.results?.length <= 0 ? ( */}
-              <BookCard url={BookListsURL} />
+            <BookCard url={BookListsURL} />
             {/* ) : ( 
               <div className="text-center text-3xl h-60 mt-20">
                 ---------------Search Book doesn't Exist-----------------
@@ -106,11 +112,11 @@ const page = () => {
         </Container>
 
         {/* -------------------affordable books----------------------- */}
-        <AffordableBookCard imageUrl={affordableBooksList} />
-        <Container>
-          {/* <BookCardList /> */}
-          <BookCard url={BookListsURL} />
-        </Container>
+        {/* <AffordableBookCard imageUrl={affordableBooksList} /> */}
+        {/* <Container> */}
+        {/* <BookCardList /> */}
+        {/* <BookCard url={BookListsURL} /> */}
+        {/* </Container> */}
       </HomeLayout>
     </>
   );

@@ -9,11 +9,11 @@ const Footer = () => {
       <Container>
         <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-12">
           <div className="inline-flex sm:col-span-2 mt-8">
-            <div className="relative inline-flex mr-4 w-40 h-20">
-              <Image fill src={"/assets/books/Image.png"} alt="logo" sizes="fit" />
+            <div className="relative inline-flex mr-4 w-44 ml-4 h-20">
+              <Image fill src={"/assets/logo.png"} alt="logo" sizes="fit" />
             </div>
             <p className="font-semibold text-lg leading-6">
-              NeplaiBook offers a world of stories and insights. Discover our
+              Gyan Kosh offers a world of stories and insights. Discover our
               curated collection of fiction, non-fiction, and classics, and
               transform your reading journey. Explore a new adventure with every
               book.
@@ -47,7 +47,7 @@ const Footer = () => {
                 <span className="font-semibold">Mobile no:</span> 98637261273
               </li>
               <li>
-                <span className="font-semibold">Email:</span> lms@gmail.com
+                <span className="font-semibold">Email:</span> gyankosh@gmail.com
               </li>
             </ul>
           </div>
