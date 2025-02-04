@@ -24,7 +24,6 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
   >({});
   const [error,setError] = useState<Record<string,any>>({});
 
-  console.log("borrow lll",selectValues?.borrow);
 
   const borrowURL = `${process.env.HOST}borrow/`;
   const { data: borrowData } = useSWR(borrowURL, defaultFetcher);
@@ -46,6 +45,7 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
   const handleCloseTap = () => {
     setShowPopUpModal(false);
     setInputFieldValue({});
+    setSelectValues({})
     setError({});
   };
   // shelf add button
@@ -118,7 +118,7 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
                 handleFieldChange("amount",e.target.value);
               }}
             />
-        <InputField
+            {/* <InputField
               type="text"
               label="Status"
               name="status"
@@ -126,7 +126,7 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
               onChange={(e)=>{
                 handleFieldChange("status",e.target.value);
               }}
-            />
+            /> */}
               <InputField
                 type="text"
                 label="Payment Method"
@@ -146,6 +146,7 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
               onClick={() => {
                 setShowPopUpModal(false);
                 setInputFieldValue({});
+                setSelectValues({})
                 setError({});
               }}
             >

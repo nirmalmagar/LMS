@@ -463,7 +463,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 )}
               </tbody>
             </table>
-            {bookData?.results.length >= 10 && (
+            {bookData?.results?.length >= 10 && (
               <div className="text-sm float-right m-4 flex items-center text-red-400 font-semibold">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}

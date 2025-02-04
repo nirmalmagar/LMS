@@ -309,7 +309,7 @@ const InputField: React.FC<InputFieldProps> = ({
         {
         labelStyle === "label-left" && 
         <span className=" text-red-500 text-xs my-1">
-          {fieldErrors.map((item: string, index: any) => (
+          {fieldErrors?.map((item: string, index: any) => (
             <span key={index}>
               {item}
               <br></br>
