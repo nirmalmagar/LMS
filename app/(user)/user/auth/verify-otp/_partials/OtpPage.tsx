@@ -16,6 +16,7 @@ const OtpPage = () => {
   );
 
   const OtpValue = otp.join("");
+  console.log("otp1",OtpValue);
   const handleOTPFormSubmit = async (
     e: FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -30,7 +31,8 @@ const OtpPage = () => {
           method: "POST",
           body: toSendData,
           headers: {
-            Accept: "application/json",
+            'Accept': "application/json",
+            'Content-Type': "pplication/json"
           },
         }
       );
@@ -115,9 +117,9 @@ const OtpPage = () => {
           </div>
           <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
             <p>Didn&apos;t receive code?</p>{" "}
-            <button className="flex flex-row items-center font-semibold text-primary-600 hover:text-primary-500">
+            {/* <button className="flex flex-row items-center font-semibold text-primary-600 hover:text-primary-500">
               Resend
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
