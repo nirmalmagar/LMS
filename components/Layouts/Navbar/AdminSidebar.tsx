@@ -124,7 +124,7 @@ const AdminSidebar = () => {
     },
     {
       name: "Fine",
-      href: routes.ADMIN_RESERVE_QUEUE_ROUTE,
+      href: routes.FINE,
       icon: CreditCardIcon,
     },
     {
