@@ -3,8 +3,11 @@ import { useSearchParams } from "next/navigation";
 import { useState, useRef, FormEvent } from "react";
 import { toast } from "react-toastify";
 import Btn from "@/components/Btn";
+import routes from "@/utils/userRoutes";
+import { useRouter } from "next/navigation";
 
 const OtpPage = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("email");
 
@@ -16,7 +19,6 @@ const OtpPage = () => {
   );
 
   const OtpValue = otp.join("");
-  console.log("otp1",OtpValue);
   const handleOTPFormSubmit = async (
     e: FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -31,8 +33,7 @@ const OtpPage = () => {
           method: "POST",
           body: toSendData,
           headers: {
-            'Accept': "application/json",
-            'Content-Type': "pplication/json"
+            Accept: "application/json",
           },
         }
       );
@@ -40,6 +41,7 @@ const OtpPage = () => {
       if (response.ok) {
         toast.success("Create Account Successfully");
         setError({});
+        router.push(routes.USER_AUTH_LOGIN);
       } else {
         setError(data);
         toast.error(data?.error);
