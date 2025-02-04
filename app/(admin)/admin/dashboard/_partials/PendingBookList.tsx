@@ -337,7 +337,7 @@ const PendingBookList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
         </p>
       ) : (
         <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddBookLists mutate={mutate} />}
+          {/* {heading && <AddBookLists mutate={mutate} />} */}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>

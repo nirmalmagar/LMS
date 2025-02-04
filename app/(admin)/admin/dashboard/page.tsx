@@ -54,7 +54,7 @@ const page = () => {
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <div>
-            <UsersBooksTable showHeading={true} />
+            <UsersBooksTable showHeading={false} />
           </div>
           <div>
             <PendingBookList showHeading={true} />
