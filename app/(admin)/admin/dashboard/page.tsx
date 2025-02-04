@@ -3,12 +3,14 @@ import React from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
 import DashboardCard from "@/components/Elements/Dashboard/DashboardCard";
 import UsersBooksTable from "../books/_partials/UsersBooksTable";
+import PendingBookList from "./_partials/PendingBookList";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { MdPendingActions } from "react-icons/md";
 import { CgCalendarDue } from "react-icons/cg";
 import { FaPeopleGroup } from "react-icons/fa6";
 import OverdueBooks from "./_partials/OverdueBooks";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+
 import useSWR from "swr";
 
 const page = () => {
@@ -52,10 +54,10 @@ const page = () => {
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <div>
-            <UsersBooksTable showHeading={false} />
+            <UsersBooksTable showHeading={true} />
           </div>
           <div>
-            <UsersBooksTable showHeading={false} />
+            <PendingBookList showHeading={true} />
           </div>
         </div>
         <div>

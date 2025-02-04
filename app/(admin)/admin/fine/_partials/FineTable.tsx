@@ -16,6 +16,7 @@ import SelectField from "@/components/Form/SelectField";
 import { collectionToOptions } from "@/helpers/CollectionOption";
 import DateToString from "@/components/DateConverter/DateToString";
 import { LibraryId } from "@/components/IdToName/IdToName";
+import FineCollectionName from "@/helpers/FineCollectionName";
 
 interface ShowHeading {
   showHeading?: boolean;
@@ -258,12 +259,12 @@ const FineTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
           </div>
         </form>
       </Modal>
-
+      {/* <FineCollectionName /> */}
       {isLoading ? (
         <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
           <span>Loading...</span>
         </p>
-      ) : (
+      ) : ( 
         <div className="mt-8 max-w-full rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddFine mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">

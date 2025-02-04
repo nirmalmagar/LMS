@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import { collectionToOptions } from "@/helpers/CollectionOption";
+import { FineCollectionName } from "@/helpers/FineCollectionName";
 import SelectField from "@/components/Form/SelectField";
 
 interface FineProps{
@@ -23,10 +24,13 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
   >({});
   const [error,setError] = useState<Record<string,any>>({});
 
-  // library section lists
-  const {data:libraryData} = useSWR(`${process.env.HOST}library-sections/`, defaultFetcher);
-  const libraryOptions = collectionToOptions(libraryData?.results ? libraryData?.results : [])
+  console.log("borrow lll",selectValues?.borrow);
 
+  const borrowURL = `${process.env.HOST}borrow/`;
+  const { data: borrowData } = useSWR(borrowURL, defaultFetcher);
+  const borrowOption = FineCollectionName(
+    borrowData?.results ? borrowData?.results : []
+  );
   // change handler
   function handleSelectChange(name:string, choice:Record<string,any>){
     const key = name;
@@ -48,9 +52,10 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
   const handleAddFine = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const InputFileData = {
-      number: inputFieldValue?.number,
-      description: inputFieldValue?.description,
-      section: selectValues?.section,
+      borrow: selectValues?.borrow,
+      amount : inputFieldValue?.amount,
+      payment_method: inputFieldValue?.payment_method,
+      status: inputFieldValue?.status
     };
     try {
       const response = await fetch(`${process.env.HOST}fine/`, {
@@ -64,7 +69,7 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
       });
       const data = await response.json();
       if (response.ok) {
-        toast.success("Find Add Successfully");
+        toast.success(data?.message);
         handleCloseTap();
         mutate();
       } else {
@@ -91,17 +96,18 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
       >
         <form id="lead-form" onSubmit={handleAddFine}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
-            <InputField
-              type="text"
-              label="Borrow Id"
-              name="borrow"
-              placeholder="Borrow id"
-              defaultValue={inputFieldValue?.borrow}
-              fieldErrors={error?.borrow ?? []}
-              onChange={(e: any) => {
-                handleFieldChange("borrow", e.target.value);
-              }}
-            />
+          <SelectField
+            className="w-full"
+            options={borrowOption}
+            label="Borrow"
+            value={selectValues?.borrow}
+            defaultValue={""}
+            onChange={(e) => {
+              handleSelectChange("borrow", {
+                value: e.target.value,
+              });
+            }}
+          />
 
             <InputField
               type="number"
@@ -109,12 +115,18 @@ const AddFine:React.FC<FineProps> = ({mutate}) => {
               name="amount"
               fieldErrors={error?.amount ?? []}
               onChange={(e)=>{
-                handleSelectChange("amount",{
-                  value:e.target.value
-                });
+                handleFieldChange("amount",e.target.value);
               }}
             />
-
+        <InputField
+              type="text"
+              label="Status"
+              name="status"
+              fieldErrors={error?.status ?? []}
+              onChange={(e)=>{
+                handleFieldChange("status",e.target.value);
+              }}
+            />
               <InputField
                 type="text"
                 label="Payment Method"

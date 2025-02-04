@@ -52,11 +52,11 @@ const BookCard: React.FC<bookUrlProps> = ({ url }) => {
       );
       const data = await response.json();
       if (response.ok) {
-        toast.success("Days Added Successfully");
+        toast.success(data?.message);
         handleCloseTap();
         // mutate();
       } else {
-        setError(data);
+        toast.error(data?.error?.message);
       }
     } catch (error) {
       console.error(error);
@@ -74,7 +74,7 @@ const BookCard: React.FC<bookUrlProps> = ({ url }) => {
           method: "POST",
           // body: JSON.stringify(formData),
           headers: {
-            // Authorization: `Bearer ${accessToken()}`,
+            Authorization: `Bearer ${accessToken()}`,
             Accept: "application/json",
             "Content-Type": "application/json",
           },
@@ -86,7 +86,7 @@ const BookCard: React.FC<bookUrlProps> = ({ url }) => {
         // handleCloseTap();
         // mutate();
       } else {
-        setError(data);
+        toast.error(data?.error?.message);
       }
     } catch (error) {
       console.error(error);
@@ -139,7 +139,7 @@ const BookCard: React.FC<bookUrlProps> = ({ url }) => {
         {url?.results?.map((value: any, index: number) => {
           return (
             <div key={index}>
-              <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[26rem]">
+              <div className="shadow-md hover:shadow-xl hover:scale-105 hover:duration-500 h-[25rem]">
                 <Link href={`/book-list/${value?.id}/`}>
                   <div className="relative w-60 h-72 mb-2">
                     {value?.cover && (
@@ -155,17 +155,13 @@ const BookCard: React.FC<bookUrlProps> = ({ url }) => {
                     <h3 className="font-semibold" id="one_line">
                       {value?.title}
                     </h3>
-                    <div className="flex gap-x-0.5">
-                      <span className="font-semibold">by:</span>
-                      <p id="one_line">{value?.publisher}</p>
-                    </div>
-                    <div className="flex gap-x-0.5 font-semibold text-sm">
-                      <p className="">Rs:</p>
-                      <span>{value?.price}</span>
-                    </div>
+                    <div className="flex mt-1 gap-x-0.5">
+                      <span className="font-semibold">By:</span>
+                      <p id="card_title">{value?.author}</p>
+                    </div> 
                   </div>
                 </Link>
-                <div className="flex px-4 justify-between">
+                {/* <div className="flex px-4 justify-between">
                   <button
                     className="bg-blue-500 px-3 py-1 rounded-md text-sm text-white"
                     onClick={() => borrowHandle(value?.id)}
@@ -178,7 +174,7 @@ const BookCard: React.FC<bookUrlProps> = ({ url }) => {
                   >
                     Reserve
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           );
