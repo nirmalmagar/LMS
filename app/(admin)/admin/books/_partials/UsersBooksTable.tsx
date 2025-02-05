@@ -147,35 +147,57 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   }
 
   // -------------export book handle-----------------
-  const handleExportBooks = async () => {
-    console.log("nirmal123",exportFormat , selectedIds);
-    const InputFileData = {
-          format: exportFormat,
-          books_id_list: selectedIds
-        };
-        try {
-          const response = await fetch(`${process.env.HOST}export-data/`, {
-            method: "POST",
-            body: JSON.stringify(InputFileData),
-            headers: {
+
+const handleExportBooks = async () => {
+
+  const InputFileData = {
+      format: exportFormat,
+      books_id_list: selectedIds,
+  };
+
+  try {
+      const response = await fetch(`${process.env.HOST}export-data/`, {
+          method: "POST",
+          body: JSON.stringify(InputFileData),
+          headers: {
               Authorization: `Bearer ${accessToken()}`,
               Accept: "application/json",
               "Content-Type": "application/json",
-            },
-          });
-          const data = await response.json();
-          if (response.ok) {
-            toast.success("data export successfully ");
-            setShowPopUpModal(false);
-            setError({});
-            mutate();
-          } else {
-            toast.error("errorrrr");
-            setError(data);
-          }
-        } catch (error) {
-          console.error(error);
-        }
+          },
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          toast.error(errorData?.error?.message ?? "Something went wrong!");
+          setError(errorData);
+          return;
+      }
+      if(response.ok){
+        handleCloseTap();
+      }
+      // ✅ Convert response to a Blob
+      const blob = await response.blob();
+
+      // ✅ Determine file extension based on format
+      const fileExtension = exportFormat === "csv" ? "csv" : "xlsx";
+
+      // ✅ Create a downloadable URL
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `exported_books.${fileExtension}`); // Set file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Free up memory
+
+      toast.success("Data exported successfully");
+      setShowPopUpModal(false);
+      setError({});
+      mutate();
+  } catch (error) {
+      console.error(error);
+  }
 };
 
   let totalPageArray = bookData?.results
