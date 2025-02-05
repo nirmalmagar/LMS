@@ -1,6 +1,10 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  TrashIcon,
+  PencilSquareIcon,
+  PhotoIcon,
+} from "@heroicons/react/24/outline";
 import useSWR from "swr";
 import { toast } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
@@ -31,12 +35,18 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [exportPopUpModal, setExportPopUpModal] = useState<boolean>(false);
   const [exportFormat, setExportFormat] = useState("csv");
-
+  const [imageUrl, setImageUrl] = useState<string | null>("");
   // Handle individual checkbox change
   const handleCheckboxChange = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+  };
+
+  // image change handler
+  const ImageChangeHandler = (e: any) => {
+    const imageURL = e.target.files[0];
+    setImageUrl(URL.createObjectURL(imageURL));
   };
 
   // books lists
@@ -148,31 +158,30 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
 
   // -------------export book handle-----------------
 
-const handleExportBooks = async () => {
-
-  const InputFileData = {
+  const handleExportBooks = async () => {
+    const InputFileData = {
       format: exportFormat,
       books_id_list: selectedIds,
-  };
+    };
 
-  try {
+    try {
       const response = await fetch(`${process.env.HOST}export-data/`, {
-          method: "POST",
-          body: JSON.stringify(InputFileData),
-          headers: {
-              Authorization: `Bearer ${accessToken()}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-          },
+        method: "POST",
+        body: JSON.stringify(InputFileData),
+        headers: {
+          Authorization: `Bearer ${accessToken()}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       });
 
       if (!response.ok) {
-          const errorData = await response.json();
-          toast.error(errorData?.error?.message ?? "Something went wrong!");
-          setError(errorData);
-          return;
+        const errorData = await response.json();
+        toast.error(errorData?.error?.message ?? "Something went wrong!");
+        setError(errorData);
+        return;
       }
-      if(response.ok){
+      if (response.ok) {
         handleCloseTap();
       }
       // ✅ Convert response to a Blob
@@ -195,10 +204,10 @@ const handleExportBooks = async () => {
       setShowPopUpModal(false);
       setError({});
       mutate();
-  } catch (error) {
+    } catch (error) {
       console.error(error);
-  }
-};
+    }
+  };
 
   let totalPageArray = bookData?.results
     ? Array.from({ length: bookData?.total_pages }, (_, index) => index + 1)
@@ -244,40 +253,45 @@ const handleExportBooks = async () => {
         <form id="lead-form" onSubmit={handleEditBook}>
           <div className=" px-4 py-4 rounded-lg border border-gray-200">
             <div className=" flex flex-col gap-y-4">
-              {/* <div className="flex gap-x-4 items-center">
-                  <div className="relative w-12 h-12">
-                    {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        className="rounded"
-                        // objectFit="cover"
-                        fill
-                        alt={"image link"}
-                      />
-                    ) : (
-                      <PhotoIcon
-                        className="h-full w-full text-primary-500"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </div>
-                  <InputField
-                    labelClassName="text-black"
-                    className="flex flex-col"
-                    label="Cover"
-                    name="cover"
-                    type="file"
-                    onChange={(e) => ImageChangeHandler(e)}
-                  />
-                  {imageUrl && (
-                    <Btn
-                      onClick={removeImage}
-                      className="bg-red-500 text-white font-semibold mb-0"
-                    >
-                      remove
-                    </Btn>
+              <div className="flex gap-x-4 items-center">
+                <div className="relative w-12 h-12">
+                  {imageUrl || editBookList?.cover ? (
+                    <Image
+                      src={imageUrl ? imageUrl : editBookList?.cover} // Use new image if available, else default
+                      className="rounded"
+                      fill
+                      alt="Book Cover"
+                    />
+                  ) : (
+                    <PhotoIcon
+                      className="h-full w-full text-primary-500"
+                      aria-hidden="true"
+                    />
                   )}
-                </div> */}
+                </div>
+
+                {/* File Input Field */}
+                <InputField
+                  labelClassName="text-black"
+                  className="flex flex-col"
+                  label="Cover"
+                  name="cover"
+                  type="file"
+                  onChange={ImageChangeHandler} // Calls the image handler function
+                />
+
+                {/* Remove Button */}
+                {imageUrl && (
+                  <Btn
+                    onClick={() => {
+                      setImageUrl(null); // Clears the selected image
+                    }}
+                    className="bg-red-500 text-white font-semibold mb-0"
+                  >
+                    Remove
+                  </Btn>
+                )}
+              </div>
 
               <InputField
                 labelClassName="text-black"
@@ -416,7 +430,6 @@ const handleExportBooks = async () => {
         modalTitle="Export Book"
         size="sm"
       >
-        
         <div className="flex flex-col gap-4">
           <label className="text-sm font-medium">Select Export Format:</label>
           <select
@@ -434,7 +447,7 @@ const handleExportBooks = async () => {
 
           <div className="flex gap-x-4">
             <Btn
-            onClick={handleExportBooks}
+              onClick={handleExportBooks}
               className="bg-blue-600 text-white px-4 py-1 rounded-md cursor-pointer"
             >
               Export
