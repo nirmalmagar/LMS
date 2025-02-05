@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { accessToken } from "@/helpers/TokenHelper";
 import Image from "next/image";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { defaultFetcher } from "@/helpers/FetchHelper";
+import { defaultFetcher, getFetcher } from "@/helpers/FetchHelper";
 import Btn from "@/components/Btn";
 import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
@@ -32,15 +32,15 @@ const MostBorrowedBooks: React.FC<ShowHeading> = ({
   const [error, setError] = useState<Record<string, any>>({});
   const [id, setId] = useState<number>();
   const [storeUserId,setStoreUserId] = useState<string>("");
-
+console.log("userid",storeUserId);
   // books lists
   const {
     data: borrowBooks,
     isLoading,
     mutate,
   } = useSWR(
-    `${process.env.HOST}most-borrowed-books/?user=${storeUserId}/?page=${currentPage} `,
-    defaultFetcher
+    `${process.env.HOST}most-borrowed-books/?user=${storeUserId}`,
+    getFetcher
   );
 
 

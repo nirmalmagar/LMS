@@ -9,7 +9,7 @@ import { accessToken } from "@/helpers/TokenHelper";
 import HeadingText from "./HeadingText";
 import Image from "next/image";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { defaultFetcher } from "@/helpers/FetchHelper";
+import { defaultFetcher, getFetcher } from "@/helpers/FetchHelper";
 import Btn from "@/components/Btn";
 import Modal from "@/components/Elements/Modal";
 import InputField from "@/components/Form/InputForm";
@@ -43,8 +43,8 @@ const MostBorrowedBooks: React.FC<ShowHeading> = ({
     isLoading,
     mutate,
   } = useSWR(
-    `${process.env.HOST}most-borrowed-books/?page=${currentPage} `,
-    defaultFetcher
+    `${process.env.HOST}most-borrowed-books/ `,
+    getFetcher
   );
 
   const openEditBox = (editId: number) => {

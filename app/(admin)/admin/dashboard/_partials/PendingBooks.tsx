@@ -14,8 +14,8 @@ const PendingBookList = () => {
     isLoading,
     mutate,
   } = useSWR(
-    `${process.env.HOST}pending-books/?page=${currentPage} `,
-    defaultFetcher
+    `${process.env.HOST}pending-books/ `,
+    getFetcher
   );
 
   let totalPageArray = pendingBook?.results
