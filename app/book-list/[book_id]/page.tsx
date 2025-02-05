@@ -17,6 +17,11 @@ import { RiSubtractFill } from "react-icons/ri";
 import Heading from "@/components/HomePages/Heading";
 import DateToString from "@/components/DateConverter/DateToString";
 import RecommendedBook from "@/components/RecommendedBook";
+import { toast } from "react-toastify";
+import Btn from "@/components/Btn";
+import Modal from "@/components/Elements/Modal";
+import { accessToken } from "@/helpers/TokenHelper";
+import InputField from "@/components/Form/InputForm";
 
 const page = () => {
   const [increment, setIncrement] = useState<number>(1);
@@ -25,8 +30,60 @@ const page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [showPopUpModal, setShowPopUpModal] = useState<boolean>(false);
+  const [bookIdd, setBookIdd] = useState<any>();
+  const [inputFieldValue, setInputFieldValue] = useState<Record<string, any>>(
+    {}
+  );
+  const [error, setError] = useState<Record<string, any>>({});
 
-  const { data: recommendedBookURL , isLoading:recommendedLoading} = useSWR(
+  const handleCloseTap = () => {
+    setShowPopUpModal(false);
+    setInputFieldValue({});
+  };
+  const borrowHandle = (book_id: any) => {
+    setBookIdd(book_id);
+    setShowPopUpModal(true);
+  };
+
+  const handleFieldChange = (key: string, value: any): void => {
+    if (key && value) {
+      setInputFieldValue((prev) => ({ ...prev, [key]: value }));
+    }
+  };
+  // borrow add handle
+  const handleAddBorrow = async (e: any) => {
+    e.preventDefault();
+    const formData = {
+      days: inputFieldValue?.days,
+    };
+    try {
+      const response = await fetch(
+        `${process.env.HOST}books/${bookIdd}/borrow-book/`,
+        {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("data successfully insert");
+        handleCloseTap();
+        // mutate();
+      } else {
+        toast.error(data?.error?.message);
+        setError(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const { data: recommendedBookURL, isLoading: recommendedLoading } = useSWR(
     `${process.env.HOST}books/${book_id}/recommended-books/`,
     getFetcher
   );
@@ -34,6 +91,39 @@ const page = () => {
     `${process.env.HOST}books/${book_id}`,
     getFetcher
   );
+  const handleReserve = async (id: any) => {
+    // const formData = {
+    //   days: inputFieldValue?.days,
+    // };
+    try {
+      const response = await fetch(
+        `${process.env.HOST}books/${id}/reserve-book/`,
+        {
+          method: "POST",
+          // body: JSON.stringify(formData),
+          headers: {
+            Authorization: `Bearer ${accessToken()}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Reserved Successfully");
+        // handleCloseTap();
+        // mutate();
+      } else {
+        toast.error(data?.error?.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // const borrowHandle = (book_id: any) => {
+  //   setBookIdd(book_id);
+  //   setShowPopUpModal(true);
+  // };
 
   // const handlePageChange = (page: number) => {
   //   if (page >= 1 && page <= totalPages) {
@@ -46,6 +136,47 @@ const page = () => {
   }, [currentPage]);
   return (
     <>
+      <Modal
+        show={showPopUpModal}
+        handleClose={handleCloseTap}
+        modalTitle="Add Days"
+        size="lg"
+      >
+        <form id="lead-form" onSubmit={handleAddBorrow}>
+          <div className=" px-4 py-4 rounded-lg border border-gray-200">
+            <InputField
+              type="number"
+              label="Days"
+              name="days"
+              placeholder="enter Days"
+              defaultValue={inputFieldValue?.days}
+              fieldErrors={error?.days}
+              onChange={(e: any) => {
+                handleFieldChange("days", e.target.value);
+              }}
+            />
+          </div>
+
+          <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
+            <Btn
+              outline="error"
+              onClick={() => {
+                setShowPopUpModal(false);
+                setInputFieldValue({});
+                setError({});
+              }}
+            >
+              Cancel
+            </Btn>
+
+            <div className="flex gap-x-4">
+              <Btn type="submit" className="bg-blue-600 text-white">
+                Add
+              </Btn>
+            </div>
+          </div>
+        </form>
+      </Modal>
       <HomeLayout>
         <Container>
           {isLoading ? (
@@ -62,6 +193,20 @@ const page = () => {
                     <DateToString inputDate={bookId?.publication_date} />
                   </div>
                 </div>
+                <div className="flex gap-x-5 mt-2">
+                  <button
+                    className="bg-blue-500 px-4 py-2 rounded-md text-sm text-white"
+                    onClick={() => borrowHandle(bookId?.id)}
+                  >
+                    Borrow
+                  </button>
+                  <button
+                    className="bg-blue-500 px-3 py-1 rounded-md text-sm text-white"
+                    onClick={() => handleReserve(bookId?.id)}
+                  >
+                    Reserve
+                  </button>
+                </div>
               </div>
               <div className="col-span-2">
                 <span className="bg-gray-100 rounded-md px-3 py-1 font-semibold text-sm">
@@ -73,7 +218,7 @@ const page = () => {
                 </h1>
                 <h2 className="font-semibold text-md mt-2 mb-4">
                   Sold By:{" "}
-                  <span className="text-blue-800">Gyan Kosh Nepal </span>
+                  <span className="text-blue-800">{bookId?.publisher} </span>
                 </h2>
                 <div className="w-full h-[1px] bg-gray-200" />
                 <div>
@@ -123,11 +268,11 @@ const page = () => {
           </Heading>
           {recommendedLoading ? (
             <div className="text-center text-xl h-96">Loading.....</div>
-          ) :
-          <section className="my-12">
-            <RecommendedBook url={recommendedBookURL} />
-          </section>
-        }
+          ) : (
+            <section className="my-12">
+              <RecommendedBook url={recommendedBookURL} />
+            </section>
+          )}
         </Container>
       </HomeLayout>
     </>

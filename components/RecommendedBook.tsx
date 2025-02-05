@@ -162,7 +162,7 @@ const RecommendedBook: React.FC<bookUrlProps> = ({ url }) => {
                     </div>
                   </div>
                 </Link>
-                <div className="flex px-4 justify-between">
+                {/* <div className="flex px-4 justify-between">
                   <button
                     className="bg-blue-500 px-3 py-1 rounded-md text-sm text-white"
                     onClick={() => borrowHandle(value?.id)}
@@ -175,7 +175,7 @@ const RecommendedBook: React.FC<bookUrlProps> = ({ url }) => {
                   >
                     Reserve
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           );
