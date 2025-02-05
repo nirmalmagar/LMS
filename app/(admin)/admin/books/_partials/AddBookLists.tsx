@@ -61,28 +61,37 @@ const AddBookLists:React.FC<boookListProps> = ({mutate}) => {
   // book add button
   const handleAddBooks = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = {
-      // cover: error,
-      title: inputFieldValue?.title,
-      description: inputFieldValue?.description,
-      author: inputFieldValue?.author,
-      publisher: inputFieldValue?.publisher,
-      price: inputFieldValue?.price,
-      pages: inputFieldValue?.pages,
-      quantity: inputFieldValue?.quantity,
-      isbn: inputFieldValue?.isbn,
-      genres: selectedGenreIds,
-    };
+  
+    // Create a new FormData instance to handle file uploads
+    const formData = new FormData();
+    formData.append("title", inputFieldValue?.title);
+    formData.append("description", inputFieldValue?.description);
+    formData.append("author", inputFieldValue?.author);
+    formData.append("publisher", inputFieldValue?.publisher);
+    formData.append("price", inputFieldValue?.price.toString()); // Ensure it's a string for FormData
+    formData.append("pages", inputFieldValue?.pages.toString());
+    formData.append("quantity", inputFieldValue?.quantity.toString());
+    formData.append("isbn", inputFieldValue?.isbn.toString());
+    formData.append("genres", JSON.stringify(selectedGenreIds));
+  
+    // Append the image file if it exists
+    if (imageUrl) {
+      const fileInput = document.querySelector('input[name="cover"]') as HTMLInputElement;
+      if (fileInput && fileInput.files) {
+        formData.append("cover", fileInput.files[0]);
+      }
+    }
+  
     try {
       const response = await fetch(`${process.env.HOST}books/`, {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: formData,
         headers: {
           Authorization: `Bearer ${accessToken()}`,
           Accept: "application/json",
-          "Content-Type": "application/json",
         },
       });
+  
       const data = await response.json();
       if (response.ok) {
         toast.success(data?.message);
@@ -90,12 +99,14 @@ const AddBookLists:React.FC<boookListProps> = ({mutate}) => {
         mutate();
       } else {
         setError(data);
-        toast.success(data?.genres)
+        toast.error(data?.genres ?? "An error occurred.");
       }
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong while uploading.");
     }
   };
+  
 
   return (
     <>
@@ -235,7 +246,7 @@ const AddBookLists:React.FC<boookListProps> = ({mutate}) => {
                   <label htmlFor="">Genres</label>
                   <Multiselect
                     className="text-sm leading-4 w-full flex-1"
-                    options={genres} // Data to display
+                    options={genres || []} // Data to display
                     displayValue="name" // The key to display (update based on your object structure)
                     onSelect={handleSelect} // Callback for when an item is selected
                     onRemove={handleRemove} // Callback for when an item is removed
