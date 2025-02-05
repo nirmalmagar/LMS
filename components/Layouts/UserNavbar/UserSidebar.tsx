@@ -39,11 +39,11 @@ const UserSidebar = () => {
       href: routes.SETTING,
       icon: Cog6ToothIcon,
       children: [
-        {
-          name: "Update Profile",
-          href: routes.UPDATE_PROFILE,
-          icon: UserIcon,
-        },
+        // {
+        //   name: "Update Profile",
+        //   href: routes.UPDATE_PROFILE,
+        //   icon: UserIcon,
+        // },
         {
           name: "Change Password",
           href: routes.CHANGE_PASSWORD,

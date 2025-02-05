@@ -155,7 +155,7 @@ const AdminSidebar = () => {
   ];
   const filteredNavigation = navigation.filter(item => {
     if (
-      (!isLoggedIn && (item.name === "Academics" || item.name === "user" || item.name === "Setting"))
+      (!isLoggedIn && (item.name === "Academics" || item.name === "User" || item.name === "Setting"))
     ) {
       return false; // Hide Academics, user, and Setting when not logged in
     }
