@@ -44,6 +44,55 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     isLoading,
     mutate,
   } = useSWR(`${process.env.HOST}user/?page=${currentPage}`, defaultFetcher);
+
+  const [roles, setRoles] = useState(() => {
+    if (Array.isArray(userData)) {
+      return userData.reduce(
+        (acc, user) => ({ ...acc, [user.id]: user.role }),
+        {}
+      );
+    }
+    return {};
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (Array.isArray(userData)) {
+      setRoles(
+        userData.reduce((acc, user) => ({ ...acc, [user.id]: user.role }), {})
+      );
+    }
+  }, [userData]);
+
+  const handleRoleChange = async (userId: any, newRole: any) => {
+    setRoles((prevRoles: any) => ({ ...prevRoles, [userId]: newRole }));
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${process.env.HOST}user/set-user-role/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user: userId, role: newRole }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update role");
+      }
+
+      toast.success(`Role updated successfully`);
+      mutate();
+    } catch (error: any) {
+      console.error("Role Update Error:", error);
+      toast.error(error?.message || "Failed to update role");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // edit id list
   const UserURL = `${process.env.HOST}user/${userId}/`;
   const { data: userIdList, mutate: editMutate } = useSWR(
@@ -247,7 +296,7 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
           <span>Loading...</span>
         </p>
       ) : (
-        <div className="mt-8 max-w-[800px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
+        <div className="mt-8 max-w-[1000px] rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
           {heading && <AddUser mutate={mutate} />}
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
@@ -259,6 +308,12 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Email
+                  </th>
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                    Role
+                  </th>
+                  <th className="min-w-[20px] py-4 px-2 font-medium text-black">
+                    Asign Role
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
@@ -284,6 +339,46 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                           <p className="text-black" id="card_title">
                             {userList?.email}
                           </p>
+                        </td>
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <p className="text-black" id="card_title">
+                            {userList.groups && userList.groups.length > 0
+                              ? userList.groups.map((group) => group.name)
+                              : "User"}
+                          </p>
+                        </td>
+                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <select
+                            value={
+                              userList.groups && userList.groups.length > 0
+                                ? userList.groups[0].name === "Admin" ||
+                                  userList.groups[0].name === "Librarian"
+                                  ? userList.groups[0].name
+                                  : ""
+                                : ""
+                            }
+                            onChange={(e) =>
+                              handleRoleChange(userList.id, e.target.value)
+                            }
+                            className="w-40 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            disabled={loading}
+                          >
+                            <option value="">--Select Role--</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Librarian">Librarian</option>
+                          </select>
+                          {/* <select
+                            value={roles[userList.id] || ""}
+                            onChange={(e) =>
+                              handleRoleChange(userList.id, e.target.value)
+                            }
+                            className="w-40 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            disabled={loading}
+                          >
+                            <option value="">--Select Role--</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Librarian">Librarian</option>
+                          </select> */}
                         </td>
                         <td className="border-b flex border-[#eee] py-2 px-2 dark:border-strokedark">
                           <div className="text-black">

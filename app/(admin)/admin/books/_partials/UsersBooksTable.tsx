@@ -28,11 +28,16 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
   const [editValue, setEditValue] = useState<Record<string, any>>({});
   const [error, setError] = useState<Record<string, any>>({});
   const [id, setId] = useState<number>();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [exportPopUpModal, setExportPopUpModal] = useState<boolean>(false);
+  const [exportFormat, setExportFormat] = useState("csv");
 
-  const { data: editBookList, mutate: editMutate } = useSWR(
-    `${process.env.HOST}books/${id}/`,
-    defaultFetcher
-  );
+  // Handle individual checkbox change
+  const handleCheckboxChange = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   // books lists
   const {
@@ -41,6 +46,19 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     mutate,
   } = useSWR(
     `${process.env.HOST}books/?query=&page=${currentPage} `,
+    defaultFetcher
+  );
+
+  const allIds = bookData?.results?.map((book: any) => book.id) || [];
+  const allSelected = selectedIds.length === allIds.length && allIds.length > 0;
+
+  // Handle "Select All" checkbox change
+  const handleSelectAll = () => {
+    setSelectedIds(allSelected ? [] : allIds);
+  };
+
+  const { data: editBookList, mutate: editMutate } = useSWR(
+    `${process.env.HOST}books/${id}/`,
     defaultFetcher
   );
 
@@ -123,6 +141,42 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     setShowPopUpModal(false);
     setEditValue({});
   }
+  // handle close export
+  function handleCloseExport() {
+    setExportPopUpModal(false);
+  }
+
+  // -------------export book handle-----------------
+  const handleExportBooks = async () => {
+    console.log("nirmal123",exportFormat , selectedIds);
+    const InputFileData = {
+          format: exportFormat,
+          books_id_list: selectedIds
+        };
+        try {
+          const response = await fetch(`${process.env.HOST}export-data/`, {
+            method: "POST",
+            body: JSON.stringify(InputFileData),
+            headers: {
+              Authorization: `Bearer ${accessToken()}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          if (response.ok) {
+            toast.success("data export successfully ");
+            setShowPopUpModal(false);
+            setError({});
+            mutate();
+          } else {
+            toast.error("errorrrr");
+            setError(data);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+};
 
   let totalPageArray = bookData?.results
     ? Array.from({ length: bookData?.total_pages }, (_, index) => index + 1)
@@ -158,6 +212,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
 
   return (
     <>
+      {/* edit modal */}
       <Modal
         show={showPopUpModal}
         handleClose={handleCloseTap}
@@ -331,18 +386,72 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
           </div>
         </form>
       </Modal>
+
+      {/* export modal */}
+      <Modal
+        show={exportPopUpModal}
+        handleClose={handleCloseExport}
+        modalTitle="Export Book"
+        size="sm"
+      >
+        
+        <div className="flex flex-col gap-4">
+          <label className="text-sm font-medium">Select Export Format:</label>
+          <select
+            className="p-2 border border-gray-300 rounded-md"
+            value={exportFormat}
+            onChange={(e) => setExportFormat(e.target.value)} // Stores only one value
+          >
+            <option value="csv">CSV</option>
+            <option value="xlsx">Excel (.xlsx)</option>
+          </select>
+        </div>
+
+        <div className="bg-white sticky left-4 bottom-0 right-4 pt-6 border-gray-200 flex items-end  justify-between">
+          <div></div>
+
+          <div className="flex gap-x-4">
+            <Btn
+            onClick={handleExportBooks}
+              className="bg-blue-600 text-white px-4 py-1 rounded-md cursor-pointer"
+            >
+              Export
+            </Btn>
+          </div>
+        </div>
+      </Modal>
+
       {isLoading ? (
         <p className="text-xl bg-white h-96 flex items-center justify-center mt-8 rounded-2xl">
           <span>Loading...</span>
         </p>
       ) : (
         <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">
-          {heading && <AddBookLists mutate={mutate} />}
+          <div className="relative">
+            <div className="absolute top-4 right-28">
+              <button
+                onClick={() => setExportPopUpModal(true)}
+                type="submit"
+                className="text-sm py-1.5 px-4 bg-red-400 text-white rounded-lg"
+              >
+                Export
+              </button>
+            </div>
+            {heading && <AddBookLists mutate={mutate} />}
+          </div>
           <div className="max-w-full overflow-x-auto">
             <table className="w-full text-sm table-auto">
               <thead>
                 <tr className="border-b-2 text-left">
-                  <th className="py-4 px-2 font-medium text-black">S.N</th>
+                  <th className="py-4 px-2 font-medium text-black">
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={allSelected}
+                      onChange={handleSelectAll}
+                    />
+                    S.N
+                  </th>
                   <th className="min-w-[80px] py-4 px-2 font-medium text-black">
                     Cover
                   </th>
@@ -374,11 +483,17 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                 </tr>
               </thead>
               <tbody>
-                {bookData?.results?.slice(0,5)?.map(
+                {bookData?.results?.map(
                   (booksList: Record<string, any>, index: number) => {
                     return (
                       <tr key={index}>
-                        <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="border-b flex gap-x-2 border-[#eee] py-2 px-2 dark:border-strokedark">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox"
+                            checked={selectedIds.includes(booksList?.id)}
+                            onChange={() => handleCheckboxChange(booksList?.id)}
+                          />
                           <h5 className="font-medium text-black">
                             {index + 1}
                           </h5>
@@ -406,7 +521,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                             )}
                           </div>
                         </td>
-                        <td className="min-w-[80px] border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className="max-w-40 border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
                             {booksList.title}
                           </p>
@@ -421,7 +536,7 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                             {booksList?.isbn}
                           </p>
                         </td>
-                        <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                        <td className=" max-w-40 border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                           <p className="text-black" id="card_title">
                             {booksList?.publisher}
                           </p>
