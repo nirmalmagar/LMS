@@ -313,7 +313,7 @@ const UserListTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
                     Role
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
-                    Asign Role
+                    Assigned Role
                   </th>
                   <th className="min-w-[20px] py-4 px-2 font-medium text-black">
                     Action
