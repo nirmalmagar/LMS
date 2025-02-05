@@ -3,15 +3,17 @@ import React from "react";
 import DefaultLayout from "@/components/Layouts/Navbar/DefaultLayout";
 import DashboardCard from "@/components/Elements/Dashboard/DashboardCard";
 import UsersBooksTable from "../books/_partials/UsersBooksTable";
-import PendingBookList from "./_partials/PendingBookList";
+import PendingBooks from "./_partials/PendingBooks";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { MdPendingActions } from "react-icons/md";
 import { CgCalendarDue } from "react-icons/cg";
 import { FaPeopleGroup } from "react-icons/fa6";
 import OverdueBooks from "./_partials/OverdueBooks";
 import { defaultFetcher } from "@/helpers/FetchHelper";
+import MostBorrowedBooks from "./_partials/MostBorrowedBooks";
 
 import useSWR from "swr";
+import TotalBooks from "./_partials/TotalBooks";
 
 const page = () => {
   const { data } = useSWR(
@@ -54,14 +56,15 @@ const page = () => {
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <div>
-            <UsersBooksTable showHeading={false} />
+            <TotalBooks />
           </div>
           <div>
-            <PendingBookList showHeading={true} />
+            <PendingBooks />
           </div>
         </div>
         <div>
           <OverdueBooks />
+          <MostBorrowedBooks />
         </div>
       </DefaultLayout>
     </div>

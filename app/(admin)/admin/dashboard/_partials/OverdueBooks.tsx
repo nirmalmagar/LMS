@@ -118,13 +118,13 @@ const OverdueBooks = () => {
                 Publisher
               </th>
               <th className="min-w-[120px] py-4 px-2 font-medium text-black">
-                Publisher
+                ISBN
               </th>
               <th className="min-w-[120px] py-4 px-2 font-medium text-black">
-                Publisher
+                Price
               </th>
               <th className="min-w-[120px] py-4 px-2 font-medium text-black">
-                Publisher
+                Pages
               </th>
               {/* <th className="min-w-[90px] py-4 px-2 font-medium text-black">
                 Action
@@ -159,7 +159,7 @@ const OverdueBooks = () => {
                         {booksList.title}
                       </p>
                     </td>
-                    <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
+                    <td className=" max-w-44 border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black " id="card_title">
                         {booksList?.author}
                       </p>
@@ -171,17 +171,17 @@ const OverdueBooks = () => {
                     </td>
                     <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black " id="card_title">
-                        {booksList?.author}
+                        {booksList?.isbn}
                       </p>
                     </td>
                     <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black " id="card_title">
-                        {booksList?.author}
+                        {booksList?.price}
                       </p>
                     </td>
                     <td className="border-b border-[#eee] py-2 px-2 dark:border-strokedark">
                       <p className="text-black " id="card_title">
-                        {booksList?.publisher}
+                        {booksList?.pages}
                       </p>
                     </td>
 
