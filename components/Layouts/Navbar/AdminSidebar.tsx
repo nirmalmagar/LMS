@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { routes } from "@/utils/routes";
 import { IoMenuSharp } from "react-icons/io5";
@@ -31,15 +31,28 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import Cookies from "js-cookie";
 
 const AdminSidebar = () => {
-  const [navbarText, setNavbarText] = useState<boolean>(true);
   const pathname = usePathname();
+  const [navbarText, setNavbarText] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  
+
+  useEffect(() => {
+    const token = Cookies.get("LOGIN_TOKEN"); // Fetch token on the client
+    const group_name = Cookies.get("GROUP_NAME");
+    if(group_name === "Librarian"){
+      if (token && group_name) {
+        setIsLoggedIn(false);
+      }
+    }
+  }, []);
 
   const navigation = [
     { name: "Dashboard", href: routes.ADMIN_DASHBOARD_ROUTE, icon: HomeIcon },
     {
-      name: "user",
+      name: "User",
       href: routes.ADMIN_USERS_ROUTE,
       icon: UsersIcon,
     },
@@ -140,6 +153,14 @@ const AdminSidebar = () => {
       ],
     },
   ];
+  const filteredNavigation = navigation.filter(item => {
+    if (
+      (!isLoggedIn && (item.name === "Academics" || item.name === "user" || item.name === "Setting"))
+    ) {
+      return false; // Hide Academics, user, and Setting when not logged in
+    }
+    return true; // Keep other items or if logged in
+  });
 
   return (
     <aside className="bg-white text-black px-2" id="">
@@ -165,7 +186,7 @@ const AdminSidebar = () => {
         {/* <span className="text-xs text-blue-200 font-semibold px-4">BOOKS</span> */}
         <ul>
           <li className="mt-4 flex flex-col gap-2">
-            {navigation.map((navbarList, index: number) => {
+            {filteredNavigation.map((navbarList, index: number) => {
               return (
                 <React.Fragment key={index}>
                   {!navbarList?.children?.length ? (

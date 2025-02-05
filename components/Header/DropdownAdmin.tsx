@@ -5,13 +5,23 @@ import { routes } from "@/utils/routes";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
+import { defaultFetcher } from "@/helpers/FetchHelper";
 
 const DropdownAdmin = () => {
   const [dropdownMenu, setDropdownMenu] = useState<boolean>(false);
   const closeDropdownRef: any = useRef();
   const router = useRouter();
+
+  const GROUP_NAME = Cookies.get("GROUP_NAME");
+  const ADMIN_LOGIN_ID = Cookies.get("ADMIN_LOGIN_ID");
+  const userURL = `${process.env.HOST}user/${ADMIN_LOGIN_ID}`;
+  const { data: userList, isLoading, mutate } = useSWR(userURL, defaultFetcher);
+
   const logout = () => {
     Cookies.remove("LOGIN_TOKEN");
+    Cookies.remove("GROUP_NAME");
+    Cookies.remove("ADMIN_LOGIN_ID");
     router.replace(routes.ADMIN_AUTH_LOGIN);
   };
   useEffect(() => {
@@ -33,8 +43,8 @@ const DropdownAdmin = () => {
           onClick={() => setDropdownMenu(!dropdownMenu)}
         >
           <div>
-            <h1>administrator@gmail.com</h1>
-            <span>( admin )</span>
+            <h1>{userList?.email}</h1>
+            <span>( {GROUP_NAME} )</span>
           </div>
           <div>{dropdownMenu ? <IoIosArrowUp /> : <IoIosArrowDown />}</div>
         </div>

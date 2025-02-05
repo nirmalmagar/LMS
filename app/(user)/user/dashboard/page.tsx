@@ -9,6 +9,8 @@ import { MdPendingActions } from "react-icons/md";
 import useSWR from "swr";
 import { defaultFetcher } from "@/helpers/FetchHelper";
 import WelcomeBanner from "./_partials/WelcomeBanner";
+import MostBorrowedBooks from "./_partials/MostBorrowedBooks";
+
 const page = () => {
   const { data } = useSWR(
     `${process.env.HOST}dashboard/student/`,
@@ -49,6 +51,7 @@ const page = () => {
             }
           </DashboardCard>
         </div>
+        <MostBorrowedBooks />
       </DefaultLayout>
     </div>
   );

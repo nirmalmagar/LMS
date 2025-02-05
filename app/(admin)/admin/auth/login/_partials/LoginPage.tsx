@@ -47,11 +47,15 @@ const LoginPage: React.FC = () => {
       if (response.ok) {
         const data = result;
         Cookie.set("LOGIN_TOKEN", data?.token?.access);
+        Cookie.set("GROUP_NAME",data?.user?.groups[0]?.name)
+        Cookie.set("ADMIN_LOGIN_ID",data?.user?.id)
         router.replace(routes.ADMIN_DASHBOARD_ROUTE);
         toast.success("login successfully");
       } else {
         toast.error("something went wrong!!");
         Cookie.remove("LOGIN_TOKEN");
+        Cookie.remove("GROUP_NAME")
+        Cookie.remove("ADMIN_LOGIN_ID")
       }
     } catch (error) {
       console.log(error);
