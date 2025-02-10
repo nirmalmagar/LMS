@@ -10,24 +10,24 @@ const Pagination = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const fetchBooks = async (page: number) => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${process.env.HOST}books/?query=${book_id}/recommended-books/?page=${page}`
-      ); // Replace `/api/books` with your API endpoint
-      const data = await res.json();
-      setBookListsURL(data.results);
-      setTotalPages(data.total_pages);
-    } catch (error) {
-      console.error("Failed to fetch books:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchBooks = async (page: number) => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch(
+  //       `${process.env.HOST}books/?query=${book_id}/recommended-books/?page=${page}`
+  //     ); // Replace `/api/books` with your API endpoint
+  //     const data = await res.json();
+  //     setBookListsURL(data.results);
+  //     setTotalPages(data.total_pages);
+  //   } catch (error) {
+  //     console.error("Failed to fetch books:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
-    fetchBooks(currentPage);
+    // fetchBooks(currentPage);
   }, [currentPage]);
 
   const handlePageChange = (page: number) => {

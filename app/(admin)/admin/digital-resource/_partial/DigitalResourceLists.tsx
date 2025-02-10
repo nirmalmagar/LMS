@@ -108,9 +108,9 @@ const DigitalResourcesLists: React.FC<ShowHeading> = ({ showHeading, showMore })
       setCurrentPage(page);
     }
   };
-  useEffect(() => {
-    BookLists();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   BookLists();
+  // }, [currentPage]);
 
   return (
     <>

@@ -76,9 +76,9 @@ console.log("userid",storeUserId);
     setStoreUserId(storeUserId);
   }, []);
   
-  useEffect(() => {
-    mutate();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   mutate();
+  // }, [currentPage]);
 
   return (
     <>

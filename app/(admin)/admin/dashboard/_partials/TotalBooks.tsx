@@ -46,9 +46,9 @@ const TotalBooks = () => {
       setCurrentPage(page);
     }
   };
-  useEffect(() => {
-    mutate();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   mutate();
+  // }, [currentPage]);
 
   return (
     <>

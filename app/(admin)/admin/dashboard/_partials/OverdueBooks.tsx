@@ -89,9 +89,9 @@ const OverdueBooks = () => {
       setCurrentPage(page);
     }
   };
-  useEffect(() => {
-    BookLists();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   BookLists();
+  // }, [currentPage]);
 
   return (
     <div className="mt-8 rounded-3xl bg-white pb-2.5 px-2 pt-2 shadow-default sm:px-7.5 xl:pb-1">

@@ -46,9 +46,9 @@ const PendingBookList = () => {
     }
   };
 
-  useEffect(() => {
-    mutate();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   mutate();
+  // }, [currentPage]);
 
   return (
     <>

@@ -117,29 +117,29 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   
 
   // fetch library-sections lists
-  const LibraryList = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.HOST}library-sections?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken()}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      setTotalPages(data?.total_pages);
-      setCurrentPage(data?.current_page);
-      setLibrarySectionLists(data?.results);
-      setIsLoading(false);
-      mutate();
-    } catch (e) {
-      console.log("error", e);
-      setIsLoading(false);
-    }
-  };
+  // const LibraryList = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.HOST}library-sections?page=${currentPage}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken()}`,
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     setTotalPages(data?.total_pages);
+  //     setCurrentPage(data?.current_page);
+  //     setLibrarySectionLists(data?.results);
+  //     setIsLoading(false);
+  //     mutate();
+  //   } catch (e) {
+  //     console.log("error", e);
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // pagination number lists in array
   let totalPageArray = librarySectionLists
@@ -173,7 +173,7 @@ const LibraryTableList: React.FC<ShowHeading> = ({
   };
 
   useEffect(() => {
-    LibraryList();
+    // LibraryList();
     mutate();
   }, [currentPage,mutate]);
   return (

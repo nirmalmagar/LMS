@@ -119,9 +119,9 @@ const MostBorrowedBooks: React.FC<ShowHeading> = ({
     }
   };
 
-  useEffect(() => {
-    mutate();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   mutate();
+  // }, [currentPage]);
 
   return (
     <>

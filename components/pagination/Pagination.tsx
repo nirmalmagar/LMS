@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 interface PaginationProps{
-  total_Pages:number;
-  current_Page:number;
-  results:Record<string,any>[];
-  mutate:()=>void;
+  total_Pages?:number;
+  current_Page?:number;
+  results?:Record<string,any>[];
+  mutate?:()=>void;
 }
 
 const Pagination:React.FC<PaginationProps> = ({total_Pages, current_Page, results, mutate}) => {

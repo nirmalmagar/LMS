@@ -14,37 +14,37 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const [buttonsArray, setButtonsArray] = useState<(number | string)[]>([]);
 
-  const updateVisiblePages = (page: number) => {
-    let pages: (number | string)[] = [];
+  // const updateVisiblePages = (page: number) => {
+  //   let pages: (number | string)[] = [];
 
-    if (totalPages <= 6) {
-      pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-    } else {
-      // Reset the pages array
-      pages = [];
+  //   if (totalPages <= 6) {
+  //     pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+  //   } else {
+  //     // Reset the pages array
+  //     pages = [];
 
-      pages.push(1);
+  //     pages.push(1);
 
-      if (page > 4) {
-        pages.push("start-ellipsis");
-      }
+  //     if (page > 4) {
+  //       pages.push("start-ellipsis");
+  //     }
 
-      const startPage = Math.max(Math.min(page - 2, totalPages - 5), 2);
-      const endPage = Math.min(startPage + 4, totalPages - 1);
+  //     const startPage = Math.max(Math.min(page - 2, totalPages - 5), 2);
+  //     const endPage = Math.min(startPage + 4, totalPages - 1);
 
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
+  //     for (let i = startPage; i <= endPage; i++) {
+  //       pages.push(i);
+  //     }
 
-      if (endPage < totalPages - 1) {
-        pages.push("end-ellipsis");
-      }
+  //     if (endPage < totalPages - 1) {
+  //       pages.push("end-ellipsis");
+  //     }
 
-      pages.push(totalPages);
-    }
+  //     pages.push(totalPages);
+  //   }
 
-    setButtonsArray(pages);
-  };
+  //   setButtonsArray(pages);
+  // };
 
   const handleEllipsisClick = (type: string) => {
     let newPage;
@@ -59,7 +59,7 @@ const Pagination: React.FC<PaginationProps> = ({
     }
 
     if (newPage !== currentPage) {
-      updateVisiblePages(newPage);
+      // updateVisiblePages(newPage);
       onPageChange(newPage);
     }
   };
@@ -95,7 +95,7 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   useEffect(() => {
-    updateVisiblePages(currentPage);
+    // updateVisiblePages(currentPage);
   }, [currentPage, totalPages ]);
   return (
     <>

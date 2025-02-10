@@ -237,9 +237,9 @@ const UsersBooksTable: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     }
   };
 
-  useEffect(() => {
-    mutate();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   mutate();
+  // }, [currentPage]);
 
   return (
     <>

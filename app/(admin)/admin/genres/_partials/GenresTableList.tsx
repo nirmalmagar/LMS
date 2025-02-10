@@ -150,9 +150,9 @@ const GenresTableList: React.FC<ShowHeading> = ({ showHeading, showMore }) => {
     }
   };
 
-  useEffect(() => {
-    mutate();
-  }, [currentPage]);
+  // useEffect(() => {
+  //   mutate();
+  // }, [currentPage]);
   console.log("hacker",genresData?.results?.length);
   return (
     <>
