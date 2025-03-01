@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import HomePage from './homepage/HomePage'
+import HomePageSkeleton from '../components/Skeleton/HomePageSkeleton'
+import BookSkeleton from '../components/Skeleton/BookSkeleton'
+
 const page = () => {
   return (
-    <div><HomePage /></div>
+    <div>
+      <Suspense fallback={<HomePageSkeleton/>}>
+      {/* <BookSkeleton /> */}
+      <HomePage />
+      {/* <HomePageSkeleton/> */}
+      </Suspense>
+      </div>
   )
 }
 
